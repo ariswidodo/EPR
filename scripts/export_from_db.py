@@ -133,6 +133,10 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             target_fy = float(m.get("TARGET EXCL") or 0)
         except ValueError:
             target_fy = 0.0
+        try:
+            target_original = float(m.get("TARGET ORIGINAL") or 0) or target_fy
+        except ValueError:
+            target_original = target_fy
 
         target_h1 = round(target_fy * 0.52)
         target_h2 = round(target_fy * 0.48)
@@ -173,6 +177,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             "tier": (m.get("CATEGORY") or "").strip(),
             "am": (m.get("AM") or "").strip(),
             "target_fy": round(target_fy),
+            "target_original": round(target_original),
             "target_h1": target_h1,
             "target_h2": target_h2,
             "actual_fy": total_fy,

@@ -457,7 +457,10 @@
           </td>
           <td><span class="tier-pill tier-${esc(p.tier)}">${esc(p.tier || "-")}</span></td>
           <td style="max-width:210px;overflow:hidden;text-overflow:ellipsis" title="${esc(epps.map((e) => e.name).join(", "))}">${eppLabel}</td>
-          <td class="num mono">${fmtCompact(p.target)}</td>
+          <td class="num mono">
+            ${fmtCompact(p.target)}
+            ${p.target_original && p.target_original !== p.target_fy ? `<div class="partner-meta">Orig: ${fmtCompact(p.target_original)}</div>` : ""}
+          </td>
           <td class="num mono"><strong>${fmtCompact(p.actual)}</strong></td>
           <td class="num">
             <div class="ach-cell">
@@ -660,7 +663,11 @@
     $("dCode").textContent = p.code;
     $("dTier").textContent = p.tier || "-";
     $("dName").textContent = p.name;
-    $("dMeta").textContent = `${p.city || "-"} · AM: ${p.am || "-"} · ${p.tx_count || 0} transaksi`;
+    $("dMeta").textContent =
+      `${p.city || "-"} · AM: ${p.am || "-"} · ${p.tx_count || 0} transaksi` +
+      (p.target_original && p.target_original !== p.target_fy
+        ? ` · Target Orig: ${fmtCompact(p.target_original)}`
+        : "");
 
     $("dAchFy").textContent = fmtPct(achFy);
     $("dAchFy").style.color = achColor(achFy);
