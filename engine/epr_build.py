@@ -39,6 +39,8 @@ def c_fs(ref, st, fml, cached):
 def kategori(cat):
     t = (cat or "").strip().upper()
     if not t: return ""
+    if t in ("CONSUMABLES", "CONSUMER", "SCANNER", "DOTMATRIX"):
+        return t.capitalize()
     if t.endswith("CONS"): return "Consumables"
     if t.startswith("SCN"): return "Scanner"
     if t.startswith("SIDM"): return "Dotmatrix"
