@@ -906,81 +906,95 @@
     }, 500);
   }
 
-  function shareAllEprPdf() {
+  function openSharePdfModal() {
+    $("sharePdfBackdrop").hidden = false;
+    $("sharePdfModal").hidden = false;
+  }
+
+  function closeSharePdfModal() {
+    $("sharePdfBackdrop").hidden = true;
+    $("sharePdfModal").hidden = true;
+  }
+
+  function shareAllEprPdf(period = state.period) {
+    closeSharePdfModal();
+    const prevPeriod = state.period;
+    state.period = period;
     const list = getFilteredPartners();
+    state.period = prevPeriod;
+
     if (!list.length) {
       alert("Tidak ada data EPR untuk dicetak.");
       return;
     }
+
     const totalRev = list.reduce((s, p) => s + p.actual, 0);
     const totalTarget = list.reduce((s, p) => s + p.target, 0);
     const totalAch = totalTarget > 0 ? totalRev / totalTarget : null;
+    const totalGap = list.reduce((s, p) => s + Math.max(0, (p.target || 0) - (p.actual || 0)), 0);
     const achievedCount = list.filter((p) => p.ach != null && p.ach >= 1).length;
     const periodLabel =
-      state.period === "h1" ? "H1 (Apr – Sep 2026)" : state.period === "h2" ? "H2 (Okt 2026 – Mar 2027)" : "FY26 (Full Year)";
+      period === "h1" ? "H1 (Apr – Sep 2026)" : period === "h2" ? "H2 (Okt 2026 – Mar 2027)" : "FY26 (Full Year)";
 
     const rowsHtml = list
-      .map(
-        (p, i) => `<tr>
+      .map((p, i) => {
+        const shortfall = Math.max(0, (p.target || 0) - (p.actual || 0));
+        const isOk = p.target > 0 && shortfall === 0;
+        const gapCell =
+          p.target <= 0
+            ? '<td class="num mono">-</td>'
+            : isOk
+            ? `<td class="num mono pdf-gap-ok">Achieved (${fmtPct(p.ach)})</td>`
+            : `<td class="num mono pdf-gap-warn">${fmtRp(shortfall)}</td>`;
+
+        return `<tr>
           <td class="mono">${i + 1}</td>
-          <td><b>${esc(p.name)}</b><br><small class="mono">${esc(p.code)} · ${esc(p.city || "-")}</small></td>
-          <td>${esc(p.tier || "-")}</td>
-          <td class="num mono">${fmtCompact(p.target)}</td>
-          <td class="num mono"><b>${fmtCompact(p.actual)}</b></td>
-          <td class="num mono"><b>${fmtPct(p.ach)}</b></td>
-          <td class="num mono">${fmtCompact(p.Consumer)}</td>
-          <td class="num mono">${fmtCompact(p.Scanner)}</td>
-          <td class="num mono">${fmtCompact(p.Consumables)}</td>
-          <td class="num mono">${fmtCompact(p.Dotmatrix)}</td>
-        </tr>`
-      )
+          <td><b>${esc(p.name)}</b><br><small class="mono">${esc(p.code)} · ${esc(p.city || "-")} · ${esc(p.tier || "-")}</small></td>
+          <td class="num mono">${fmtRp(p.target)}</td>
+          ${gapCell}
+        </tr>`;
+      })
       .join("");
 
     $("pdfReport").innerHTML = `
       <div class="pdf-head">
         <div>
-          <h1>Result Achievement EPR</h1>
-          <div class="pdf-meta">Periode: ${esc(periodLabel)} · ${list.length} Partner EPR (${achievedCount} Achieved &ge; 100%)</div>
+          <h1>Result Achievement EPR — ${esc(periodLabel)}</h1>
+          <div class="pdf-meta">${list.length} Partner EPR · ${achievedCount} Achieved (&ge; 100%)</div>
         </div>
         <div class="pdf-meta" style="text-align:right">
-          <div><b>Rekap Pencapaian Area</b></div>
+          <div><b>Laporan Kekurangan Target ${esc(period.toUpperCase())}</b></div>
           <div>Dicetak: ${new Date().toLocaleString("id-ID")}</div>
         </div>
       </div>
 
       <div class="pdf-kpis">
         <div class="pdf-kpi">
-          <span>Total Net Revenue</span>
-          <strong class="mono">${fmtCompact(totalRev)}</strong>
-          <small class="mono">Target: ${fmtCompact(totalTarget)}</small>
+          <span>Total Target ${esc(period.toUpperCase())}</span>
+          <strong class="mono">${fmtCompact(totalTarget)}</strong>
+          <small>${list.length} partner EPR</small>
         </div>
         <div class="pdf-kpi">
-          <span>Overall Achievement</span>
+          <span>Total Aktual &amp; Ach %</span>
           <strong class="mono">${fmtPct(totalAch)}</strong>
-          <small>${achLabel(totalAch)}</small>
+          <small class="mono">${fmtCompact(totalRev)}</small>
         </div>
         <div class="pdf-kpi">
-          <span>Partner Achieved</span>
-          <strong class="mono">${achievedCount} / ${list.length}</strong>
-          <small>Exclude PPN 11%</small>
+          <span>Total Kekurangan</span>
+          <strong class="mono" style="color:#b91c1c">${fmtCompact(totalGap)}</strong>
+          <small>${list.length - achievedCount} partner belum 100%</small>
         </div>
       </div>
 
       <div class="pdf-sec">
-        <h3>Rincian Pencapaian per EPR</h3>
+        <h3>Daftar Target &amp; Kekurangan per EPR (${esc(period.toUpperCase())})</h3>
         <table class="pdf-table">
           <thead>
             <tr>
-              <th>#</th>
-              <th>EPR Partner</th>
-              <th>Tier</th>
+              <th style="width:36px">#</th>
+              <th>Nama EPR</th>
               <th class="num">Target</th>
-              <th class="num">Aktual (Net)</th>
-              <th class="num">Ach %</th>
-              <th class="num">Consumer</th>
-              <th class="num">Scanner</th>
-              <th class="num">Consumables</th>
-              <th class="num">Dotmatrix</th>
+              <th class="num">Kekurangan</th>
             </tr>
           </thead>
           <tbody>${rowsHtml}</tbody>
@@ -988,13 +1002,13 @@
       </div>
 
       <div class="pdf-foot">
-        <span>Result Achievement EPR · Semua nilai exclude PPN 11%</span>
+        <span>Result Achievement EPR (${esc(period.toUpperCase())}) · Exclude PPN 11%</span>
         <span>${list.length} partner</span>
       </div>
     `;
 
     const prevTitle = document.title;
-    document.title = `Result_Achievement_EPR_${state.period.toUpperCase()}`;
+    document.title = `Result_Achievement_EPR_${period.toUpperCase()}`;
     window.print();
     setTimeout(() => {
       document.title = prevTitle;
@@ -1162,7 +1176,12 @@
       if (e.key === "Escape") closeDrawer();
     });
 
-    $("btnShareAllPdf").addEventListener("click", shareAllEprPdf);
+    $("btnShareAllPdf").addEventListener("click", openSharePdfModal);
+    $("btnCloseSharePdf").addEventListener("click", closeSharePdfModal);
+    $("sharePdfBackdrop").addEventListener("click", closeSharePdfModal);
+    document.querySelectorAll(".share-period-btn").forEach((btn) => {
+      btn.addEventListener("click", () => shareAllEprPdf(btn.dataset.sharePeriod));
+    });
     $("btnExportCsv").addEventListener("click", exportCsv);
     $("rejectTypeFilter").addEventListener("change", renderRejectedRows);
     $("rejectSearch").addEventListener("input", renderRejectedRows);

@@ -1011,4 +1011,27 @@ td {
     display: flex;
     justify-content: space-between;
   }
+  .pdf-gap-warn {
+    color: #b91c1c;
+    background: #fef2f2;
+    font-weight: 700;
+  }
+  .pdf-gap-ok {
+    color: #047857;
+    background: #ecfdf5;
+    font-weight: 700;
+  }
+}
+
+.share-period-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.share-period-btn {
+  width: 100%;
+  justify-content: space-between;
+  text-align: left;
+  padding: 11px 14px;
 }

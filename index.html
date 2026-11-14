@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20261114d" />
+  <link rel="stylesheet" href="styles.css?v=20261114e" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -429,9 +429,42 @@
     </div>
   </div>
 
+  <!-- Modal Pilih Periode Share PDF Semua EPR -->
+  <div class="modal-backdrop" id="sharePdfBackdrop" hidden></div>
+  <div class="modal" id="sharePdfModal" hidden role="dialog" aria-modal="true" style="width:min(400px, calc(100vw - 24px))">
+    <div class="modal-head">
+      <div>
+        <h2>Share PDF — Result Achievement</h2>
+        <p class="card-sub">Pilih periode yang ingin ditampilkan (tanpa nama EPP).</p>
+      </div>
+      <button class="btn btn-icon" id="btnCloseSharePdf" aria-label="Tutup">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Pilih Periode Achievement</label>
+        <div class="share-period-list">
+          <button class="btn share-period-btn" data-share-period="h1">
+            <span><b>H1 (Apr – Sep)</b><br><small style="color:var(--text-3)">52% Target Tahunan · Highlight Kekurangan</small></span>
+            <span>&rarr;</span>
+          </button>
+          <button class="btn share-period-btn" data-share-period="h2">
+            <span><b>H2 (Okt – Mar)</b><br><small style="color:var(--text-3)">48% Target Tahunan · Highlight Kekurangan</small></span>
+            <span>&rarr;</span>
+          </button>
+          <button class="btn share-period-btn" data-share-period="fy">
+            <span><b>FY26 (Full Year)</b><br><small style="color:var(--text-3)">100% Target Tahunan · Highlight Kekurangan</small></span>
+            <span>&rarr;</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Printable PDF Report Container (per EPR) -->
   <section id="pdfReport" class="pdf-report" aria-hidden="true"></section>
 
-  <script src="app.js?v=20261114d"></script>
+  <script src="app.js?v=20261114e"></script>
 </body>
 </html>
