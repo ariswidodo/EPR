@@ -837,8 +837,38 @@ td {
 
 .audit-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 18px;
+}
+
+.audit-grid > div {
+  min-width: 0;
+}
+
+.audit-grid .badge {
+  max-width: 210px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.audit-grid .partner-cell {
+  max-width: 220px;
+}
+
+.audit-grid .partner-cell > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modal[hidden],
+.modal-backdrop[hidden],
+.drawer-backdrop[hidden],
+.upload-status[hidden] {
+  display: none !important;
 }
 
 .audit-subhead {
