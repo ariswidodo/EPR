@@ -52,7 +52,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
     con = sqlite3.connect(db_path)
     con.row_factory = sqlite3.Row
     rows = con.execute(
-        "SELECT epr, epp, epp_name, kat, month_ser, qty, price, eim, quarter, remarks, invoice_date, material, description FROM terverifikasi"
+        "SELECT epr, epp, epp_name, kat, month_ser, qty, price, total, eim, quarter, remarks, invoice_date, material, description FROM terverifikasi"
     ).fetchall()
     last_proc = con.execute(
         "SELECT waktu, file FROM proses ORDER BY id DESC LIMIT 1"
@@ -115,7 +115,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         code = (r["epr"] or "").strip()
         kat = (r["kat"] or "").strip()
         mser = r["month_ser"]
-        gross = (r["price"] or 0.0) * (r["qty"] or 0.0)
+        gross = r["total"] if (r["total"] is not None and r["total"] > 0) else ((r["price"] or 0.0) * (r["qty"] or 0.0))
         net = gross / 1.11
         agg[code][(kat, mser)] += gross
         row_count[code] += 1

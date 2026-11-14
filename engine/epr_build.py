@@ -688,8 +688,9 @@ def build(input_paths, emit=lambda s: None, out_dir=None, build_excel=True):
     agg = collections.defaultdict(lambda: collections.defaultdict(float))
     midhi = collections.defaultdict(float)
     for d in allv:
-        agg[d["epr"]][(d["kat"], d["month_ser"])] += d["price"] * d["qty"]
-        if d["eim"] == "Mid High": midhi[d["epr"]] += d["price"] * d["qty"]
+        g = d["total"] if d.get("total") else (d["price"] * d["qty"])
+        agg[d["epr"]][(d["kat"], d["month_ser"])] += g
+        if d["eim"] == "Mid High": midhi[d["epr"]] += g
 
     v = Pkg(T.TEMPLATE_VER)
     part = v.part_of("RETAIL")
