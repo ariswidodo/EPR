@@ -565,68 +565,114 @@
       .join("");
   }
 
+  function getProgramRules() {
+    const base = rawData?.meta?.program_rules || {};
+    let local = {};
+    try {
+      local = JSON.parse(localStorage.getItem("epr_program_rules") || "{}");
+    } catch (_) {}
+    return { ...base, ...local };
+  }
+
+  function inProgPeriod(dateStr, rule) {
+    if (!rule || (!rule.start && !rule.end)) return true;
+    if (!dateStr) return false;
+    if (rule.start && dateStr < rule.start) return false;
+    if (rule.end && dateStr > rule.end) return false;
+    return true;
+  }
+
   function renderProgramSummary(list) {
+    const rules = getProgramRules();
+    const visibleCodes = new Set(list.map((p) => p.code));
+    const items = rawData?.program_items || [];
     const map = new Map();
     let grand = 0;
-    list.forEach((p) => {
-      (p.program_sources || []).forEach((pr) => {
-        grand += pr.total || 0;
-        let cur = map.get(pr.name);
+
+    if (items.length) {
+      items.forEach((it) => {
+        if (!visibleCodes.has(it.epr)) return;
+        const rule = rules[it.prog];
+        if (!inProgPeriod(it.date, rule)) return;
+        grand += it.net || 0;
+        let cur = map.get(it.prog);
         if (!cur) {
-          cur = {
-            name: pr.name,
-            eprs: new Set(),
-            tx: 0,
-            qty: 0,
-            total: 0,
-            cats: { Consumer: 0, Scanner: 0, Consumables: 0, Dotmatrix: 0 },
-          };
-          map.set(pr.name, cur);
+          cur = { name: it.prog, eprs: new Set(), tx: 0, qty: 0, total: 0 };
+          map.set(it.prog, cur);
         }
-        cur.eprs.add(p.code);
-        cur.tx += pr.tx || 0;
-        cur.qty += pr.qty || 0;
-        cur.total += pr.total || 0;
-        CATS.forEach((c) => {
-          cur.cats[c] += pr.cats?.[c] || 0;
+        cur.eprs.add(it.epr);
+        cur.tx += it.tx || 0;
+        cur.qty += it.qty || 0;
+        cur.total += it.net || 0;
+      });
+    } else {
+      list.forEach((p) => {
+        (p.program_sources || []).forEach((pr) => {
+          grand += pr.total || 0;
+          let cur = map.get(pr.name);
+          if (!cur) {
+            cur = { name: pr.name, eprs: new Set(), tx: 0, qty: 0, total: 0 };
+            map.set(pr.name, cur);
+          }
+          cur.eprs.add(p.code);
+          cur.tx += pr.tx || 0;
+          cur.qty += pr.qty || 0;
+          cur.total += pr.total || 0;
         });
       });
-    });
+    }
 
     const rows = [...map.values()].sort((a, b) => b.total - a.total);
     $("progSummaryCount").textContent = `${rows.length} program`;
     const body = $("progSummaryBody");
     if (!rows.length || grand <= 0) {
       body.innerHTML =
-        '<tr><td colspan="11" style="text-align:center;color:var(--text-3);padding:20px">Belum ada data program.</td></tr>';
+        '<tr><td colspan="12" style="text-align:center;color:var(--text-3);padding:20px">Belum ada data program.</td></tr>';
       return;
     }
+
+    // Ambil rincian kategori dari program_sources (atau tampilkan - jika difilter tanggal)
+    const catByProg = new Map();
+    list.forEach((p) => {
+      (p.program_sources || []).forEach((pr) => {
+        if (!catByProg.has(pr.name)) {
+          catByProg.set(pr.name, { Consumer: 0, Scanner: 0, Consumables: 0, Dotmatrix: 0 });
+        }
+        const cObj = catByProg.get(pr.name);
+        CATS.forEach((c) => {
+          cObj[c] += pr.cats?.[c] || 0;
+        });
+      });
+    });
 
     body.innerHTML = rows
       .map((pr, i) => {
         const totPct = (pr.total / grand) * 100;
-        const barSegs = CATS.map((c) => {
-          const w = ((pr.cats[c] || 0) / grand) * 100;
-          return w > 0 ? `<span style="width:${w.toFixed(2)}%;background:${CAT_COLORS[c]}" title="${c}: ${w.toFixed(1)}%"></span>` : "";
-        }).join("");
+        const rule = rules[pr.name];
+        const periodTxt =
+          rule && (rule.start || rule.end)
+            ? `${rule.start || "..."} s/d ${rule.end || "..."}`
+            : "Semua Tanggal";
         const isReg = pr.name.startsWith("Reguler");
+        const cats = catByProg.get(pr.name) || {};
         return `<tr data-prog="${esc(pr.name)}" class="${selectedProg === pr.name ? "prog-row-active" : ""}">
           <td class="col-rank mono">${i + 1}</td>
           <td><span class="${isReg ? "badge badge-neutral" : "badge badge-indigo"}">${esc(pr.name)}</span></td>
+          <td class="mono" style="font-size:12px">${esc(periodTxt)}</td>
           <td class="num mono">${pr.eprs.size}</td>
           <td class="num mono">${pr.tx.toLocaleString("id-ID")}</td>
-          <td class="num mono">${pr.qty.toLocaleString("id-ID")}</td>
+          <td class="num mono"><strong>${pr.qty.toLocaleString("id-ID")}</strong></td>
           <td class="num">
             <div class="ach-cell">
-              <div class="epp-contrib-bar">${barSegs}</div>
+              <div class="mini-bar"><span style="width:${Math.min(100, totPct).toFixed(1)}%;background:var(--indigo)"></span></div>
               <span class="mono" style="font-weight:700;min-width:50px;text-align:right">${totPct.toFixed(1)}%</span>
             </div>
           </td>
           <td class="num mono"><strong>${fmtCompact(pr.total)}</strong></td>
-          <td class="num mono">${fmtCompact(pr.cats.Consumer)}</td>
-          <td class="num mono">${fmtCompact(pr.cats.Consumables)}</td>
-          <td class="num mono">${fmtCompact(pr.cats.Scanner)}</td>
-          <td class="num mono">${fmtCompact(pr.cats.Dotmatrix)}</td>
+          <td class="num mono">${fmtCompact(cats.Consumer || 0)}</td>
+          <td class="num mono">${fmtCompact(cats.Consumables || 0)}</td>
+          <td class="num mono">${fmtCompact(cats.Scanner || 0)}</td>
+          <td class="num mono">${fmtCompact(cats.Dotmatrix || 0)}</td>
         </tr>`;
       })
       .join("");
@@ -634,6 +680,11 @@
     body.querySelectorAll("tr[data-prog]").forEach((tr) => {
       tr.addEventListener("click", () => {
         selectedProg = selectedProg === tr.dataset.prog ? null : tr.dataset.prog;
+        if (selectedProg) {
+          const r = getProgramRules()[selectedProg] || {};
+          $("progStart").value = r.start || "";
+          $("progEnd").value = r.end || "";
+        }
         renderProgramSummary(list);
       });
     });
@@ -651,15 +702,55 @@
     const panel = $("progEprPanel");
     panel.hidden = false;
     const mode = $("progEprMode")?.value || "all";
+    const rule = {
+      start: $("progStart").value || "",
+      end: $("progEnd").value || "",
+    };
+
+    const items = (rawData?.program_items || []).filter((it) => it.prog === progName);
+    const byEpr = new Map();
+    const modelTotals = new Map();
+    let excludedTx = 0;
+    let excludedQty = 0;
+
+    items.forEach((it) => {
+      if (!inProgPeriod(it.date, rule)) {
+        excludedTx += it.tx || 0;
+        excludedQty += it.qty || 0;
+        return;
+      }
+      if (!byEpr.has(it.epr)) {
+        byEpr.set(it.epr, { net: 0, tx: 0, qty: 0, models: new Map() });
+      }
+      const eo = byEpr.get(it.epr);
+      eo.net += it.net || 0;
+      eo.tx += it.tx || 0;
+      eo.qty += it.qty || 0;
+
+      const mKey = it.desc ? `${it.model} (${it.desc})` : it.model || "-";
+      eo.models.set(mKey, (eo.models.get(mKey) || 0) + (it.qty || 0));
+      modelTotals.set(mKey, (modelTotals.get(mKey) || 0) + (it.qty || 0));
+    });
+
+    const topModels = [...modelTotals.entries()].sort((a, b) => b[1] - a[1]);
+    $("progModelSummary").innerHTML = topModels.length
+      ? topModels
+          .slice(0, 14)
+          .map(
+            ([m, q]) =>
+              `<span class="model-chip"><span>${esc(m)}</span><strong class="mono">${q.toLocaleString("id-ID")} unit</strong></span>`
+          )
+          .join("")
+      : '<span style="font-size:12px;color:var(--text-3)">Tidak ada transaksi pada rentang tanggal ini.</span>';
 
     const rows = list
       .map((p) => {
-        const hit = (p.program_sources || []).find((pr) => pr.name === progName);
-        const progVal = hit ? hit.total : 0;
-        const progTx = hit ? hit.tx : 0;
+        const hit = byEpr.get(p.code);
+        const progVal = hit ? hit.net : 0;
         const progQty = hit ? hit.qty : 0;
+        const models = hit ? [...hit.models.entries()].sort((a, b) => b[1] - a[1]) : [];
         const shortfall = Math.max(0, (p.target || 0) - (p.actual || 0));
-        return { p, progVal, progTx, progQty, shortfall, joined: !!hit };
+        return { p, progVal, progQty, models, shortfall, joined: !!hit && progQty > 0 };
       })
       .filter((r) => {
         if (mode === "joined") return r.joined;
@@ -668,13 +759,17 @@
       })
       .sort((a, b) => b.progVal - a.progVal || b.shortfall - a.shortfall);
 
-    const joinedCount = list.filter((p) => (p.program_sources || []).some((pr) => pr.name === progName)).length;
+    const joinedCount = rows.filter((r) => r.joined).length;
     $("progEprTitle").textContent = `Monitor EPR — ${progName}`;
-    $("progEprSub").textContent = `${joinedCount} dari ${list.length} EPR sudah membeli pada program ini (${state.period.toUpperCase()})`;
+    $("progEprSub").textContent =
+      `${joinedCount} EPR ikut dalam periode` +
+      (excludedTx > 0
+        ? ` · ${excludedTx} tx (${excludedQty.toLocaleString("id-ID")} unit) di luar periode tidak dihitung`
+        : "");
 
     const tbody = $("progEprBody");
     if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-3);padding:18px">Tidak ada EPR pada filter ini.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-3);padding:18px">Tidak ada EPR pada filter ini.</td></tr>';
       return;
     }
 
@@ -687,18 +782,23 @@
             ? `<span class="badge badge-emerald">Achieved (${fmtPct(r.p.ach)})</span>`
             : `<span class="mono" style="color:var(--rose);font-weight:700">${fmtCompact(r.shortfall)}</span>`;
 
+        const modelHtml = r.models.length
+          ? `<div class="model-list-cell">${r.models
+              .map(([m, q]) => `<span class="badge badge-neutral mono">${esc(m)}: ${q}</span>`)
+              .join("")}</div>`
+          : '<span class="badge badge-neutral">Belum Beli</span>';
+
         return `<tr data-code="${esc(r.p.code)}">
           <td class="col-rank mono">${i + 1}</td>
           <td>
             <div class="partner-cell">
               <span class="partner-name">${esc(r.p.name)}</span>
-              <span class="partner-meta mono">${esc(r.p.code)} · ${esc(r.p.city || "-")}</span>
+              <span class="partner-meta mono">${esc(r.p.code)} · ${esc(r.p.city || "-")} · ${esc(r.p.tier || "-")}</span>
             </div>
           </td>
-          <td><span class="tier-pill tier-${esc(r.p.tier)}">${esc(r.p.tier || "-")}</span></td>
-          <td class="num mono">${r.progTx}</td>
-          <td class="num mono">${r.progQty}</td>
-          <td class="num mono">${r.joined ? `<strong>${fmtCompact(r.progVal)}</strong>` : '<span class="badge badge-neutral">Belum Beli</span>'}</td>
+          <td>${modelHtml}</td>
+          <td class="num mono"><strong>${r.progQty.toLocaleString("id-ID")}</strong></td>
+          <td class="num mono">${r.joined ? `<strong>${fmtCompact(r.progVal)}</strong>` : "-"}</td>
           <td class="num mono">${fmtCompact(r.p.target)}</td>
           <td class="num">${gapHtml}</td>
         </tr>`;
@@ -1311,6 +1411,35 @@
     });
     $("progEprMode").addEventListener("change", () => {
       if (selectedProg) renderProgramEprDetail(getFilteredPartners(), selectedProg);
+    });
+    $("progStart").addEventListener("change", () => {
+      if (selectedProg) renderProgramEprDetail(getFilteredPartners(), selectedProg);
+    });
+    $("progEnd").addEventListener("change", () => {
+      if (selectedProg) renderProgramEprDetail(getFilteredPartners(), selectedProg);
+    });
+    $("btnSaveProgRule").addEventListener("click", async () => {
+      if (!selectedProg) return;
+      const start = $("progStart").value || "";
+      const end = $("progEnd").value || "";
+      let local = {};
+      try { local = JSON.parse(localStorage.getItem("epr_program_rules") || "{}"); } catch (_) {}
+      if (start || end) local[selectedProg] = { start, end };
+      else delete local[selectedProg];
+      localStorage.setItem("epr_program_rules", JSON.stringify(local));
+
+      try {
+        const res = await fetch("/api/program-rules", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ program: selectedProg, start, end }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (rawData?.meta) rawData.meta.program_rules = data.rules || {};
+        }
+      } catch (_) {}
+      renderProgramSummary(getFilteredPartners());
     });
     $("btnCloseProgPanel").addEventListener("click", () => {
       selectedProg = null;

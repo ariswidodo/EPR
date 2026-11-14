@@ -52,7 +52,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
     con = sqlite3.connect(db_path)
     con.row_factory = sqlite3.Row
     rows = con.execute(
-        "SELECT epr, epp, epp_name, kat, month_ser, qty, price, eim, quarter, remarks FROM terverifikasi"
+        "SELECT epr, epp, epp_name, kat, month_ser, qty, price, eim, quarter, remarks, invoice_date, material, description FROM terverifikasi"
     ).fetchall()
     last_proc = con.execute(
         "SELECT waktu, file FROM proses ORDER BY id DESC LIMIT 1"
@@ -109,6 +109,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
     global_epp = defaultdict(lambda: {"total": 0.0, "tx": 0, "name": "", "cats": defaultdict(float)})
     prog_agg = defaultdict(lambda: defaultdict(lambda: {"total": 0.0, "tx": 0, "qty": 0.0, "cats": defaultdict(float)}))
     global_prog = defaultdict(float)
+    prog_items_map = defaultdict(lambda: {"qty": 0.0, "net": 0.0, "tx": 0, "desc": ""})
 
     for r in rows:
         code = (r["epr"] or "").strip()
@@ -146,6 +147,17 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         if kat:
             pa["cats"][kat] += net
         global_prog[prog_name] += net
+
+        inv_date = (r["invoice_date"] or "").strip()
+        mat = (r["material"] or "").strip()
+        desc = (r["description"] or "").strip()
+        pk = (code, prog_name, inv_date, mat)
+        pi = prog_items_map[pk]
+        pi["qty"] += r["qty"] or 0.0
+        pi["net"] += net
+        pi["tx"] += 1
+        if desc and not pi["desc"]:
+            pi["desc"] = desc
 
     partners = []
     seen_codes = set()
@@ -242,6 +254,29 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         for ec, ev in sorted(global_epp.items(), key=lambda kv: -kv[1]["total"])
     ]
 
+    rules_path = os.path.join(tool_dir, "data", "program_rules.json")
+    program_rules = {}
+    if os.path.exists(rules_path):
+        try:
+            with open(rules_path, encoding="utf-8") as rf:
+                program_rules = json.load(rf)
+        except Exception:
+            program_rules = {}
+
+    program_items = [
+        {
+            "epr": k[0],
+            "prog": k[1],
+            "date": k[2],
+            "model": k[3],
+            "desc": v["desc"],
+            "qty": round(v["qty"]),
+            "net": round(v["net"], 2),
+            "tx": v["tx"],
+        }
+        for k, v in prog_items_map.items()
+    ]
+
     payload = {
         "meta": {
             "title": "EPR FY26 Achievement Dashboard",
@@ -253,6 +288,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             "months": MLBL,
             "categories": CATS,
             "programs": [k for k, _ in sorted(global_prog.items(), key=lambda kv: -kv[1])],
+            "program_rules": program_rules,
             "tax_note": "Semua nilai revenue exclude PPN 11% (dibagi 1.11)",
         },
         "audit": {
@@ -265,6 +301,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             "recent_rejected": recent_rejected,
         },
         "epp_summary": epp_summary,
+        "program_items": program_items,
         "partners": partners,
     }
 

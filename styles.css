@@ -867,6 +867,32 @@ td {
 .prog-epr-panel[hidden] { display: none !important; }
 .prog-row-active { background: var(--indigo-soft) !important; }
 
+.prog-model-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.model-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.model-list-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 340px;
+  white-space: normal;
+}
+
 .modal[hidden],
 .modal-backdrop[hidden],
 .drawer-backdrop[hidden],

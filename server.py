@@ -139,6 +139,36 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
+        if parsed.path == "/api/program-rules":
+            length = int(self.headers.get("Content-Length") or 0)
+            if length <= 0:
+                return self._send_json({"ok": False, "error": "Payload kosong."}, 400)
+            try:
+                body = json.loads(self.rfile.read(length).decode("utf-8"))
+                prog = (body.get("program") or "").strip()
+                start = (body.get("start") or "").strip()
+                end = (body.get("end") or "").strip()
+                if not prog:
+                    return self._send_json({"ok": False, "error": "Nama program wajib diisi."}, 400)
+                rpath = os.path.join(ROOT, "data", "program_rules.json")
+                rules = {}
+                if os.path.exists(rpath):
+                    with open(rpath, encoding="utf-8") as rf:
+                        rules = json.load(rf)
+                if start or end:
+                    rules[prog] = {"start": start, "end": end}
+                else:
+                    rules.pop(prog, None)
+                with open(rpath, "w", encoding="utf-8") as wf:
+                    json.dump(rules, wf, ensure_ascii=False, indent=2)
+                export_from_db.export_data(
+                    tool_dir=ROOT,
+                    out_path=os.path.join(ROOT, "data", "epr_data.json"),
+                )
+                return self._send_json({"ok": True, "rules": rules})
+            except Exception as exc:
+                return self._send_json({"ok": False, "error": str(exc)}, 500)
+
         if parsed.path != "/api/upload":
             self.send_error(404)
             return
