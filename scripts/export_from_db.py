@@ -175,8 +175,14 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         except ValueError:
             target_original = target_fy
 
-        target_h1 = round(target_fy * 0.52)
-        target_h2 = round(target_fy * 0.48)
+        try:
+            target_h1 = round(float(m.get("TARGET CAT H1") or 0)) or round(target_fy * 0.50)
+        except ValueError:
+            target_h1 = round(target_fy * 0.50)
+        try:
+            target_h2 = round(float(m.get("TARGET CAT H2") or 0)) or round(target_fy * 0.50)
+        except ValueError:
+            target_h2 = round(target_fy * 0.50)
         target_original_h1 = round(target_original * 0.52)
         target_original_h2 = round(target_original * 0.48)
 

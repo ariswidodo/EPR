@@ -1128,12 +1128,12 @@
           <small class="mono">Beli: ${fmtCompact(p.actual_fy)} · Cat: ${fmtCompact(p.target_fy)} · Orig: ${fmtCompact(origFy)} (${fmtPct(achOrigFy)})</small>
         </div>
         <div class="pdf-kpi">
-          <span>H1 (52% Target)</span>
+          <span>H1 (Apr – Sep)</span>
           <strong class="mono">${fmtPct(achH1)}</strong>
           <small class="mono">Beli: ${fmtCompact(p.actual_h1)} · Cat: ${fmtCompact(p.target_h1)} · Orig: ${fmtCompact(origH1)} (${fmtPct(achOrigH1)})</small>
         </div>
         <div class="pdf-kpi">
-          <span>H2 (48% Target)</span>
+          <span>H2 (Okt – Mar)</span>
           <strong class="mono">${fmtPct(achH2)}</strong>
           <small class="mono">Beli: ${fmtCompact(p.actual_h2)} · Cat: ${fmtCompact(p.target_h2)} · Orig: ${fmtCompact(origH2)} (${fmtPct(achOrigH2)})</small>
         </div>
