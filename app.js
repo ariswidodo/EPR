@@ -788,6 +788,20 @@
       return `<tr><td>${c}</td><td class="num mono">${fmtRp(val)}</td><td class="num mono">${pct}%</td></tr>`;
     }).join("");
 
+    const eppRows = (p.epp_sources || []).length
+      ? (p.epp_sources || [])
+          .map((ep) => {
+            const share = p.actual_fy > 0 ? ((ep.total / p.actual_fy) * 100).toFixed(1) : "0.0";
+            return `<tr>
+              <td><strong>${esc(ep.name)}</strong><br><small>${esc(ep.code)} · ${esc(ep.city || "-")}</small></td>
+              <td class="num mono">${ep.tx}</td>
+              <td class="num mono">${fmtRp(ep.total)}</td>
+              <td class="num mono">${share}%</td>
+            </tr>`;
+          })
+          .join("")
+      : '<tr><td colspan="4" style="text-align:center;color:#64748b">Belum ada transaksi terverifikasi.</td></tr>';
+
     const origNote =
       p.target_original && p.target_original !== p.target_fy
         ? ` · Target Orig: ${fmtCompact(p.target_original)}`
@@ -870,6 +884,14 @@
         </table>
       </div>
 
+      <div class="pdf-sec">
+        <h3>Sumber Pembelian EPP</h3>
+        <table class="pdf-table">
+          <thead><tr><th>Nama EPP</th><th class="num">Tx</th><th class="num">Net Revenue</th><th class="num">Share</th></tr></thead>
+          <tbody>${eppRows}</tbody>
+        </table>
+      </div>
+
       <div class="pdf-foot">
         <span>Result Achievement EPR FY26 · Semua nilai exclude PPN 11%</span>
         <span>${p.tx_count || 0} transaksi terverifikasi</span>
@@ -878,6 +900,101 @@
 
     const prevTitle = document.title;
     document.title = `EPR_${p.code}_${p.name.replace(/[^A-Za-z0-9_-]+/g, "_")}`;
+    window.print();
+    setTimeout(() => {
+      document.title = prevTitle;
+    }, 500);
+  }
+
+  function shareAllEprPdf() {
+    const list = getFilteredPartners();
+    if (!list.length) {
+      alert("Tidak ada data EPR untuk dicetak.");
+      return;
+    }
+    const totalRev = list.reduce((s, p) => s + p.actual, 0);
+    const totalTarget = list.reduce((s, p) => s + p.target, 0);
+    const totalAch = totalTarget > 0 ? totalRev / totalTarget : null;
+    const achievedCount = list.filter((p) => p.ach != null && p.ach >= 1).length;
+    const periodLabel =
+      state.period === "h1" ? "H1 (Apr – Sep 2026)" : state.period === "h2" ? "H2 (Okt 2026 – Mar 2027)" : "FY26 (Full Year)";
+
+    const rowsHtml = list
+      .map(
+        (p, i) => `<tr>
+          <td class="mono">${i + 1}</td>
+          <td><b>${esc(p.name)}</b><br><small class="mono">${esc(p.code)} · ${esc(p.city || "-")}</small></td>
+          <td>${esc(p.tier || "-")}</td>
+          <td class="num mono">${fmtCompact(p.target)}</td>
+          <td class="num mono"><b>${fmtCompact(p.actual)}</b></td>
+          <td class="num mono"><b>${fmtPct(p.ach)}</b></td>
+          <td class="num mono">${fmtCompact(p.Consumer)}</td>
+          <td class="num mono">${fmtCompact(p.Scanner)}</td>
+          <td class="num mono">${fmtCompact(p.Consumables)}</td>
+          <td class="num mono">${fmtCompact(p.Dotmatrix)}</td>
+        </tr>`
+      )
+      .join("");
+
+    $("pdfReport").innerHTML = `
+      <div class="pdf-head">
+        <div>
+          <h1>Result Achievement EPR</h1>
+          <div class="pdf-meta">Periode: ${esc(periodLabel)} · ${list.length} Partner EPR (${achievedCount} Achieved &ge; 100%)</div>
+        </div>
+        <div class="pdf-meta" style="text-align:right">
+          <div><b>Rekap Pencapaian Area</b></div>
+          <div>Dicetak: ${new Date().toLocaleString("id-ID")}</div>
+        </div>
+      </div>
+
+      <div class="pdf-kpis">
+        <div class="pdf-kpi">
+          <span>Total Net Revenue</span>
+          <strong class="mono">${fmtCompact(totalRev)}</strong>
+          <small class="mono">Target: ${fmtCompact(totalTarget)}</small>
+        </div>
+        <div class="pdf-kpi">
+          <span>Overall Achievement</span>
+          <strong class="mono">${fmtPct(totalAch)}</strong>
+          <small>${achLabel(totalAch)}</small>
+        </div>
+        <div class="pdf-kpi">
+          <span>Partner Achieved</span>
+          <strong class="mono">${achievedCount} / ${list.length}</strong>
+          <small>Exclude PPN 11%</small>
+        </div>
+      </div>
+
+      <div class="pdf-sec">
+        <h3>Rincian Pencapaian per EPR</h3>
+        <table class="pdf-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>EPR Partner</th>
+              <th>Tier</th>
+              <th class="num">Target</th>
+              <th class="num">Aktual (Net)</th>
+              <th class="num">Ach %</th>
+              <th class="num">Consumer</th>
+              <th class="num">Scanner</th>
+              <th class="num">Consumables</th>
+              <th class="num">Dotmatrix</th>
+            </tr>
+          </thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
+      </div>
+
+      <div class="pdf-foot">
+        <span>Result Achievement EPR · Semua nilai exclude PPN 11%</span>
+        <span>${list.length} partner</span>
+      </div>
+    `;
+
+    const prevTitle = document.title;
+    document.title = `Result_Achievement_EPR_${state.period.toUpperCase()}`;
     window.print();
     setTimeout(() => {
       document.title = prevTitle;
@@ -1045,6 +1162,7 @@
       if (e.key === "Escape") closeDrawer();
     });
 
+    $("btnShareAllPdf").addEventListener("click", shareAllEprPdf);
     $("btnExportCsv").addEventListener("click", exportCsv);
     $("rejectTypeFilter").addEventListener("change", renderRejectedRows);
     $("rejectSearch").addEventListener("input", renderRejectedRows);
