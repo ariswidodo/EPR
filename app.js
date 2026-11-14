@@ -211,6 +211,7 @@
     renderKpis(list);
     renderCharts(list);
     renderTable(list);
+    renderAudit();
   }
 
   function renderMeta() {
@@ -470,6 +471,66 @@
     body.querySelectorAll("tr[data-code]").forEach((tr) => {
       tr.addEventListener("click", () => openDrawer(tr.dataset.code));
     });
+  }
+
+  function renderAudit() {
+    const a = rawData?.audit;
+    if (!a) {
+      $("auditPills").innerHTML = "";
+      $("processLogBody").innerHTML =
+        '<tr><td colspan="6" style="text-align:center;color:var(--text-3);padding:18px">Data audit tidak tersedia pada mode preview Excel lokal.</td></tr>';
+      $("doubleRejectBody").innerHTML =
+        '<tr><td colspan="4" style="text-align:center;color:var(--text-3);padding:18px">-</td></tr>';
+      return;
+    }
+
+    $("auditPills").innerHTML = [
+      `<span class="badge badge-amber">Double Ditolak: ${(a.double_total || 0).toLocaleString("id-ID")}</span>`,
+      `<span class="badge badge-neutral">Luar DB EPR: ${(a.luar_db || 0).toLocaleString("id-ID")}</span>`,
+      `<span class="badge badge-rose">Total Ditolak: ${(a.rejected_total || 0).toLocaleString("id-ID")}</span>`,
+    ].join("");
+
+    const logs = a.process_logs || [];
+    $("processLogBody").innerHTML = logs.length
+      ? logs
+          .slice(0, 8)
+          .map(
+            (l) => `<tr>
+            <td class="mono" style="font-size:12px">${esc(l.waktu)}</td>
+            <td style="max-width:170px;overflow:hidden;text-overflow:ellipsis" title="${esc(l.file)}">${esc(l.file)}</td>
+            <td class="num mono">${(l.baris_input || 0).toLocaleString("id-ID")}</td>
+            <td class="num mono" style="color:var(--emerald);font-weight:600">${(l.masuk || 0).toLocaleString("id-ID")}</td>
+            <td class="num mono" style="color:var(--amber);font-weight:600">${(l.double || 0).toLocaleString("id-ID")}</td>
+            <td class="num mono">${(l.luar_db || 0).toLocaleString("id-ID")}</td>
+          </tr>`
+          )
+          .join("")
+      : '<tr><td colspan="6" style="text-align:center;color:var(--text-3);padding:18px">Belum ada log proses.</td></tr>';
+
+    const dbls = a.recent_doubles || [];
+    $("doubleRejectBody").innerHTML = dbls.length
+      ? dbls
+          .slice(0, 12)
+          .map(
+            (d) => `<tr>
+            <td>
+              <div class="partner-cell">
+                <span class="mono" style="font-weight:600">${esc(d.invoice_no || "-")}</span>
+                <span class="partner-meta mono">${esc(d.invoice_date || "-")} · baris ${d.baris_sumber || "-"}</span>
+              </div>
+            </td>
+            <td>
+              <div class="partner-cell">
+                <span>${esc(d.epr_name || d.epr || "-")}</span>
+                <span class="partner-meta mono">${esc(d.material || "-")} (qty ${d.qty || 0})</span>
+              </div>
+            </td>
+            <td class="num mono">${fmtCompact(d.total || 0)}</td>
+            <td><span class="badge badge-amber" title="${esc(d.keterangan)}">${esc(d.keterangan)}</span></td>
+          </tr>`
+          )
+          .join("")
+      : '<tr><td colspan="4" style="text-align:center;color:var(--text-3);padding:18px">Belum ada baris double yang ditolak.</td></tr>';
   }
 
   // Partner Detail Drawer

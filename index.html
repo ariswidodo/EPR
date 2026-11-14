@@ -192,6 +192,55 @@
       </div>
     </section>
 
+    <!-- Audit & Data Ditolak -->
+    <section class="card audit-card">
+      <div class="card-head">
+        <div>
+          <h2>Audit Verifikasi &amp; Data Ditolak (Double Check)</h2>
+          <p class="card-sub">Baris double (sudah terverifikasi sebelumnya atau kembar dalam satu file) otomatis ditolak &amp; tidak dihitung.</p>
+        </div>
+        <div class="audit-pills" id="auditPills"></div>
+      </div>
+
+      <div class="audit-grid">
+        <div>
+          <h3 class="audit-subhead">Riwayat Proses</h3>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>File Input</th>
+                  <th class="num">Input</th>
+                  <th class="num">Terverifikasi</th>
+                  <th class="num">Double (Reject)</th>
+                  <th class="num">Luar DB</th>
+                </tr>
+              </thead>
+              <tbody id="processLogBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="audit-subhead">Sampel Data Double yang Ditolak</h3>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Invoice</th>
+                  <th>EPR / Material</th>
+                  <th class="num">Total</th>
+                  <th>Alasan Reject</th>
+                </tr>
+              </thead>
+              <tbody id="doubleRejectBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <footer class="footer">
       <span>Data bersumber dari <strong>EPR Sell In Tool</strong> &middot; Seluruh angka revenue exclude PPN 11% (dibagi 1,11)</span>
       <span id="footerSource"></span>

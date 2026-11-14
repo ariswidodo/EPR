@@ -42,6 +42,34 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
     last_proc = con.execute(
         "SELECT waktu, file FROM proses ORDER BY id DESC LIMIT 1"
     ).fetchone()
+    proc_logs = [
+        dict(r) for r in con.execute(
+            "SELECT waktu, file, baris_input, masuk, double, luar_db, nilai "
+            "FROM proses ORDER BY id DESC LIMIT 15"
+        ).fetchall()
+    ]
+    rej_rows = con.execute(
+        "SELECT keterangan, COUNT(1) AS cnt FROM data_per_q WHERE is_verified = 0 GROUP BY keterangan"
+    ).fetchall()
+    double_existing = 0
+    double_in_file = 0
+    luar_db = 0
+    for rr in rej_rows:
+        ket = (rr["keterangan"] or "").strip()
+        if ket.startswith("SUDAH TERVERIFIKASI"):
+            double_existing += rr["cnt"]
+        elif ket == "KEMBAR DALAM INPUT":
+            double_in_file += rr["cnt"]
+        elif ket == "LUAR DATABASE EPR":
+            luar_db += rr["cnt"]
+
+    recent_doubles = [
+        dict(r) for r in con.execute(
+            "SELECT invoice_date, invoice_no, epr, epr_name, material, qty, total, keterangan, sumber_file, baris_sumber "
+            "FROM data_per_q WHERE is_verified = 0 AND (keterangan LIKE 'SUDAH TERVERIFIKASI%' OR keterangan = 'KEMBAR DALAM INPUT') "
+            "ORDER BY diproses_pada DESC, baris_sumber ASC LIMIT 200"
+        ).fetchall()
+    ]
     con.close()
 
     agg = defaultdict(lambda: defaultdict(float))
@@ -122,6 +150,15 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             "months": MLBL,
             "categories": CATS,
             "tax_note": "Semua nilai revenue exclude PPN 11% (dibagi 1.11)",
+        },
+        "audit": {
+            "double_existing": double_existing,
+            "double_in_file": double_in_file,
+            "double_total": double_existing + double_in_file,
+            "luar_db": luar_db,
+            "rejected_total": double_existing + double_in_file + luar_db,
+            "process_logs": proc_logs,
+            "recent_doubles": recent_doubles,
         },
         "partners": partners,
     }
