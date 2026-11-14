@@ -177,6 +177,8 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
 
         target_h1 = round(target_fy * 0.52)
         target_h2 = round(target_fy * 0.48)
+        target_original_h1 = round(target_original * 0.52)
+        target_original_h2 = round(target_original * 0.48)
 
         monthly_by_cat = {}
         cat_totals = {}
@@ -226,6 +228,8 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             "am": (m.get("AM") or "").strip(),
             "target_fy": round(target_fy),
             "target_original": round(target_original),
+            "target_original_h1": target_original_h1,
+            "target_original_h2": target_original_h2,
             "target_h1": target_h1,
             "target_h2": target_h2,
             "actual_fy": total_fy,

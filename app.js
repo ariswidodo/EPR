@@ -120,6 +120,14 @@
         ? p.target_h2
         : p.target_fy;
 
+    const origFy = p.target_original || p.target_fy || 0;
+    const target_orig =
+      state.period === "h1"
+        ? p.target_original_h1 ?? Math.round(origFy * 0.52)
+        : state.period === "h2"
+        ? p.target_original_h2 ?? Math.round(origFy * 0.48)
+        : origFy;
+
     const actual =
       state.period === "h1"
         ? p.actual_h1
@@ -134,14 +142,17 @@
     });
 
     const ach = target > 0 ? actual / target : null;
+    const ach_orig = target_orig > 0 ? actual / target_orig : null;
     const midHiRatio = p.actual_fy > 0 ? (p.mid_hi || 0) / p.actual_fy : 0;
     const midHiEst = state.period === "fy" ? p.mid_hi || 0 : actual * midHiRatio;
 
     return {
       ...p,
       target,
+      target_orig,
       actual,
       ach,
+      ach_orig,
       midhi_val: midHiEst,
       midhi_pct: actual > 0 ? midHiEst / actual : 0,
       Consumer: catTotals.Consumer,
@@ -245,14 +256,16 @@
   function renderKpis(list) {
     const totalRev = list.reduce((s, p) => s + p.actual, 0);
     const totalTarget = list.reduce((s, p) => s + p.target, 0);
+    const totalTargetOrig = list.reduce((s, p) => s + (p.target_orig || 0), 0);
     const ach = totalTarget > 0 ? totalRev / totalTarget : null;
+    const achOrig = totalTargetOrig > 0 ? totalRev / totalTargetOrig : null;
     const activeCount = list.filter((p) => p.actual > 0).length;
     const achievedCount = list.filter((p) => p.ach != null && p.ach >= 1).length;
     const totalMidHi = list.reduce((s, p) => s + p.midhi_val, 0);
     const midHiPct = totalRev > 0 ? totalMidHi / totalRev : 0;
 
     $("kpiRevenue").textContent = fmtCompact(totalRev);
-    $("kpiRevenueSub").textContent = `Target ${state.period.toUpperCase()}: ${fmtCompact(totalTarget)}`;
+    $("kpiRevenueSub").textContent = `Target Cat: ${fmtCompact(totalTarget)} · Target Orig: ${fmtCompact(totalTargetOrig)}`;
 
     $("kpiAch").textContent = fmtPct(ach);
     const badge = $("kpiAchBadge");
@@ -267,9 +280,10 @@
 
     const gap = totalRev - totalTarget;
     $("kpiAchSub").textContent =
-      gap >= 0
-        ? `Surplus +${fmtCompact(gap)}`
-        : `Sisa target ${fmtCompact(Math.abs(gap))}`;
+      (gap >= 0
+        ? `Surplus Cat +${fmtCompact(gap)}`
+        : `Sisa Cat ${fmtCompact(Math.abs(gap))}`) +
+      ` · Ach Orig: ${fmtPct(achOrig)}`;
 
     $("kpiPartners").textContent = `${activeCount} / ${list.length}`;
     $("kpiPartnersSub").textContent = `${achievedCount} partner sudah ≥ 100% target`;
@@ -394,7 +408,7 @@
         labels: top.map((p) => p.name),
         datasets: [
           {
-            label: "Aktual (Net)",
+            label: "Total Pembelian (Net)",
             data: top.map((p) => p.actual),
             backgroundColor: top.map((p) =>
               p.ach >= 1 ? "#10b981" : p.ach >= 0.75 ? "#4f46e5" : "#f59e0b"
@@ -402,9 +416,15 @@
             borderRadius: 5,
           },
           {
-            label: "Target",
+            label: "Target Category",
             data: top.map((p) => p.target),
-            backgroundColor: "rgba(148, 163, 184, 0.35)",
+            backgroundColor: "rgba(148, 163, 184, 0.45)",
+            borderRadius: 5,
+          },
+          {
+            label: "Target Original",
+            data: top.map((p) => p.target_orig),
+            backgroundColor: "rgba(99, 102, 241, 0.25)",
             borderRadius: 5,
           },
         ],
@@ -448,7 +468,7 @@
     const body = $("tableBody");
 
     if (!list.length) {
-      body.innerHTML = `<tr><td colspan="12" style="text-align:center;padding:32px;color:var(--text-3)">Tidak ada partner yang cocok dengan filter.</td></tr>`;
+      body.innerHTML = `<tr><td colspan="13" style="text-align:center;padding:32px;color:var(--text-3)">Tidak ada partner yang cocok dengan filter.</td></tr>`;
       return;
     }
 
@@ -471,16 +491,15 @@
           </td>
           <td><span class="tier-pill tier-${esc(p.tier)}">${esc(p.tier || "-")}</span></td>
           <td style="max-width:210px;overflow:hidden;text-overflow:ellipsis" title="${esc(epps.map((e) => e.name).join(", "))}">${eppLabel}</td>
-          <td class="num mono">
-            ${fmtCompact(p.target)}
-            ${p.target_original && p.target_original !== p.target_fy ? `<div class="partner-meta">Orig: ${fmtCompact(p.target_original)}</div>` : ""}
-          </td>
+          <td class="num mono">${fmtCompact(p.target_orig)}</td>
+          <td class="num mono">${fmtCompact(p.target)}</td>
           <td class="num mono"><strong>${fmtCompact(p.actual)}</strong></td>
           <td class="num">
             <div class="ach-cell">
               <div class="mini-bar"><span style="width:${barW}%;background:${color}"></span></div>
               <span class="mono" style="color:${color};font-weight:600;min-width:52px;text-align:right">${fmtPct(p.ach)}</span>
             </div>
+            <div class="partner-meta mono" style="text-align:right">Orig: ${fmtPct(p.ach_orig)}</div>
           </td>
           <td class="num mono">${fmtPct(p.midhi_pct)}</td>
           <td class="num mono">${fmtCompact(p.Consumer)}</td>
@@ -918,30 +937,34 @@
     if (!p) return;
     activeDrawerCode = code;
 
+    const origFy = p.target_original || p.target_fy || 0;
+    const origH1 = p.target_original_h1 ?? Math.round(origFy * 0.52);
+    const origH2 = p.target_original_h2 ?? Math.round(origFy * 0.48);
+
     const achFy = p.target_fy > 0 ? p.actual_fy / p.target_fy : null;
     const achH1 = p.target_h1 > 0 ? p.actual_h1 / p.target_h1 : null;
     const achH2 = p.target_h2 > 0 ? p.actual_h2 / p.target_h2 : null;
+    const achOrigFy = origFy > 0 ? p.actual_fy / origFy : null;
+    const achOrigH1 = origH1 > 0 ? p.actual_h1 / origH1 : null;
+    const achOrigH2 = origH2 > 0 ? p.actual_h2 / origH2 : null;
 
     $("dCode").textContent = p.code;
     $("dTier").textContent = p.tier || "-";
     $("dName").textContent = p.name;
     $("dMeta").textContent =
-      `${p.city || "-"} · AM: ${p.am || "-"} · ${p.tx_count || 0} transaksi` +
-      (p.target_original && p.target_original !== p.target_fy
-        ? ` · Target Orig: ${fmtCompact(p.target_original)}`
-        : "");
+      `${p.city || "-"} · AM: ${p.am || "-"} · ${p.tx_count || 0} transaksi`;
 
     $("dAchFy").textContent = fmtPct(achFy);
     $("dAchFy").style.color = achColor(achFy);
-    $("dRevFy").textContent = `${fmtCompact(p.actual_fy)} / ${fmtCompact(p.target_fy)}`;
+    $("dRevFy").innerHTML = `Beli: ${fmtCompact(p.actual_fy)}<br>Cat: ${fmtCompact(p.target_fy)} (${fmtPct(achFy)})<br>Orig: ${fmtCompact(origFy)} (${fmtPct(achOrigFy)})`;
 
     $("dAchH1").textContent = fmtPct(achH1);
     $("dAchH1").style.color = achColor(achH1);
-    $("dRevH1").textContent = `${fmtCompact(p.actual_h1)} / ${fmtCompact(p.target_h1)}`;
+    $("dRevH1").innerHTML = `Beli: ${fmtCompact(p.actual_h1)}<br>Cat: ${fmtCompact(p.target_h1)} (${fmtPct(achH1)})<br>Orig: ${fmtCompact(origH1)} (${fmtPct(achOrigH1)})`;
 
     $("dAchH2").textContent = fmtPct(achH2);
     $("dAchH2").style.color = achColor(achH2);
-    $("dRevH2").textContent = `${fmtCompact(p.actual_h2)} / ${fmtCompact(p.target_h2)}`;
+    $("dRevH2").innerHTML = `Beli: ${fmtCompact(p.actual_h2)}<br>Cat: ${fmtCompact(p.target_h2)} (${fmtPct(achH2)})<br>Orig: ${fmtCompact(origH2)} (${fmtPct(achOrigH2)})`;
 
     const tc = themeColors();
     const months = rawData.meta?.months || DEFAULT_MONTHS;
@@ -1046,9 +1069,16 @@
     const p = rawData?.partners.find((x) => x.code === activeDrawerCode);
     if (!p) return;
 
+    const origFy = p.target_original || p.target_fy || 0;
+    const origH1 = p.target_original_h1 ?? Math.round(origFy * 0.52);
+    const origH2 = p.target_original_h2 ?? Math.round(origFy * 0.48);
+
     const achFy = p.target_fy > 0 ? p.actual_fy / p.target_fy : null;
     const achH1 = p.target_h1 > 0 ? p.actual_h1 / p.target_h1 : null;
     const achH2 = p.target_h2 > 0 ? p.actual_h2 / p.target_h2 : null;
+    const achOrigFy = origFy > 0 ? p.actual_fy / origFy : null;
+    const achOrigH1 = origH1 > 0 ? p.actual_h1 / origH1 : null;
+    const achOrigH2 = origH2 > 0 ? p.actual_h2 / origH2 : null;
     const chartImg = charts.drawer ? charts.drawer.toBase64Image() : "";
     const gapFy = (p.actual_fy || 0) - (p.target_fy || 0);
     const gapH1 = (p.actual_h1 || 0) - (p.target_h1 || 0);
@@ -1095,49 +1125,55 @@
         <div class="pdf-kpi">
           <span>FY26 Achievement</span>
           <strong class="mono">${fmtPct(achFy)}</strong>
-          <small class="mono">${fmtCompact(p.actual_fy)} / ${fmtCompact(p.target_fy)}</small>
+          <small class="mono">Beli: ${fmtCompact(p.actual_fy)} · Cat: ${fmtCompact(p.target_fy)} · Orig: ${fmtCompact(origFy)} (${fmtPct(achOrigFy)})</small>
         </div>
         <div class="pdf-kpi">
           <span>H1 (52% Target)</span>
           <strong class="mono">${fmtPct(achH1)}</strong>
-          <small class="mono">${fmtCompact(p.actual_h1)} / ${fmtCompact(p.target_h1)}</small>
+          <small class="mono">Beli: ${fmtCompact(p.actual_h1)} · Cat: ${fmtCompact(p.target_h1)} · Orig: ${fmtCompact(origH1)} (${fmtPct(achOrigH1)})</small>
         </div>
         <div class="pdf-kpi">
           <span>H2 (48% Target)</span>
           <strong class="mono">${fmtPct(achH2)}</strong>
-          <small class="mono">${fmtCompact(p.actual_h2)} / ${fmtCompact(p.target_h2)}</small>
+          <small class="mono">Beli: ${fmtCompact(p.actual_h2)} · Cat: ${fmtCompact(p.target_h2)} · Orig: ${fmtCompact(origH2)} (${fmtPct(achOrigH2)})</small>
         </div>
       </div>
 
       ${chartImg ? `<div class="pdf-sec"><h3>Tren Revenue Bulanan (Apr 26 – Mar 27)</h3><img class="pdf-chart-img" src="${chartImg}" alt="Grafik Bulanan" /></div>` : ""}
 
       <div class="pdf-sec">
-        <h3>Result Achievement EPR</h3>
+        <h3>Result Achievement EPR (Target Original &amp; Target Category vs Total Pembelian)</h3>
         <table class="pdf-table">
-          <thead><tr><th>Periode</th><th class="num">Target (Excl.)</th><th class="num">Aktual (Net)</th><th class="num">Selisih / Sisa</th><th class="num">Achievement</th><th>Status</th></tr></thead>
+          <thead><tr><th>Periode</th><th class="num">Target Original</th><th class="num">Target Category</th><th class="num">Total Pembelian</th><th class="num">Ach Orig</th><th class="num">Ach Cat</th><th class="num">Selisih (Cat)</th><th>Status</th></tr></thead>
           <tbody>
             <tr>
               <td><b>FY26 (Full Year)</b></td>
+              <td class="num mono">${fmtRp(origFy)}</td>
               <td class="num mono">${fmtRp(p.target_fy)}</td>
-              <td class="num mono">${fmtRp(p.actual_fy)}</td>
-              <td class="num mono">${gapFy >= 0 ? "+" + fmtRp(gapFy) : "-" + fmtRp(Math.abs(gapFy))}</td>
+              <td class="num mono"><b>${fmtRp(p.actual_fy)}</b></td>
+              <td class="num mono">${fmtPct(achOrigFy)}</td>
               <td class="num mono"><b>${fmtPct(achFy)}</b></td>
+              <td class="num mono">${gapFy >= 0 ? "+" + fmtRp(gapFy) : "-" + fmtRp(Math.abs(gapFy))}</td>
               <td><b>${achLabel(achFy)}</b></td>
             </tr>
             <tr>
               <td>H1 (Apr – Sep)</td>
+              <td class="num mono">${fmtRp(origH1)}</td>
               <td class="num mono">${fmtRp(p.target_h1)}</td>
-              <td class="num mono">${fmtRp(p.actual_h1)}</td>
-              <td class="num mono">${gapH1 >= 0 ? "+" + fmtRp(gapH1) : "-" + fmtRp(Math.abs(gapH1))}</td>
+              <td class="num mono"><b>${fmtRp(p.actual_h1)}</b></td>
+              <td class="num mono">${fmtPct(achOrigH1)}</td>
               <td class="num mono">${fmtPct(achH1)}</td>
+              <td class="num mono">${gapH1 >= 0 ? "+" + fmtRp(gapH1) : "-" + fmtRp(Math.abs(gapH1))}</td>
               <td>${achLabel(achH1)}</td>
             </tr>
             <tr>
               <td>H2 (Okt – Mar)</td>
+              <td class="num mono">${fmtRp(origH2)}</td>
               <td class="num mono">${fmtRp(p.target_h2)}</td>
-              <td class="num mono">${fmtRp(p.actual_h2)}</td>
-              <td class="num mono">${gapH2 >= 0 ? "+" + fmtRp(gapH2) : "-" + fmtRp(Math.abs(gapH2))}</td>
+              <td class="num mono"><b>${fmtRp(p.actual_h2)}</b></td>
+              <td class="num mono">${fmtPct(achOrigH2)}</td>
               <td class="num mono">${fmtPct(achH2)}</td>
+              <td class="num mono">${gapH2 >= 0 ? "+" + fmtRp(gapH2) : "-" + fmtRp(Math.abs(gapH2))}</td>
               <td>${achLabel(achH2)}</td>
             </tr>
           </tbody>
@@ -1202,7 +1238,9 @@
 
     const totalRev = list.reduce((s, p) => s + p.actual, 0);
     const totalTarget = list.reduce((s, p) => s + p.target, 0);
+    const totalTargetOrig = list.reduce((s, p) => s + (p.target_orig || 0), 0);
     const totalAch = totalTarget > 0 ? totalRev / totalTarget : null;
+    const totalAchOrig = totalTargetOrig > 0 ? totalRev / totalTargetOrig : null;
     const totalGap = list.reduce((s, p) => s + Math.max(0, (p.target || 0) - (p.actual || 0)), 0);
     const achievedCount = list.filter((p) => p.ach != null && p.ach >= 1).length;
     const periodLabel =
@@ -1216,13 +1254,17 @@
           p.target <= 0
             ? '<td class="num mono">-</td>'
             : isOk
-            ? `<td class="num mono pdf-gap-ok">Achieved (${fmtPct(p.ach)})</td>`
+            ? `<td class="num mono pdf-gap-ok">Achieved</td>`
             : `<td class="num mono pdf-gap-warn">${fmtRp(shortfall)}</td>`;
 
         return `<tr>
           <td class="mono">${i + 1}</td>
           <td><b>${esc(p.name)}</b> <span class="mono" style="color:#64748b;font-size:9px">· ${esc(p.code)} · ${esc(p.city || "-")} · ${esc(p.tier || "-")}</span></td>
+          <td class="num mono">${fmtRp(p.target_orig)}</td>
           <td class="num mono">${fmtRp(p.target)}</td>
+          <td class="num mono"><b>${fmtRp(p.actual)}</b></td>
+          <td class="num mono">${fmtPct(p.ach_orig)}</td>
+          <td class="num mono"><b>${fmtPct(p.ach)}</b></td>
           ${gapCell}
         </tr>`;
       })
@@ -1232,26 +1274,59 @@
       <div class="pdf-head">
         <div>
           <h1>Result Achievement EPR — ${esc(periodLabel)}</h1>
-          <div class="pdf-meta">${list.length} Partner EPR · ${achievedCount} Achieved (&ge; 100%)</div>
+          <div class="pdf-meta">${list.length} Partner EPR · ${achievedCount} Achieved (&ge; 100% Target Category)</div>
         </div>
         <div class="pdf-meta" style="text-align:right">
-          <div><b>Laporan Kekurangan Target ${esc(period.toUpperCase())}</b></div>
+          <div><b>Target Original &amp; Category vs Total Pembelian (${esc(period.toUpperCase())})</b></div>
           <div>Dicetak: ${new Date().toLocaleString("id-ID")}</div>
         </div>
       </div>
 
+      <div class="pdf-kpis">
+        <div class="pdf-kpi">
+          <span>Total Target Original (${esc(period.toUpperCase())})</span>
+          <strong class="mono">${fmtCompact(totalTargetOrig)}</strong>
+          <small class="mono">Ach: ${fmtPct(totalAchOrig)}</small>
+        </div>
+        <div class="pdf-kpi">
+          <span>Total Target Category (${esc(period.toUpperCase())})</span>
+          <strong class="mono">${fmtCompact(totalTarget)}</strong>
+          <small class="mono">Ach: ${fmtPct(totalAch)}</small>
+        </div>
+        <div class="pdf-kpi">
+          <span>Total Pembelian (Net)</span>
+          <strong class="mono">${fmtCompact(totalRev)}</strong>
+          <small class="mono">Kekurangan Cat: ${fmtCompact(totalGap)}</small>
+        </div>
+      </div>
+
       <div class="pdf-sec">
-        <h3>Daftar Target &amp; Kekurangan per EPR (${esc(period.toUpperCase())})</h3>
+        <h3>Daftar Target Original, Target Category &amp; Total Pembelian per EPR (${esc(period.toUpperCase())})</h3>
         <table class="pdf-table">
           <thead>
             <tr>
-              <th style="width:36px">#</th>
+              <th style="width:28px">#</th>
               <th>Nama EPR</th>
-              <th class="num">Target</th>
-              <th class="num">Kekurangan</th>
+              <th class="num">Target Original</th>
+              <th class="num">Target Category</th>
+              <th class="num">Total Pembelian</th>
+              <th class="num">Ach Orig</th>
+              <th class="num">Ach Cat</th>
+              <th class="num">Kekurangan (Cat)</th>
             </tr>
           </thead>
           <tbody>${rowsHtml}</tbody>
+          <tfoot>
+            <tr>
+              <th colspan="2">Total (${list.length} EPR)</th>
+              <th class="num mono">${fmtRp(totalTargetOrig)}</th>
+              <th class="num mono">${fmtRp(totalTarget)}</th>
+              <th class="num mono">${fmtRp(totalRev)}</th>
+              <th class="num mono">${fmtPct(totalAchOrig)}</th>
+              <th class="num mono">${fmtPct(totalAch)}</th>
+              <th class="num mono">${fmtRp(totalGap)}</th>
+            </tr>
+          </tfoot>
         </table>
       </div>
 
@@ -1274,13 +1349,14 @@
     const list = getFilteredPartners();
     const header = [
       "EPR Code", "EPR Name", "City", "Tier", "AM",
-      "Target", "Actual Net", "Achievement %", "Mid Hi",
+      "Target Original", "Target Category", "Total Pembelian (Net)", "Achievement Cat %", "Achievement Orig %", "Mid Hi",
       "Consumer", "Scanner", "Consumables", "Dotmatrix",
     ];
     const rows = list.map((p) => [
       p.code, p.name, p.city, p.tier, p.am,
-      Math.round(p.target), Math.round(p.actual),
+      Math.round(p.target_orig), Math.round(p.target), Math.round(p.actual),
       p.ach != null ? (p.ach * 100).toFixed(2) : "",
+      p.ach_orig != null ? (p.ach_orig * 100).toFixed(2) : "",
       Math.round(p.midhi_val),
       Math.round(p.Consumer), Math.round(p.Scanner),
       Math.round(p.Consumables), Math.round(p.Dotmatrix),
