@@ -1,37 +1,63 @@
 # EPR Achievement Dashboard (FY26)
 
-Dashboard web interaktif, bersih, dan modern untuk memantau pencapaian **EPR Sell In** (data terverifikasi, exclude PPN 11%), lengkap dengan **proses verifikasi otomatis di GitHub Actions**.
-
-## Alur Kerja Otomatis di GitHub
-
-1. **Upload file Sell Out (`.xlsx` / `.xlsm`)** ke folder `inbox/` (langsung lewat GitHub Web UI: *Add file → Upload files*, atau `git push`).
-2. **GitHub Actions (`.github/workflows/verify-epr.yml`)** berjalan otomatis:
-   - Menjalankan mesin verifikasi Python (`engine/epr_build.py` + `engine/epr_db.py`) tanpa dependensi eksternal.
-   - Memperbarui database append-only `data/epr.db` dan memindahkan file input ke `processed/`.
-   - Mengekspor hasil terbaru ke `data/epr_data.json` dan melakukan commit otomatis.
-   - Menyediakan 3 workbook hasil (`Data Per Q`, `Data terverifikasi`, `Data ditolak`) sebagai **Workflow Artifacts** di tab **Actions**.
-3. **Dashboard (GitHub Pages)** otomatis menampilkan angka pencapaian terbaru.
-
-## Fitur Dashboard
-
-- **Ringkasan KPI Real-time**: Total Net Revenue, Overall Achievement %, Partisipasi Partner, dan rasio Mid High vs Low End.
-- **Filter Periode & Segmen**: Switch instan antara **FY26 (Full Year)**, **H1 (Apr–Sep, 52% target)**, dan **H2 (Okt–Mar, 48% target)**, serta filter Tier (`SUN`, `STAR`, `MOON`, `EARTH`, `CRESCENT`), Kota, Status, dan pencarian EPR.
-- **Visualisasi Interaktif**: Tren Revenue Bulanan per Kategori, Komposisi Produk, dan Top EPR Aktual vs Target.
-- **Detail Partner (Slide-over Drawer)**: Klik baris partner mana pun pada tabel untuk melihat pencapaian H1/H2/FY dan tren bulanannya.
-- **Upload Excel Manual di Browser**: Bisa juga memuat file `Data terverifikasi - *.xlsx` langsung di browser.
-- **Export CSV & Mode Terang/Gelap**.
+Dashboard web lokal yang bersih dan modern untuk memantau pencapaian **EPR Sell In** (data terverifikasi, *exclude* PPN 11%), lengkap dengan mesin verifikasi Python, monitoring kontribusi EPP & Program berjalan, audit data ditolak, serta **Share to PDF** 1 halaman A4.
 
 ## Cara Menjalankan Secara Lokal
 
-```bash
-cd EPR_Dashboard
-python -m http.server 8080
+Klik ganda **`start_dashboard.bat`**, atau jalankan melalui terminal:
+
+```powershell
+python server.py
 ```
 
-Lalu buka `http://127.0.0.1:8080/` di browser.
+Browser otomatis terbuka ke `http://127.0.0.1:8765/`. Hentikan server dengan `Ctrl+C`.
 
-## Aktivasi GitHub Pages
+## Fitur Utama
 
-1. Buka repositori di GitHub → **Settings** → **Pages**.
-2. Pada **Build and deployment**, pilih **Deploy from a branch** → Branch `main` / `/ (root)` → **Save**.
-3. Pastikan di **Settings → Actions → General → Workflow permissions**, opsi **Read and write permissions** aktif agar GitHub Actions bisa menyimpan hasil verifikasi ke `data/epr_data.json`.
+### 1. Upload & Verifikasi Sell Out Cepat
+- Klik **Upload Data** → tab **Verifikasi Lokal** → pilih file Sell Out (`.xlsx` / `.xlsm`, format V1 maupun V2).
+- **Mode cepat (default)**: langsung memverifikasi dan memperbarui `data/epr.db` + dashboard dalam hitungan detik. Centang *"Sekalian buat 3 file Excel output"* jika ingin mengunduh `Data Per Q`, `Data terverifikasi`, dan `Data ditolak`.
+- **Aturan Verifikasi ([engine/epr_build.py](engine/epr_build.py))**:
+  - **Cek Double**: baris kembar dalam satu file (`KEMBAR DALAM INPUT`) maupun yang sudah pernah terverifikasi (`SUDAH TERVERIFIKASI`) otomatis ditolak.
+  - **Cek Kode EPR & Kota**: kode `EPR-xxxx` yang tidak terdaftar di `data/epr_master.csv` langsung ditolak (tidak dicocokkan paksa lewat nama), dan kolom `City` ikut diverifikasi agar nama yang sama dari kota berbeda tidak salah masuk.
+  - **Alias EPR**: pemetaan nama alternatif diatur di `data/epr_aliases.json`.
+
+### 2. Ringkasan Pencapaian, EPP & Program Berjalan
+- **KPI & Grafik**: Total Net Revenue (Excl. PPN 11%), Achievement % (`FY26`, `H1` 52%, `H2` 48%), Tren Bulanan per Kategori (`Consumer`, `Scanner`, `Consumables`, `Dotmatrix`), dan Top EPR Aktual vs Target.
+- **Ringkasan Kontribusi EPP di Area**: persentase kontribusi setiap EPP beserta kota dan komposisi kategorinya.
+- **Ringkasan Program Berjalan (`Remarks` AD)**:
+  - Otomatis mengekstrak program dari kolom `Remarks (AD)` (dan menggabungkan format `EIN-YY-NNNNN` ke 6 digit).
+  - Klik baris program untuk membuka **Monitor EPR** (menampilkan **Tipe/Model & Qty**, **Pembelian Program**, **Target EPR**, dan **Kekurangan Target**).
+  - Mendukung aturan **Periode Program** (`data/program_rules.json` atau edit langsung di UI) — transaksi di luar periode program otomatis tidak dihitung.
+
+### 3. Share to PDF (1 Halaman A4)
+- **Share PDF (Semua EPR)** *(tombol di kanan atas)*: pilih periode **H1**, **H2**, atau **FY26** → menghasilkan laporan **Result Achievement EPR** (`Nama EPR | Target | Kekurangan`) **tanpa nama EPP** agar siap dibagikan ke pihak EPP.
+- **Share to PDF (Per EPR)** *(di dalam pop-up Detail Partner)*: mencetak laporan lengkap 1 EPR beserta grafik bulanan, komposisi kategori, dan sumber pembelian EPP-nya.
+
+### 4. Audit Verifikasi & Log Data Ditolak
+- Menampilkan riwayat setiap upload serta daftar baris yang ditolak (**Double** & **Luar Database EPR**) lengkap dengan pencarian, filter jenis penolakan, dan **Export CSV**.
+
+## Struktur Folder
+
+```text
+EPR_Dashboard/
+├─ server.py                 Server lokal (dashboard + API upload/verifikasi)
+├─ start_dashboard.bat       Launcher double-click Windows
+├─ index.html / styles.css / app.js
+├─ engine/
+│  ├─ epr_tool.py            Pembaca Excel & normalisasi master
+│  ├─ epr_db.py              SQLite append-only (data/epr.db)
+│  ├─ epr_build.py           Mesin verifikasi & pembuat workbook
+│  └─ seed.py
+├─ scripts/
+│  ├─ export_from_db.py      Ekspor data/epr.db -> data/epr_data.json
+│  └─ process_github.py      Entrypoint opsional untuk GitHub Actions
+└─ data/
+   ├─ epr.db                 Database SQLite terverifikasi
+   ├─ epr_data.json          Data JSON untuk dashboard
+   ├─ epr_master.csv         Master EPR & Target
+   ├─ epp_master.csv         Master EPP & Kota
+   ├─ epr_aliases.json       Mapping alias nama EPR
+   ├─ program_rules.json     Aturan periode tanggal per program
+   └─ sku.xlsx / template_*.xlsx
+```
