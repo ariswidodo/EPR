@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EPR FY26 — Achievement Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Navigation Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
+          </svg>
+        </div>
+        <div>
+          <div class="title-row">
+            <h1>EPR Achievement Dashboard</h1>
+            <span class="badge badge-indigo" id="fyBadge">FY26</span>
+          </div>
+          <p class="subtitle" id="metaSubtitle">Memuat data pencapaian...</p>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <label class="btn btn-secondary" title="Muat file Data terverifikasi (.xlsx) langsung di browser">
+          <input type="file" id="excelUpload" accept=".xlsx,.xlsm" hidden />
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span>Upload Excel</span>
+        </label>
+        <button class="btn btn-secondary" id="btnExportCsv" title="Unduh ringkasan CSV sesuai filter">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Export CSV</span>
+        </button>
+        <button class="btn btn-icon" id="btnTheme" title="Ganti tema Terang / Gelap" aria-label="Toggle theme">
+          <svg id="iconSun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          <svg id="iconMoon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Filter Bar -->
+    <section class="filter-bar">
+      <div class="segmented" role="group" aria-label="Periode">
+        <button class="seg-btn active" data-period="fy">FY26 (Full Year)</button>
+        <button class="seg-btn" data-period="h1">H1 (Apr–Sep)</button>
+        <button class="seg-btn" data-period="h2">H2 (Okt–Mar)</button>
+      </div>
+
+      <div class="filter-controls">
+        <div class="search-box">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="searchInput" placeholder="Cari EPR Name / Code..." />
+        </div>
+        <select id="tierFilter" aria-label="Filter Tier">
+          <option value="ALL">Semua Tier</option>
+        </select>
+        <select id="cityFilter" aria-label="Filter Kota">
+          <option value="ALL">Semua Kota</option>
+        </select>
+        <select id="statusFilter" aria-label="Filter Status Pencapaian">
+          <option value="ALL">Semua Status</option>
+          <option value="achieved">Achieved (&ge; 100%)</option>
+          <option value="ontrack">On Track (75–99%)</option>
+          <option value="behind">Perlu Perhatian (&lt; 75%)</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- KPI Cards -->
+    <section class="kpi-grid">
+      <article class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-label" id="kpiRevLabel">Total Net Revenue (Excl. PPN)</span>
+          <span class="kpi-icon indigo">Rp</span>
+        </div>
+        <div class="kpi-value mono" id="kpiRevenue">-</div>
+        <div class="kpi-foot" id="kpiRevenueSub">-</div>
+      </article>
+
+      <article class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-label" id="kpiAchLabel">Overall Achievement</span>
+          <span class="kpi-pill" id="kpiAchBadge">-</span>
+        </div>
+        <div class="kpi-value mono" id="kpiAch">-</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="kpiAchBar" style="width:0%"></div>
+        </div>
+        <div class="kpi-foot" id="kpiAchSub">-</div>
+      </article>
+
+      <article class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-label">Partisipasi &amp; Target EPR</span>
+          <span class="kpi-icon emerald">EPR</span>
+        </div>
+        <div class="kpi-value mono" id="kpiPartners">-</div>
+        <div class="kpi-foot" id="kpiPartnersSub">-</div>
+      </article>
+
+      <article class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-label">Mid High vs Low End</span>
+          <span class="kpi-icon amber">MIX</span>
+        </div>
+        <div class="kpi-value mono" id="kpiMidHi">-</div>
+        <div class="progress-track split">
+          <div class="progress-fill indigo" id="kpiMidHiBar" style="width:0%"></div>
+        </div>
+        <div class="kpi-foot" id="kpiMidHiSub">-</div>
+      </article>
+    </section>
+
+    <!-- Charts Grid -->
+    <section class="charts-grid">
+      <article class="card chart-wide">
+        <div class="card-head">
+          <div>
+            <h2>Tren Revenue Bulanan</h2>
+            <p class="card-sub">Net revenue per bulan berdasarkan kategori produk (Apr 26 – Mar 27)</p>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="monthlyChart"></canvas>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2>Komposisi Kategori</h2>
+            <p class="card-sub">Kontribusi revenue per lini produk</p>
+          </div>
+        </div>
+        <div class="chart-wrap doughnut-wrap">
+          <canvas id="categoryChart"></canvas>
+        </div>
+        <div class="cat-legend" id="catLegend"></div>
+      </article>
+
+      <article class="card chart-full">
+        <div class="card-head">
+          <div>
+            <h2>Top EPR: Aktual vs Target</h2>
+            <p class="card-sub">Perbandingan pencapaian terhadap target pada periode terpilih</p>
+          </div>
+          <span class="card-sub mono" id="chartRankNote">Top 12 berdasarkan Aktual</span>
+        </div>
+        <div class="chart-wrap tall">
+          <canvas id="partnerChart"></canvas>
+        </div>
+      </article>
+    </section>
+
+    <!-- Leaderboard Table -->
+    <section class="card table-card">
+      <div class="card-head">
+        <div>
+          <h2>Rincian Pencapaian per EPR</h2>
+          <p class="card-sub">Klik baris partner untuk melihat detail tren bulanan &amp; komposisi produk</p>
+        </div>
+        <span class="badge badge-neutral" id="tableCount">0 partner</span>
+      </div>
+
+      <div class="table-scroll">
+        <table id="eprTable">
+          <thead>
+            <tr>
+              <th class="col-rank">#</th>
+              <th class="sortable" data-sort="name">EPR Partner</th>
+              <th class="sortable" data-sort="tier">Tier</th>
+              <th class="sortable num" data-sort="target">Target</th>
+              <th class="sortable num" data-sort="actual">Aktual (Net)</th>
+              <th class="sortable num" data-sort="ach">Achievement</th>
+              <th class="sortable num" data-sort="midhi_pct">Mid-Hi %</th>
+              <th class="sortable num" data-sort="Consumer">Consumer</th>
+              <th class="sortable num" data-sort="Scanner">Scanner</th>
+              <th class="sortable num" data-sort="Consumables">Consumables</th>
+              <th class="sortable num" data-sort="Dotmatrix">Dotmatrix</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span>Data bersumber dari <strong>EPR Sell In Tool</strong> &middot; Seluruh angka revenue exclude PPN 11% (dibagi 1,11)</span>
+      <span id="footerSource"></span>
+    </footer>
+  </div>
+
+  <!-- Slide-over Partner Detail Drawer -->
+  <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+  <aside class="drawer" id="partnerDrawer" aria-hidden="true">
+    <div class="drawer-head">
+      <div>
+        <div class="title-row">
+          <span class="badge badge-indigo mono" id="dCode">-</span>
+          <span class="badge badge-neutral" id="dTier">-</span>
+        </div>
+        <h2 id="dName">-</h2>
+        <p class="card-sub" id="dMeta">-</p>
+      </div>
+      <button class="btn btn-icon" id="btnCloseDrawer" aria-label="Tutup detail">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="drawer-body">
+      <div class="drawer-kpis">
+        <div class="mini-kpi">
+          <span>FY26 Achievement</span>
+          <strong class="mono" id="dAchFy">-</strong>
+          <small class="mono" id="dRevFy">-</small>
+        </div>
+        <div class="mini-kpi">
+          <span>H1 (52% Target)</span>
+          <strong class="mono" id="dAchH1">-</strong>
+          <small class="mono" id="dRevH1">-</small>
+        </div>
+        <div class="mini-kpi">
+          <span>H2 (48% Target)</span>
+          <strong class="mono" id="dAchH2">-</strong>
+          <small class="mono" id="dRevH2">-</small>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <h3>Tren Bulanan Partner</h3>
+        <div class="drawer-chart-wrap">
+          <canvas id="drawerChart"></canvas>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <h3>Rincian Kategori &amp; Split</h3>
+        <div class="drawer-list" id="dCatList"></div>
+      </div>
+    </div>
+  </aside>
+
+  <script src="app.js"></script>
+</body>
+</html>
