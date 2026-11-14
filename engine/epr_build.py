@@ -377,29 +377,63 @@ def build(input_paths, emit=lambda s: None, out_dir=None, build_excel=True):
     NEEDS = {"Invoice Date","Invoice No","Material Code","Quantity","Actual Unit Price",
              "Actual Total Amount","UID","Item No","Reseller Name","Dealer Name",
              "T2 Partner code","T3 Partner code","Product","Rebate product category","Status","Remarks",
-             "City","Reseller City"}
+             "City","Reseller City","SN"}
+    HDR_ALIAS = {
+        "epp code": "T2 Partner code",
+        "epr code": "T3 Partner code",
+        "epr name": "Reseller Name",
+        "description": "Product",
+        "qty": "Quantity",
+        "reseller price (idr)": "Actual Unit Price",
+        "new price (idr)": "_NewPrice",
+        "total price": "Actual Total Amount",
+        "epp name": "Dealer Name",
+        "product rebate": "Rebate product category",
+        "remaks": "Remarks",
+        "remarks": "Remarks",
+        "status": "Status",
+        "sn": "SN",
+        "area": "City",
+    }
     src = []
     for path in input_paths:
-        sh = T.detect_input_sheet(path)
-        if not sh:
+        sheets = T.detect_input_sheets(path)
+        if not sheets:
             raise RuntimeError(f"Sheet data tidak ditemukan di {os.path.basename(path)}")
-        rows = T.read_sheet(path, sh)
-        if not rows: raise RuntimeError(f"Sheet '{sh}' kosong di {os.path.basename(path)}")
-        log(f"Format       : {T.input_version(path, sh)} (sheet '{sh}')")
-        first = min(rows)
-        hdr = {i: str(v).strip() for i, v in rows[first].items()}
-        if "Invoice Date" not in hdr.values() or "Material Code" not in hdr.values():
-            raise RuntimeError(f"Kolom wajib tidak ditemukan di {os.path.basename(path)}.")
-        colmap = {i: n for i, n in hdr.items() if n in NEEDS}
-        fname = os.path.basename(path); n0 = len(src)
-        for rn in sorted(rows):
-            if rn == first: continue
-            d = rows[rn]
-            r = {n: (d.get(i) or "").strip() for i, n in colmap.items()}
-            if not r.get("Invoice Date") and not r.get("Material Code"): continue
-            r["__rn"] = rn; r["__file"] = fname
-            src.append(r)
-        log(f"Input        : {fname} — {len(src)-n0} baris")
+        fname = os.path.basename(path)
+        for sh in sheets:
+            rows = T.read_sheet(path, sh)
+            if not rows:
+                continue
+            first = T.find_header_row(rows)
+            hdr = {i: str(v).strip() for i, v in rows[first].items()}
+            norm_hdr = {}
+            for i in sorted(hdr):
+                raw_h = hdr[i]
+                canon = raw_h if raw_h in NEEDS else HDR_ALIAS.get(raw_h.lower(), raw_h)
+                if canon in NEEDS or canon == "_NewPrice":
+                    norm_hdr[i] = canon
+            vals_set = set(norm_hdr.values())
+            if "Invoice Date" not in vals_set or "Material Code" not in vals_set:
+                if len(sheets) == 1:
+                    raise RuntimeError(f"Kolom wajib tidak ditemukan di {fname}.")
+                continue
+            log(f"Format       : {T.input_version(path, sh)} (sheet '{sh}')")
+            n0 = len(src)
+            for rn in sorted(rows):
+                if rn <= first: continue
+                d = rows[rn]
+                r = {}
+                for i, n in norm_hdr.items():
+                    val = (d.get(i) or "").strip()
+                    if val and not r.get(n):
+                        r[n] = val
+                if not r.get("Actual Unit Price") and r.get("_NewPrice"):
+                    r["Actual Unit Price"] = r["_NewPrice"]
+                if not r.get("Invoice Date") and not r.get("Material Code"): continue
+                r["__rn"] = rn; r["__file"] = fname
+                src.append(r)
+            log(f"Input        : {fname} ({sh}) — {len(src)-n0} baris")
     if not src: raise RuntimeError("File input tidak berisi baris data.")
 
     self_map = collections.defaultdict(set)
@@ -479,7 +513,12 @@ def build(input_paths, emit=lambda s: None, out_dir=None, build_excel=True):
         if r.get("Invoice No"):
             return "|".join([code, r["Invoice No"], r["Material Code"].upper(),
                              r["Quantity"], r["Actual Unit Price"], r.get("Item No","")])
-        return "UID|" + r.get("UID","")
+        if r.get("UID"):
+            return "UID|" + r["UID"]
+        if r.get("SN"):
+            return "|".join(["SN", code, r["Material Code"].upper(), r["SN"]])
+        return "|".join(["V3", code, r.get("Invoice Date",""), r["Material Code"].upper(),
+                         r.get("Quantity",""), r.get("Actual Unit Price",""), r["__file"], str(r["__rn"])])
 
     REG = D.verified_info(); seen = set()
     ins = []; dbl_rows = []

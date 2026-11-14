@@ -250,34 +250,53 @@ def import_sku(path):
 
 
 # ------------------------------------------------------------------ deteksi versi input
-INPUT_SHEETS = ("Sheet1", "Partner Hub")
+INPUT_SHEETS = ("Sheet1", "Partner Hub", "Report Retail Q1", "Report Retail Q2", "Report Retail Q3", "Report Retail Q4")
 
-def detect_input_sheet(path):
-    """Cari sheet data input: V1 = 'Sheet1', V2 = 'Partner Hub'.
+def find_header_row(rows):
+    """Cari baris header (baris 1..15) yang memuat 'Material Code' dan 'Invoice Date'."""
+    for rn in sorted(rows)[:15]:
+        vals = {str(v).strip() for v in rows[rn].values()}
+        if "Material Code" in vals and "Invoice Date" in vals:
+            return rn
+    return min(rows) if rows else None
 
-    Kalau nama tidak cocok, dicari sheet yang baris pertamanya memuat 'Material Code'.
-    """
+def detect_input_sheets(path):
+    """Kembalikan daftar semua sheet data input yang valid (mendukung V1, V2, V3)."""
     names = [n for n, _ in sheet_names(path)]
-    for nm in INPUT_SHEETS:
-        if nm in names:
-            return nm
+    if "Sheet1" in names:
+        return ["Sheet1"]
+    if "Partner Hub" in names:
+        return ["Partner Hub"]
+    v3_sheets = [n for n in names if n.startswith("Report Retail Q")]
+    if v3_sheets:
+        return v3_sheets
+    found = []
     for nm in names:
+        if nm.upper() in ("CATATAN", "SUMMARY"):
+            continue
         try:
             rows = read_sheet(path, nm)
         except Exception:
             continue
-        if not rows: continue
-        first = rows[min(rows)]
-        vals = {str(v).strip() for v in first.values()}
-        if "Material Code" in vals:
-            return nm
-    return names[0] if names else None
+        if not rows:
+            continue
+        hr = find_header_row(rows)
+        vals = {str(v).strip() for v in rows[hr].values()}
+        if "Material Code" in vals and "Invoice Date" in vals:
+            found.append(nm)
+    return found or ([names[0]] if names else [])
+
+def detect_input_sheet(path):
+    """Cari sheet data input utama: V1 = 'Sheet1', V2 = 'Partner Hub', V3 = 'Report Retail Q*'."""
+    shs = detect_input_sheets(path)
+    return shs[0] if shs else None
 
 
 def input_version(path, sheetname):
     if sheetname == "Partner Hub": return "V2"
     if sheetname == "Sheet1": return "V1"
-    return "?"
+    if str(sheetname).startswith("Report Retail"): return "V3"
+    return "V3"
 
 
 def parse_inv_date(s):
