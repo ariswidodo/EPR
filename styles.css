@@ -946,11 +946,12 @@ td {
 .pdf-report { display: none; }
 
 @media print {
-  @page { size: A4 portrait; margin: 14mm; }
-  body { background: #ffffff !important; color: #0f172a !important; }
+  @page { size: A4 portrait; margin: 0; }
+  body { background: #ffffff !important; color: #0f172a !important; margin: 0; }
   .app-shell, .drawer, .drawer-backdrop, .modal, .modal-backdrop { display: none !important; }
   .pdf-report {
     display: block !important;
+    padding: 14mm;
     font-family: "Inter", -apple-system, sans-serif;
     color: #0f172a;
   }

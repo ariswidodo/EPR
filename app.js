@@ -778,26 +778,15 @@
     const achH1 = p.target_h1 > 0 ? p.actual_h1 / p.target_h1 : null;
     const achH2 = p.target_h2 > 0 ? p.actual_h2 / p.target_h2 : null;
     const chartImg = charts.drawer ? charts.drawer.toBase64Image() : "";
+    const gapFy = (p.actual_fy || 0) - (p.target_fy || 0);
+    const gapH1 = (p.actual_h1 || 0) - (p.target_h1 || 0);
+    const gapH2 = (p.actual_h2 || 0) - (p.target_h2 || 0);
 
     const catRows = CATS.map((c) => {
       const val = p.cat_totals?.[c] || 0;
       const pct = p.actual_fy > 0 ? ((val / p.actual_fy) * 100).toFixed(1) : "0.0";
       return `<tr><td>${c}</td><td class="num mono">${fmtRp(val)}</td><td class="num mono">${pct}%</td></tr>`;
     }).join("");
-
-    const eppRows = (p.epp_sources || []).length
-      ? (p.epp_sources || [])
-          .map((ep) => {
-            const share = p.actual_fy > 0 ? ((ep.total / p.actual_fy) * 100).toFixed(1) : "0.0";
-            return `<tr>
-              <td><strong>${esc(ep.name)}</strong><br><small>${esc(ep.code)} · ${esc(ep.city || "-")}</small></td>
-              <td class="num mono">${ep.tx}</td>
-              <td class="num mono">${fmtRp(ep.total)}</td>
-              <td class="num mono">${share}%</td>
-            </tr>`;
-          })
-          .join("")
-      : '<tr><td colspan="4" style="text-align:center;color:#64748b">Belum ada transaksi terverifikasi.</td></tr>';
 
     const origNote =
       p.target_original && p.target_original !== p.target_fy
@@ -811,7 +800,7 @@
           <div class="pdf-meta">${esc(p.code)} · ${esc(p.city || "-")} · Tier ${esc(p.tier || "-")} · AM: ${esc(p.am || "-")}${esc(origNote)}</div>
         </div>
         <div class="pdf-meta" style="text-align:right">
-          <div><b>Laporan Pencapaian EPR FY26</b></div>
+          <div><b>Result Achievement EPR FY26</b></div>
           <div>Dicetak: ${new Date().toLocaleString("id-ID")}</div>
         </div>
       </div>
@@ -837,6 +826,39 @@
       ${chartImg ? `<div class="pdf-sec"><h3>Tren Revenue Bulanan (Apr 26 – Mar 27)</h3><img class="pdf-chart-img" src="${chartImg}" alt="Grafik Bulanan" /></div>` : ""}
 
       <div class="pdf-sec">
+        <h3>Result Achievement EPR</h3>
+        <table class="pdf-table">
+          <thead><tr><th>Periode</th><th class="num">Target (Excl.)</th><th class="num">Aktual (Net)</th><th class="num">Selisih / Sisa</th><th class="num">Achievement</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><b>FY26 (Full Year)</b></td>
+              <td class="num mono">${fmtRp(p.target_fy)}</td>
+              <td class="num mono">${fmtRp(p.actual_fy)}</td>
+              <td class="num mono">${gapFy >= 0 ? "+" + fmtRp(gapFy) : "-" + fmtRp(Math.abs(gapFy))}</td>
+              <td class="num mono"><b>${fmtPct(achFy)}</b></td>
+              <td><b>${achLabel(achFy)}</b></td>
+            </tr>
+            <tr>
+              <td>H1 (Apr – Sep)</td>
+              <td class="num mono">${fmtRp(p.target_h1)}</td>
+              <td class="num mono">${fmtRp(p.actual_h1)}</td>
+              <td class="num mono">${gapH1 >= 0 ? "+" + fmtRp(gapH1) : "-" + fmtRp(Math.abs(gapH1))}</td>
+              <td class="num mono">${fmtPct(achH1)}</td>
+              <td>${achLabel(achH1)}</td>
+            </tr>
+            <tr>
+              <td>H2 (Okt – Mar)</td>
+              <td class="num mono">${fmtRp(p.target_h2)}</td>
+              <td class="num mono">${fmtRp(p.actual_h2)}</td>
+              <td class="num mono">${gapH2 >= 0 ? "+" + fmtRp(gapH2) : "-" + fmtRp(Math.abs(gapH2))}</td>
+              <td class="num mono">${fmtPct(achH2)}</td>
+              <td>${achLabel(achH2)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pdf-sec">
         <h3>Komposisi Kategori &amp; Split (Exclude PPN 11%)</h3>
         <table class="pdf-table">
           <thead><tr><th>Kategori</th><th class="num">Net Revenue</th><th class="num">Kontribusi</th></tr></thead>
@@ -848,17 +870,9 @@
         </table>
       </div>
 
-      <div class="pdf-sec">
-        <h3>Sumber Pembelian EPP</h3>
-        <table class="pdf-table">
-          <thead><tr><th>Nama EPP</th><th class="num">Tx</th><th class="num">Net Revenue</th><th class="num">Share</th></tr></thead>
-          <tbody>${eppRows}</tbody>
-        </table>
-      </div>
-
       <div class="pdf-foot">
-        <span>EPR Achievement Dashboard · Semua nilai exclude PPN 11%</span>
-        <span>${esc(rawData.meta?.last_source_file || "")}</span>
+        <span>Result Achievement EPR FY26 · Semua nilai exclude PPN 11%</span>
+        <span>${p.tx_count || 0} transaksi terverifikasi</span>
       </div>
     `;
 
