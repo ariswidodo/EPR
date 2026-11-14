@@ -968,24 +968,6 @@
         </div>
       </div>
 
-      <div class="pdf-kpis">
-        <div class="pdf-kpi">
-          <span>Total Target ${esc(period.toUpperCase())}</span>
-          <strong class="mono">${fmtCompact(totalTarget)}</strong>
-          <small>${list.length} partner EPR</small>
-        </div>
-        <div class="pdf-kpi">
-          <span>Total Aktual &amp; Ach %</span>
-          <strong class="mono">${fmtPct(totalAch)}</strong>
-          <small class="mono">${fmtCompact(totalRev)}</small>
-        </div>
-        <div class="pdf-kpi">
-          <span>Total Kekurangan</span>
-          <strong class="mono" style="color:#b91c1c">${fmtCompact(totalGap)}</strong>
-          <small>${list.length - achievedCount} partner belum 100%</small>
-        </div>
-      </div>
-
       <div class="pdf-sec">
         <h3>Daftar Target &amp; Kekurangan per EPR (${esc(period.toUpperCase())})</h3>
         <table class="pdf-table">
