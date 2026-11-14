@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20261114g" />
+  <link rel="stylesheet" href="styles.css?v=20261114h" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -74,6 +74,9 @@
           <option value="achieved">Achieved (&ge; 100%)</option>
           <option value="ontrack">On Track (75–99%)</option>
           <option value="behind">Perlu Perhatian (&lt; 75%)</option>
+        </select>
+        <select id="programFilter" aria-label="Filter Program">
+          <option value="ALL">Semua Program</option>
         </select>
       </div>
     </section>
@@ -226,6 +229,37 @@
       </div>
     </section>
 
+    <!-- Ringkasan Program Berjalan (Remarks AD) -->
+    <section class="card epp-summary-card">
+      <div class="card-head">
+        <div>
+          <h2>Ringkasan Program Berjalan (Remarks AD)</h2>
+          <p class="card-sub">Perhitungan kontribusi setiap program yang tercatat di kolom Remarks (AD) pada file Sell Out.</p>
+        </div>
+        <span class="badge badge-neutral" id="progSummaryCount">0 program</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th class="col-rank">#</th>
+              <th>Nama Program</th>
+              <th class="num">EPR Ikut</th>
+              <th class="num">Transaksi</th>
+              <th class="num">Qty</th>
+              <th class="num">Kontribusi</th>
+              <th class="num">Net Revenue</th>
+              <th class="num">Consumer</th>
+              <th class="num">Consumables</th>
+              <th class="num">Scanner</th>
+              <th class="num">Dotmatrix</th>
+            </tr>
+          </thead>
+          <tbody id="progSummaryBody"></tbody>
+        </table>
+      </div>
+    </section>
+
     <!-- Audit & Data Ditolak -->
     <section class="card audit-card">
       <div class="card-head">
@@ -347,6 +381,11 @@
       </div>
 
       <div class="drawer-section">
+        <h3>Program yang Diikuti (Remarks AD)</h3>
+        <div class="drawer-list" id="dProgList"></div>
+      </div>
+
+      <div class="drawer-section">
         <h3>Beli dari EPP Mana</h3>
         <div class="drawer-list" id="dEppList"></div>
       </div>
@@ -465,6 +504,6 @@
   <!-- Printable PDF Report Container (per EPR) -->
   <section id="pdfReport" class="pdf-report" aria-hidden="true"></section>
 
-  <script src="app.js?v=20261114g"></script>
+  <script src="app.js?v=20261114h"></script>
 </body>
 </html>

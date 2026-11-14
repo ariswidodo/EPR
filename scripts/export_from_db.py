@@ -6,6 +6,7 @@ import csv
 import datetime
 import json
 import os
+import re
 import sqlite3
 from collections import defaultdict
 
@@ -51,7 +52,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
     con = sqlite3.connect(db_path)
     con.row_factory = sqlite3.Row
     rows = con.execute(
-        "SELECT epr, epp, epp_name, kat, month_ser, qty, price, eim, quarter FROM terverifikasi"
+        "SELECT epr, epp, epp_name, kat, month_ser, qty, price, eim, quarter, remarks FROM terverifikasi"
     ).fetchall()
     last_proc = con.execute(
         "SELECT waktu, file FROM proses ORDER BY id DESC LIMIT 1"
@@ -87,12 +88,27 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
     ]
     con.close()
 
+    def _extract_program(rem_text):
+        parts = [x.strip() for x in (rem_text or "").split("|")]
+        ad_raw = ""
+        if len(parts) >= 4 and parts[-1].lower().startswith("src "):
+            ad_raw = " | ".join(parts[2:-1]).strip()
+        ad_raw = ad_raw.strip().strip('"').strip()
+        if not ad_raw:
+            return "Reguler (Tanpa Program)"
+        m = re.match(r"^EIN-(\d{2})-(\d+)$", ad_raw, re.I)
+        if m:
+            return f"EIN-{m.group(1)}-{m.group(2).zfill(6)}"
+        return ad_raw
+
     agg = defaultdict(lambda: defaultdict(float))
     midhi = defaultdict(float)
     row_count = defaultdict(int)
     qty_sum = defaultdict(float)
     epp_agg = defaultdict(lambda: defaultdict(lambda: {"total": 0.0, "tx": 0, "name": "", "cats": defaultdict(float)}))
     global_epp = defaultdict(lambda: {"total": 0.0, "tx": 0, "name": "", "cats": defaultdict(float)})
+    prog_agg = defaultdict(lambda: defaultdict(lambda: {"total": 0.0, "tx": 0, "qty": 0.0, "cats": defaultdict(float)}))
+    global_prog = defaultdict(float)
 
     for r in rows:
         code = (r["epr"] or "").strip()
@@ -121,6 +137,15 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         ga["name"] = ep_name
         if kat:
             ga["cats"][kat] += net
+
+        prog_name = _extract_program(r["remarks"])
+        pa = prog_agg[code][prog_name]
+        pa["total"] += net
+        pa["tx"] += 1
+        pa["qty"] += r["qty"] or 0.0
+        if kat:
+            pa["cats"][kat] += net
+        global_prog[prog_name] += net
 
     partners = []
     seen_codes = set()
@@ -170,6 +195,17 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             for ec, ev in sorted(epp_agg[code].items(), key=lambda kv: -kv[1]["total"])
         ]
 
+        program_sources = [
+            {
+                "name": pn,
+                "total": round(pv["total"], 2),
+                "tx": pv["tx"],
+                "qty": round(pv["qty"]),
+                "cats": {k: round(pv["cats"].get(k, 0.0), 2) for k in CATS},
+            }
+            for pn, pv in sorted(prog_agg[code].items(), key=lambda kv: -kv[1]["total"])
+        ]
+
         partners.append({
             "code": code,
             "name": (m.get("EPR NAME") or "").strip(),
@@ -191,6 +227,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             "monthly_total": monthly_total,
             "monthly_by_cat": monthly_by_cat,
             "epp_sources": epp_sources,
+            "program_sources": program_sources,
         })
 
     epp_summary = [
@@ -215,6 +252,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             "verified_rows": len(rows),
             "months": MLBL,
             "categories": CATS,
+            "programs": [k for k, _ in sorted(global_prog.items(), key=lambda kv: -kv[1])],
             "tax_note": "Semua nilai revenue exclude PPN 11% (dibagi 1.11)",
         },
         "audit": {

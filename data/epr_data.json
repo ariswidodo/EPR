@@ -2,7 +2,7 @@
   "meta": {
     "title": "EPR FY26 Achievement Dashboard",
     "fiscal_year": "FY26 (Apr 2026 - Mar 2027)",
-    "generated_at": "2026-11-14 11:12:42",
+    "generated_at": "2026-11-14 19:27:49",
     "last_source_file": "012. Data Download EPSON PARTNER HUB _ Jul-Sep 2026 _161026.xlsx",
     "last_processed_at": "2026-11-14 17:25:08",
     "verified_rows": 1555,
@@ -25,6 +25,15 @@
       "Scanner",
       "Consumables",
       "Dotmatrix"
+    ],
+    "programs": [
+      "Reguler (Tanpa Program)",
+      "EIN-26-000044",
+      "EIN-26-000069",
+      "BOOSTER CM",
+      "West Java Reseller Package",
+      "EPR-1628",
+      "tes upload"
     ],
     "tax_note": "Semua nilai revenue exclude PPN 11% (dibagi 1.11)"
   },
@@ -7059,6 +7068,44 @@
             "Dotmatrix": 0.0
           }
         }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 3843068051.35,
+          "tx": 108,
+          "qty": 35413,
+          "cats": {
+            "Consumer": 939622634.23,
+            "Scanner": 26824324.32,
+            "Consumables": 2723326936.94,
+            "Dotmatrix": 5843682.88
+          }
+        },
+        {
+          "name": "EIN-26-000044",
+          "total": 193788288.29,
+          "tx": 6,
+          "qty": 1540,
+          "cats": {
+            "Consumer": 81355855.86,
+            "Scanner": 0.0,
+            "Consumables": 112432432.43,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "EIN-26-000069",
+          "total": 73324324.32,
+          "tx": 4,
+          "qty": 810,
+          "cats": {
+            "Consumer": 0.0,
+            "Scanner": 0.0,
+            "Consumables": 73324324.32,
+            "Dotmatrix": 0.0
+          }
+        }
       ]
     },
     {
@@ -7168,6 +7215,56 @@
             "Scanner": 63459459.46,
             "Consumables": 717168468.47,
             "Dotmatrix": 204445945.95
+          }
+        }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 1417154954.95,
+          "tx": 79,
+          "qty": 4703,
+          "cats": {
+            "Consumer": 669162162.16,
+            "Scanner": 63459459.46,
+            "Consumables": 480087387.39,
+            "Dotmatrix": 204445945.95
+          }
+        },
+        {
+          "name": "EIN-26-000044",
+          "total": 548342342.34,
+          "tx": 26,
+          "qty": 481,
+          "cats": {
+            "Consumer": 525369369.37,
+            "Scanner": 0.0,
+            "Consumables": 22972972.97,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "EIN-26-000069",
+          "total": 214108108.11,
+          "tx": 20,
+          "qty": 1980,
+          "cats": {
+            "Consumer": 0.0,
+            "Scanner": 0.0,
+            "Consumables": 214108108.11,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "tes upload",
+          "total": 1351351.35,
+          "tx": 1,
+          "qty": 1,
+          "cats": {
+            "Consumer": 1351351.35,
+            "Scanner": 0.0,
+            "Consumables": 0.0,
+            "Dotmatrix": 0.0
           }
         }
       ]
@@ -7317,6 +7414,44 @@
             "Consumer": 1324324.32,
             "Scanner": 0.0,
             "Consumables": 54355855.86,
+            "Dotmatrix": 0.0
+          }
+        }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 685747531.53,
+          "tx": 30,
+          "qty": 2177,
+          "cats": {
+            "Consumer": 484256756.76,
+            "Scanner": 0.0,
+            "Consumables": 189598882.88,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "EIN-26-000044",
+          "total": 135261261.26,
+          "tx": 9,
+          "qty": 935,
+          "cats": {
+            "Consumer": 67963963.96,
+            "Scanner": 0.0,
+            "Consumables": 67297297.3,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "EIN-26-000069",
+          "total": 42513513.51,
+          "tx": 8,
+          "qty": 430,
+          "cats": {
+            "Consumer": 1324324.32,
+            "Scanner": 0.0,
+            "Consumables": 41189189.19,
             "Dotmatrix": 0.0
           }
         }
@@ -7470,6 +7605,32 @@
             "Dotmatrix": 0.0
           }
         }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 72767963.96,
+          "tx": 18,
+          "qty": 423,
+          "cats": {
+            "Consumer": 30441441.44,
+            "Scanner": 5225225.23,
+            "Consumables": 37101297.3,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "EIN-26-000044",
+          "total": 42637837.84,
+          "tx": 8,
+          "qty": 81,
+          "cats": {
+            "Consumer": 38070270.27,
+            "Scanner": 0.0,
+            "Consumables": 4567567.57,
+            "Dotmatrix": 0.0
+          }
+        }
       ]
     },
     {
@@ -7594,6 +7755,32 @@
             "Dotmatrix": 0.0
           }
         }
+      ],
+      "program_sources": [
+        {
+          "name": "EIN-26-000044",
+          "total": 44613513.51,
+          "tx": 13,
+          "qty": 111,
+          "cats": {
+            "Consumer": 37789189.19,
+            "Scanner": 0.0,
+            "Consumables": 6824324.32,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 25644144.14,
+          "tx": 12,
+          "qty": 211,
+          "cats": {
+            "Consumer": 5900900.9,
+            "Scanner": 0.0,
+            "Consumables": 19743243.24,
+            "Dotmatrix": 0.0
+          }
+        }
       ]
     },
     {
@@ -7713,6 +7900,20 @@
           "tx": 3,
           "cats": {
             "Consumer": 0.0,
+            "Scanner": 0.0,
+            "Consumables": 4594594.59,
+            "Dotmatrix": 0.0
+          }
+        }
+      ],
+      "program_sources": [
+        {
+          "name": "EIN-26-000044",
+          "total": 46833333.33,
+          "tx": 10,
+          "qty": 84,
+          "cats": {
+            "Consumer": 42238738.74,
             "Scanner": 0.0,
             "Consumables": 4594594.59,
             "Dotmatrix": 0.0
@@ -7852,6 +8053,32 @@
             "Consumer": 45054054.05,
             "Scanner": 0.0,
             "Consumables": 0.0,
+            "Dotmatrix": 0.0
+          }
+        }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 744746672.07,
+          "tx": 36,
+          "qty": 1466,
+          "cats": {
+            "Consumer": 507193576.58,
+            "Scanner": 0.0,
+            "Consumables": 93956724.32,
+            "Dotmatrix": 78336013.51
+          }
+        },
+        {
+          "name": "EIN-26-000044",
+          "total": 236315220.72,
+          "tx": 5,
+          "qty": 355,
+          "cats": {
+            "Consumer": 218153058.56,
+            "Scanner": 0.0,
+            "Consumables": 18162162.16,
             "Dotmatrix": 0.0
           }
         }
@@ -8002,6 +8229,56 @@
             "Consumer": 8828828.83,
             "Scanner": 0.0,
             "Consumables": 0.0,
+            "Dotmatrix": 0.0
+          }
+        }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 640760360.36,
+          "tx": 129,
+          "qty": 2403,
+          "cats": {
+            "Consumer": 312361261.26,
+            "Scanner": 20756756.76,
+            "Consumables": 190908108.11,
+            "Dotmatrix": 100211711.71
+          }
+        },
+        {
+          "name": "EIN-26-000044",
+          "total": 207201801.8,
+          "tx": 18,
+          "qty": 442,
+          "cats": {
+            "Consumer": 179958558.56,
+            "Scanner": 0.0,
+            "Consumables": 27243243.24,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "BOOSTER CM",
+          "total": 108905405.41,
+          "tx": 7,
+          "qty": 225,
+          "cats": {
+            "Consumer": 95283783.78,
+            "Scanner": 0.0,
+            "Consumables": 13621621.62,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "EIN-26-000069",
+          "total": 59882882.88,
+          "tx": 17,
+          "qty": 760,
+          "cats": {
+            "Consumer": 0.0,
+            "Scanner": 0.0,
+            "Consumables": 59882882.88,
             "Dotmatrix": 0.0
           }
         }
@@ -8168,6 +8445,32 @@
             "Dotmatrix": 0.0
           }
         }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 214440541.44,
+          "tx": 65,
+          "qty": 301,
+          "cats": {
+            "Consumer": 117812613.51,
+            "Scanner": 6202702.7,
+            "Consumables": 21026126.13,
+            "Dotmatrix": 20000000.0
+          }
+        },
+        {
+          "name": "EIN-26-000044",
+          "total": 44018018.02,
+          "tx": 6,
+          "qty": 82,
+          "cats": {
+            "Consumer": 39477477.48,
+            "Scanner": 0.0,
+            "Consumables": 4540540.54,
+            "Dotmatrix": 0.0
+          }
+        }
       ]
     },
     {
@@ -8302,6 +8605,44 @@
             "Consumer": 9369369.37,
             "Scanner": 0.0,
             "Consumables": 0.0,
+            "Dotmatrix": 0.0
+          }
+        }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 60422522.52,
+          "tx": 18,
+          "qty": 193,
+          "cats": {
+            "Consumer": 30459459.46,
+            "Scanner": 0.0,
+            "Consumables": 14277477.48,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "EIN-26-000044",
+          "total": 53268468.47,
+          "tx": 11,
+          "qty": 136,
+          "cats": {
+            "Consumer": 44872072.07,
+            "Scanner": 0.0,
+            "Consumables": 8396396.4,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "EIN-26-000069",
+          "total": 27578378.38,
+          "tx": 14,
+          "qty": 351,
+          "cats": {
+            "Consumer": 0.0,
+            "Scanner": 0.0,
+            "Consumables": 27578378.38,
             "Dotmatrix": 0.0
           }
         }
@@ -8455,6 +8796,44 @@
             "Dotmatrix": 50270270.27
           }
         }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 3012674914.41,
+          "tx": 136,
+          "qty": 11089,
+          "cats": {
+            "Consumer": 1857360360.36,
+            "Scanner": 63459459.46,
+            "Consumables": 805900144.14,
+            "Dotmatrix": 155225225.23
+          }
+        },
+        {
+          "name": "EIN-26-000044",
+          "total": 1460738738.74,
+          "tx": 36,
+          "qty": 1361,
+          "cats": {
+            "Consumer": 1404738738.74,
+            "Scanner": 0.0,
+            "Consumables": 56000000.0,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "EIN-26-000069",
+          "total": 75621621.62,
+          "tx": 5,
+          "qty": 810,
+          "cats": {
+            "Consumer": 0.0,
+            "Scanner": 0.0,
+            "Consumables": 75621621.62,
+            "Dotmatrix": 0.0
+          }
+        }
       ]
     },
     {
@@ -8576,6 +8955,32 @@
             "Consumer": 0.0,
             "Scanner": 5225225.23,
             "Consumables": 0.0,
+            "Dotmatrix": 0.0
+          }
+        }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 77865752.25,
+          "tx": 81,
+          "qty": 760,
+          "cats": {
+            "Consumer": 12756756.76,
+            "Scanner": 5225225.23,
+            "Consumables": 59883770.27,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "EIN-26-000044",
+          "total": 4540540.54,
+          "tx": 3,
+          "qty": 60,
+          "cats": {
+            "Consumer": 0.0,
+            "Scanner": 0.0,
+            "Consumables": 4540540.54,
             "Dotmatrix": 0.0
           }
         }
@@ -8709,6 +9114,44 @@
           "city": "Semarang",
           "total": 1448648.65,
           "tx": 4,
+          "cats": {
+            "Consumer": 0.0,
+            "Scanner": 0.0,
+            "Consumables": 1448648.65,
+            "Dotmatrix": 0.0
+          }
+        }
+      ],
+      "program_sources": [
+        {
+          "name": "EIN-26-000044",
+          "total": 160932432.43,
+          "tx": 13,
+          "qty": 194,
+          "cats": {
+            "Consumer": 151743243.24,
+            "Scanner": 0.0,
+            "Consumables": 9189189.19,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 107445941.44,
+          "tx": 13,
+          "qty": 170,
+          "cats": {
+            "Consumer": 58977477.48,
+            "Scanner": 1810810.81,
+            "Consumables": 10896396.4,
+            "Dotmatrix": 5873873.87
+          }
+        },
+        {
+          "name": "EPR-1628",
+          "total": 1448648.65,
+          "tx": 4,
+          "qty": 12,
           "cats": {
             "Consumer": 0.0,
             "Scanner": 0.0,
@@ -8879,6 +9322,32 @@
             "Dotmatrix": 0.0
           }
         }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 2336905136.94,
+          "tx": 107,
+          "qty": 32413,
+          "cats": {
+            "Consumer": 9225225.23,
+            "Scanner": 0.0,
+            "Consumables": 2327679911.71,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "West Java Reseller Package",
+          "total": 42028828.83,
+          "tx": 10,
+          "qty": 734,
+          "cats": {
+            "Consumer": 0.0,
+            "Scanner": 0.0,
+            "Consumables": 42028828.83,
+            "Dotmatrix": 0.0
+          }
+        }
       ]
     },
     {
@@ -8983,6 +9452,20 @@
           "city": "Semarang",
           "total": 15720720.72,
           "tx": 10,
+          "cats": {
+            "Consumer": 11617117.12,
+            "Scanner": 0.0,
+            "Consumables": 4103603.6,
+            "Dotmatrix": 0.0
+          }
+        }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 15720720.72,
+          "tx": 10,
+          "qty": 47,
           "cats": {
             "Consumer": 11617117.12,
             "Scanner": 0.0,
@@ -9140,6 +9623,44 @@
             "Dotmatrix": 8783783.78
           }
         }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 826275531.53,
+          "tx": 76,
+          "qty": 3941,
+          "cats": {
+            "Consumer": 327880144.14,
+            "Scanner": 0.0,
+            "Consumables": 285481873.87,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "EIN-26-000044",
+          "total": 225243243.24,
+          "tx": 23,
+          "qty": 927,
+          "cats": {
+            "Consumer": 152891891.89,
+            "Scanner": 0.0,
+            "Consumables": 63567567.57,
+            "Dotmatrix": 8783783.78
+          }
+        },
+        {
+          "name": "EIN-26-000069",
+          "total": 56490990.99,
+          "tx": 15,
+          "qty": 700,
+          "cats": {
+            "Consumer": 0.0,
+            "Scanner": 0.0,
+            "Consumables": 56490990.99,
+            "Dotmatrix": 0.0
+          }
+        }
       ]
     },
     {
@@ -9264,6 +9785,32 @@
             "Dotmatrix": 17516216.22
           }
         }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 203490450.45,
+          "tx": 52,
+          "qty": 202,
+          "cats": {
+            "Consumer": 77190990.99,
+            "Scanner": 0.0,
+            "Consumables": 15480540.54,
+            "Dotmatrix": 20429729.73
+          }
+        },
+        {
+          "name": "EIN-26-000044",
+          "total": 31702702.7,
+          "tx": 9,
+          "qty": 38,
+          "cats": {
+            "Consumer": 29788288.29,
+            "Scanner": 0.0,
+            "Consumables": 1914414.41,
+            "Dotmatrix": 0.0
+          }
+        }
       ]
     },
     {
@@ -9368,6 +9915,20 @@
           "city": "Semarang",
           "total": 11310810.81,
           "tx": 3,
+          "cats": {
+            "Consumer": 0.0,
+            "Scanner": 0.0,
+            "Consumables": 0.0,
+            "Dotmatrix": 11310810.81
+          }
+        }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 11310810.81,
+          "tx": 3,
+          "qty": 4,
           "cats": {
             "Consumer": 0.0,
             "Scanner": 0.0,
@@ -9495,6 +10056,20 @@
           "cats": {
             "Consumer": 45772972.97,
             "Scanner": 0.0,
+            "Consumables": 1301801.8,
+            "Dotmatrix": 7797297.3
+          }
+        }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 217337836.94,
+          "tx": 23,
+          "qty": 92,
+          "cats": {
+            "Consumer": 63818018.02,
+            "Scanner": 16554053.15,
             "Consumables": 1301801.8,
             "Dotmatrix": 7797297.3
           }
@@ -9649,6 +10224,32 @@
             "Dotmatrix": 0.0
           }
         }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 138205405.41,
+          "tx": 24,
+          "qty": 295,
+          "cats": {
+            "Consumer": 98816216.22,
+            "Scanner": 6572972.97,
+            "Consumables": 18162162.16,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "EIN-26-000044",
+          "total": 94864864.86,
+          "tx": 10,
+          "qty": 163,
+          "cats": {
+            "Consumer": 85729729.73,
+            "Scanner": 0.0,
+            "Consumables": 9135135.14,
+            "Dotmatrix": 0.0
+          }
+        }
       ]
     },
     {
@@ -9786,6 +10387,32 @@
             "Dotmatrix": 9369369.37
           }
         }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 205228240.54,
+          "tx": 91,
+          "qty": 1162,
+          "cats": {
+            "Consumer": 32381081.08,
+            "Scanner": 5315315.32,
+            "Consumables": 101888605.41,
+            "Dotmatrix": 22476576.58
+          }
+        },
+        {
+          "name": "EIN-26-000044",
+          "total": 58836486.49,
+          "tx": 13,
+          "qty": 217,
+          "cats": {
+            "Consumer": 44468468.47,
+            "Scanner": 0.0,
+            "Consumables": 14368018.02,
+            "Dotmatrix": 0.0
+          }
+        }
       ]
     },
     {
@@ -9910,6 +10537,44 @@
             "Dotmatrix": 0.0
           }
         }
+      ],
+      "program_sources": [
+        {
+          "name": "EIN-26-000044",
+          "total": 83986486.49,
+          "tx": 12,
+          "qty": 102,
+          "cats": {
+            "Consumer": 79418918.92,
+            "Scanner": 0.0,
+            "Consumables": 4567567.57,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "EIN-26-000069",
+          "total": 29126126.13,
+          "tx": 11,
+          "qty": 360,
+          "cats": {
+            "Consumer": 0.0,
+            "Scanner": 0.0,
+            "Consumables": 29126126.13,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 756756.76,
+          "tx": 1,
+          "qty": 20,
+          "cats": {
+            "Consumer": 0.0,
+            "Scanner": 0.0,
+            "Consumables": 756756.76,
+            "Dotmatrix": 0.0
+          }
+        }
       ]
     },
     {
@@ -10031,6 +10696,20 @@
             "Consumer": 0.0,
             "Scanner": 0.0,
             "Consumables": 22567567.57,
+            "Dotmatrix": 0.0
+          }
+        }
+      ],
+      "program_sources": [
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 106468468.47,
+          "tx": 36,
+          "qty": 1385,
+          "cats": {
+            "Consumer": 0.0,
+            "Scanner": 0.0,
+            "Consumables": 106468468.47,
             "Dotmatrix": 0.0
           }
         }
@@ -10169,6 +10848,44 @@
             "Scanner": 0.0,
             "Consumables": 0.0,
             "Dotmatrix": 5765765.77
+          }
+        }
+      ],
+      "program_sources": [
+        {
+          "name": "EIN-26-000044",
+          "total": 199792792.79,
+          "tx": 5,
+          "qty": 100,
+          "cats": {
+            "Consumer": 199792792.79,
+            "Scanner": 0.0,
+            "Consumables": 0.0,
+            "Dotmatrix": 0.0
+          }
+        },
+        {
+          "name": "Reguler (Tanpa Program)",
+          "total": 99762162.16,
+          "tx": 32,
+          "qty": 284,
+          "cats": {
+            "Consumer": 45486486.49,
+            "Scanner": 0.0,
+            "Consumables": 48509909.91,
+            "Dotmatrix": 5765765.77
+          }
+        },
+        {
+          "name": "EIN-26-000069",
+          "total": 86007207.21,
+          "tx": 23,
+          "qty": 1081,
+          "cats": {
+            "Consumer": 0.0,
+            "Scanner": 0.0,
+            "Consumables": 86007207.21,
+            "Dotmatrix": 0.0
           }
         }
       ]

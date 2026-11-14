@@ -19,6 +19,7 @@
     tier: "ALL",
     city: "ALL",
     status: "ALL",
+    program: "ALL",
     sortKey: "actual",
     sortDir: "desc",
   };
@@ -163,6 +164,14 @@
     citySel.innerHTML =
       '<option value="ALL">Semua Kota</option>' +
       cities.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
+
+    const progs = rawData?.meta?.programs || [];
+    const progSel = $("programFilter");
+    if (progSel) {
+      progSel.innerHTML =
+        '<option value="ALL">Semua Program</option>' +
+        progs.map((pr) => `<option value="${esc(pr)}">${esc(pr)}</option>`).join("");
+    }
   }
 
   function getFilteredPartners() {
@@ -173,6 +182,10 @@
       .filter((p) => {
         if (state.tier !== "ALL" && p.tier !== state.tier) return false;
         if (state.city !== "ALL" && p.city !== state.city) return false;
+        if (state.program !== "ALL") {
+          const hit = (p.program_sources || []).some((pr) => pr.name === state.program);
+          if (!hit) return false;
+        }
         if (
           q &&
           !p.name.toLowerCase().includes(q) &&
@@ -212,6 +225,7 @@
     renderCharts(list);
     renderTable(list);
     renderEppSummary(list);
+    renderProgramSummary(list);
     renderAudit();
   }
 
@@ -551,6 +565,73 @@
       .join("");
   }
 
+  function renderProgramSummary(list) {
+    const map = new Map();
+    let grand = 0;
+    list.forEach((p) => {
+      (p.program_sources || []).forEach((pr) => {
+        grand += pr.total || 0;
+        let cur = map.get(pr.name);
+        if (!cur) {
+          cur = {
+            name: pr.name,
+            eprs: new Set(),
+            tx: 0,
+            qty: 0,
+            total: 0,
+            cats: { Consumer: 0, Scanner: 0, Consumables: 0, Dotmatrix: 0 },
+          };
+          map.set(pr.name, cur);
+        }
+        cur.eprs.add(p.code);
+        cur.tx += pr.tx || 0;
+        cur.qty += pr.qty || 0;
+        cur.total += pr.total || 0;
+        CATS.forEach((c) => {
+          cur.cats[c] += pr.cats?.[c] || 0;
+        });
+      });
+    });
+
+    const rows = [...map.values()].sort((a, b) => b.total - a.total);
+    $("progSummaryCount").textContent = `${rows.length} program`;
+    const body = $("progSummaryBody");
+    if (!rows.length || grand <= 0) {
+      body.innerHTML =
+        '<tr><td colspan="11" style="text-align:center;color:var(--text-3);padding:20px">Belum ada data program.</td></tr>';
+      return;
+    }
+
+    body.innerHTML = rows
+      .map((pr, i) => {
+        const totPct = (pr.total / grand) * 100;
+        const barSegs = CATS.map((c) => {
+          const w = ((pr.cats[c] || 0) / grand) * 100;
+          return w > 0 ? `<span style="width:${w.toFixed(2)}%;background:${CAT_COLORS[c]}" title="${c}: ${w.toFixed(1)}%"></span>` : "";
+        }).join("");
+        const isReg = pr.name.startsWith("Reguler");
+        return `<tr>
+          <td class="col-rank mono">${i + 1}</td>
+          <td><span class="${isReg ? "badge badge-neutral" : "badge badge-indigo"}">${esc(pr.name)}</span></td>
+          <td class="num mono">${pr.eprs.size}</td>
+          <td class="num mono">${pr.tx.toLocaleString("id-ID")}</td>
+          <td class="num mono">${pr.qty.toLocaleString("id-ID")}</td>
+          <td class="num">
+            <div class="ach-cell">
+              <div class="epp-contrib-bar">${barSegs}</div>
+              <span class="mono" style="font-weight:700;min-width:50px;text-align:right">${totPct.toFixed(1)}%</span>
+            </div>
+          </td>
+          <td class="num mono"><strong>${fmtCompact(pr.total)}</strong></td>
+          <td class="num mono">${fmtCompact(pr.cats.Consumer)}</td>
+          <td class="num mono">${fmtCompact(pr.cats.Consumables)}</td>
+          <td class="num mono">${fmtCompact(pr.cats.Scanner)}</td>
+          <td class="num mono">${fmtCompact(pr.cats.Dotmatrix)}</td>
+        </tr>`;
+      })
+      .join("");
+  }
+
   function getFilteredRejected() {
     const a = rawData?.audit;
     if (!a) return [];
@@ -736,6 +817,19 @@
       `<div class="drawer-row"><span>Low End</span><span class="mono"><strong>${fmtRp(p.low_end || 0)}</strong></span></div>`
     );
     $("dCatList").innerHTML = catRows.join("");
+
+    const progs = p.program_sources || [];
+    $("dProgList").innerHTML = progs.length
+      ? progs
+          .map((pr) => {
+            const share = p.actual_fy > 0 ? ((pr.total / p.actual_fy) * 100).toFixed(1) : "0.0";
+            return `<div class="drawer-row">
+              <span><strong>${esc(pr.name)}</strong> <small style="color:var(--text-3)">(${pr.tx} tx · ${pr.qty} unit)</small></span>
+              <span class="mono"><strong>${fmtCompact(pr.total)}</strong> (${share}%)</span>
+            </div>`;
+          })
+          .join("")
+      : '<div class="drawer-row" style="color:var(--text-3)">Belum ada data program.</div>';
 
     const epps = p.epp_sources || [];
     $("dEppList").innerHTML = epps.length
@@ -1131,6 +1225,10 @@
     });
     $("statusFilter").addEventListener("change", (e) => {
       state.status = e.target.value;
+      render();
+    });
+    $("programFilter").addEventListener("change", (e) => {
+      state.program = e.target.value;
       render();
     });
 
