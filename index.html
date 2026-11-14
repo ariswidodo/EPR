@@ -31,11 +31,10 @@
       </div>
 
       <div class="topbar-actions">
-        <label class="btn btn-secondary" title="Muat file Data terverifikasi (.xlsx) langsung di browser">
-          <input type="file" id="excelUpload" accept=".xlsx,.xlsm" hidden />
+        <button class="btn btn-primary" id="btnOpenUpload" title="Upload file Sell Out ke GitHub atau preview Excel lokal">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          <span>Upload Excel</span>
-        </label>
+          <span>Upload Data</span>
+        </button>
         <button class="btn btn-secondary" id="btnExportCsv" title="Unduh ringkasan CSV sesuai filter">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           <span>Export CSV</span>
@@ -248,6 +247,61 @@
       </div>
     </div>
   </aside>
+
+  <!-- Upload & Verifikasi Modal -->
+  <div class="modal-backdrop" id="uploadModalBackdrop" hidden></div>
+  <div class="modal" id="uploadModal" hidden role="dialog" aria-modal="true" aria-labelledby="uploadModalTitle">
+    <div class="modal-head">
+      <div>
+        <h2 id="uploadModalTitle">Upload &amp; Verifikasi Data</h2>
+        <p class="card-sub">Kirim file Sell Out ke GitHub untuk diverifikasi otomatis, atau preview Excel lokal.</p>
+      </div>
+      <button class="btn btn-icon" id="btnCloseUpload" aria-label="Tutup modal">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-tabs">
+      <button class="tab-btn active" data-tab="github">Verifikasi di GitHub</button>
+      <button class="tab-btn" data-tab="local">Preview Lokal (.xlsx)</button>
+    </div>
+
+    <div class="modal-body" id="tabGithub">
+      <div class="field">
+        <label for="ghRepo">Repository GitHub</label>
+        <input type="text" id="ghRepo" value="ariswidodo/EPR" />
+      </div>
+      <div class="field">
+        <label for="ghToken">GitHub Personal Access Token (PAT)</label>
+        <div class="token-row">
+          <input type="password" id="ghToken" placeholder="github_pat_... atau ghp_..." autocomplete="off" />
+          <button type="button" class="btn btn-secondary" id="btnToggleToken">Lihat</button>
+        </div>
+        <small class="hint">Disimpan hanya di browser Anda (<code>localStorage</code>). Buat Fine-grained PAT dengan izin <b>Contents: Read &amp; write</b> dan <b>Actions: Read</b>.</small>
+      </div>
+      <div class="field">
+        <label>File Sell Out (Belum Terverifikasi)</label>
+        <label class="dropzone" id="ghDropzone">
+          <input type="file" id="ghFileInput" accept=".xlsx,.xlsm" hidden />
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span id="ghFileName">Klik untuk pilih file Sell Out (.xlsx / .xlsm)</span>
+        </label>
+      </div>
+      <div class="upload-status" id="ghStatus" hidden></div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="btnGhUpload" disabled>Upload &amp; Verifikasi</button>
+      </div>
+    </div>
+
+    <div class="modal-body" id="tabLocal" hidden>
+      <p class="card-sub">Muat file <code>Data terverifikasi - *.xlsx</code> langsung di browser tanpa mengirim ke GitHub.</p>
+      <label class="dropzone">
+        <input type="file" id="excelUpload" accept=".xlsx,.xlsm" hidden />
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span>Pilih file Data terverifikasi (.xlsx)</span>
+      </label>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>

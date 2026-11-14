@@ -724,9 +724,218 @@
 
     $("btnExportCsv").addEventListener("click", exportCsv);
     $("excelUpload").addEventListener("change", (e) => {
-      if (e.target.files?.[0]) handleExcelUpload(e.target.files[0]);
+      if (e.target.files?.[0]) {
+        handleExcelUpload(e.target.files[0]);
+        closeUploadModal();
+      }
       e.target.value = "";
     });
+
+    bindUploadModal();
+  }
+
+  // ---------------- Upload Modal & GitHub API ----------------
+  let selectedGhFile = null;
+
+  function openUploadModal() {
+    $("ghRepo").value = localStorage.getItem("epr_gh_repo") || "ariswidodo/EPR";
+    $("ghToken").value = localStorage.getItem("epr_gh_token") || "";
+    updateGhBtn();
+    $("uploadModalBackdrop").hidden = false;
+    $("uploadModal").hidden = false;
+  }
+
+  function closeUploadModal() {
+    $("uploadModalBackdrop").hidden = true;
+    $("uploadModal").hidden = true;
+  }
+
+  function updateGhBtn() {
+    $("btnGhUpload").disabled = !(
+      selectedGhFile &&
+      $("ghRepo").value.trim() &&
+      $("ghToken").value.trim()
+    );
+  }
+
+  function setGhStatus(html, cls = "") {
+    const el = $("ghStatus");
+    el.hidden = false;
+    el.className = "upload-status" + (cls ? " " + cls : "");
+    el.innerHTML = html;
+  }
+
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(String(r.result).split(",")[1] || "");
+      r.onerror = reject;
+      r.readAsDataURL(file);
+    });
+  }
+
+  async function uploadToGithub() {
+    const repo = $("ghRepo").value.trim();
+    const token = $("ghToken").value.trim();
+    const file = selectedGhFile;
+    if (!repo || !token || !file) return;
+
+    localStorage.setItem("epr_gh_repo", repo);
+    localStorage.setItem("epr_gh_token", token);
+
+    const btn = $("btnGhUpload");
+    btn.disabled = true;
+    setGhStatus(`Mengunggah <b>${esc(file.name)}</b> ke <code>${esc(repo)}/inbox/</code>...`);
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28",
+    };
+
+    try {
+      const path = `inbox/${encodeURIComponent(file.name)}`;
+      const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
+
+      let sha = undefined;
+      const checkRes = await fetch(apiUrl, { headers });
+      if (checkRes.ok) {
+        const existing = await checkRes.json();
+        sha = existing.sha;
+      }
+
+      const content = await fileToBase64(file);
+      const putRes = await fetch(apiUrl, {
+        method: "PUT",
+        headers: { ...headers, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: `upload: ${file.name} via dashboard`,
+          content,
+          ...(sha ? { sha } : {}),
+        }),
+      });
+
+      if (!putRes.ok) {
+        const err = await putRes.json().catch(() => ({}));
+        throw new Error(err.message || `HTTP ${putRes.status}`);
+      }
+
+      const putData = await putRes.json();
+      const commitSha = putData.commit?.sha;
+      setGhStatus(
+        `File berhasil diunggah ke <code>inbox/</code>. Menunggu GitHub Actions memverifikasi...`
+      );
+
+      await pollVerificationRun(repo, headers, commitSha);
+    } catch (err) {
+      setGhStatus(`Gagal upload: ${esc(err.message)}`, "err");
+      btn.disabled = false;
+    }
+  }
+
+  async function pollVerificationRun(repo, headers, commitSha) {
+    const runsUrl = `https://api.github.com/repos/${repo}/actions/workflows/verify-epr.yml/runs?per_page=3`;
+    for (let i = 0; i < 45; i++) {
+      await new Promise((r) => setTimeout(r, 4000));
+      const res = await fetch(runsUrl, { headers, cache: "no-store" });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const run =
+        (data.workflow_runs || []).find((r) => !commitSha || r.head_sha === commitSha) ||
+        (data.workflow_runs || [])[0];
+      if (!run) continue;
+
+      if (run.status !== "completed") {
+        setGhStatus(
+          `Proses verifikasi berjalan di GitHub Actions (<b>${esc(run.status)}</b>)... ` +
+            `<a href="${esc(run.html_url)}" target="_blank" rel="noopener">Lihat log</a>`
+        );
+        continue;
+      }
+
+      if (run.conclusion === "success") {
+        setGhStatus(
+          `Verifikasi selesai! <a href="${esc(run.html_url)}" target="_blank" rel="noopener">Unduh workbook hasil di Actions</a>. ` +
+            `Memuat ulang data dashboard...`,
+          "ok"
+        );
+        await reloadDashboardData(repo, headers);
+      } else {
+        setGhStatus(
+          `Workflow selesai dengan status <b>${esc(run.conclusion)}</b>. ` +
+            `<a href="${esc(run.html_url)}" target="_blank" rel="noopener">Cek detail error</a>`,
+          "err"
+        );
+      }
+      updateGhBtn();
+      return;
+    }
+
+    setGhStatus(
+      `Upload sukses, namun verifikasi masih berjalan lebih lama. Cek tab <b>Actions</b> di GitHub lalu muat ulang halaman.`
+    );
+    updateGhBtn();
+  }
+
+  async function reloadDashboardData(repo, headers) {
+    try {
+      // Ambil langsung dari GitHub Contents API agar tidak menunggu cache GitHub Pages
+      const res = await fetch(
+        `https://api.github.com/repos/${repo}/contents/data/epr_data.json`,
+        {
+          headers: { ...headers, Accept: "application/vnd.github.raw+json" },
+          cache: "no-store",
+        }
+      );
+      if (res.ok) {
+        rawData = await res.json();
+        populateFilters(rawData.partners || []);
+        render();
+        return;
+      }
+    } catch (_) {}
+    // Fallback ke file lokal/Pages
+    const localRes = await fetch(`./data/epr_data.json?t=${Date.now()}`, { cache: "no-store" });
+    if (localRes.ok) {
+      rawData = await localRes.json();
+      populateFilters(rawData.partners || []);
+      render();
+    }
+  }
+
+  function bindUploadModal() {
+    $("btnOpenUpload").addEventListener("click", openUploadModal);
+    $("btnCloseUpload").addEventListener("click", closeUploadModal);
+    $("uploadModalBackdrop").addEventListener("click", closeUploadModal);
+
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        const isGh = btn.dataset.tab === "github";
+        $("tabGithub").hidden = !isGh;
+        $("tabLocal").hidden = isGh;
+      });
+    });
+
+    $("btnToggleToken").addEventListener("click", () => {
+      const inp = $("ghToken");
+      const show = inp.type === "password";
+      inp.type = show ? "text" : "password";
+      $("btnToggleToken").textContent = show ? "Sembunyi" : "Lihat";
+    });
+
+    $("ghRepo").addEventListener("input", updateGhBtn);
+    $("ghToken").addEventListener("input", updateGhBtn);
+    $("ghFileInput").addEventListener("change", (e) => {
+      selectedGhFile = e.target.files?.[0] || null;
+      $("ghFileName").textContent = selectedGhFile
+        ? `${selectedGhFile.name} (${(selectedGhFile.size / 1024 / 1024).toFixed(2)} MB)`
+        : "Klik untuk pilih file Sell Out (.xlsx / .xlsm)";
+      updateGhBtn();
+    });
+
+    $("btnGhUpload").addEventListener("click", uploadToGithub);
   }
 
   async function init() {
