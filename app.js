@@ -610,7 +610,7 @@
           return w > 0 ? `<span style="width:${w.toFixed(2)}%;background:${CAT_COLORS[c]}" title="${c}: ${w.toFixed(1)}%"></span>` : "";
         }).join("");
         const isReg = pr.name.startsWith("Reguler");
-        return `<tr>
+        return `<tr data-prog="${esc(pr.name)}" class="${selectedProg === pr.name ? "prog-row-active" : ""}">
           <td class="col-rank mono">${i + 1}</td>
           <td><span class="${isReg ? "badge badge-neutral" : "badge badge-indigo"}">${esc(pr.name)}</span></td>
           <td class="num mono">${pr.eprs.size}</td>
@@ -630,6 +630,84 @@
         </tr>`;
       })
       .join("");
+
+    body.querySelectorAll("tr[data-prog]").forEach((tr) => {
+      tr.addEventListener("click", () => {
+        selectedProg = selectedProg === tr.dataset.prog ? null : tr.dataset.prog;
+        renderProgramSummary(list);
+      });
+    });
+
+    if (selectedProg) {
+      renderProgramEprDetail(list, selectedProg);
+    } else {
+      $("progEprPanel").hidden = true;
+    }
+  }
+
+  let selectedProg = null;
+
+  function renderProgramEprDetail(list, progName) {
+    const panel = $("progEprPanel");
+    panel.hidden = false;
+    const mode = $("progEprMode")?.value || "all";
+
+    const rows = list
+      .map((p) => {
+        const hit = (p.program_sources || []).find((pr) => pr.name === progName);
+        const progVal = hit ? hit.total : 0;
+        const progTx = hit ? hit.tx : 0;
+        const progQty = hit ? hit.qty : 0;
+        const shortfall = Math.max(0, (p.target || 0) - (p.actual || 0));
+        return { p, progVal, progTx, progQty, shortfall, joined: !!hit };
+      })
+      .filter((r) => {
+        if (mode === "joined") return r.joined;
+        if (mode === "missing") return !r.joined;
+        return true;
+      })
+      .sort((a, b) => b.progVal - a.progVal || b.shortfall - a.shortfall);
+
+    const joinedCount = list.filter((p) => (p.program_sources || []).some((pr) => pr.name === progName)).length;
+    $("progEprTitle").textContent = `Monitor EPR — ${progName}`;
+    $("progEprSub").textContent = `${joinedCount} dari ${list.length} EPR sudah membeli pada program ini (${state.period.toUpperCase()})`;
+
+    const tbody = $("progEprBody");
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-3);padding:18px">Tidak ada EPR pada filter ini.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = rows
+      .map((r, i) => {
+        const gapHtml =
+          r.p.target <= 0
+            ? '<span style="color:var(--text-3)">-</span>'
+            : r.shortfall === 0
+            ? `<span class="badge badge-emerald">Achieved (${fmtPct(r.p.ach)})</span>`
+            : `<span class="mono" style="color:var(--rose);font-weight:700">${fmtCompact(r.shortfall)}</span>`;
+
+        return `<tr data-code="${esc(r.p.code)}">
+          <td class="col-rank mono">${i + 1}</td>
+          <td>
+            <div class="partner-cell">
+              <span class="partner-name">${esc(r.p.name)}</span>
+              <span class="partner-meta mono">${esc(r.p.code)} · ${esc(r.p.city || "-")}</span>
+            </div>
+          </td>
+          <td><span class="tier-pill tier-${esc(r.p.tier)}">${esc(r.p.tier || "-")}</span></td>
+          <td class="num mono">${r.progTx}</td>
+          <td class="num mono">${r.progQty}</td>
+          <td class="num mono">${r.joined ? `<strong>${fmtCompact(r.progVal)}</strong>` : '<span class="badge badge-neutral">Belum Beli</span>'}</td>
+          <td class="num mono">${fmtCompact(r.p.target)}</td>
+          <td class="num">${gapHtml}</td>
+        </tr>`;
+      })
+      .join("");
+
+    tbody.querySelectorAll("tr[data-code]").forEach((tr) => {
+      tr.addEventListener("click", () => openDrawer(tr.dataset.code));
+    });
   }
 
   function getFilteredRejected() {
@@ -1230,6 +1308,13 @@
     $("programFilter").addEventListener("change", (e) => {
       state.program = e.target.value;
       render();
+    });
+    $("progEprMode").addEventListener("change", () => {
+      if (selectedProg) renderProgramEprDetail(getFilteredPartners(), selectedProg);
+    });
+    $("btnCloseProgPanel").addEventListener("click", () => {
+      selectedProg = null;
+      renderProgramSummary(getFilteredPartners());
     });
 
     document.querySelectorAll("th.sortable").forEach((th) => {

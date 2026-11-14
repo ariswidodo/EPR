@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20261114h" />
+  <link rel="stylesheet" href="styles.css?v=20261114i" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -234,7 +234,7 @@
       <div class="card-head">
         <div>
           <h2>Ringkasan Program Berjalan (Remarks AD)</h2>
-          <p class="card-sub">Perhitungan kontribusi setiap program yang tercatat di kolom Remarks (AD) pada file Sell Out.</p>
+          <p class="card-sub">Klik baris program untuk memonitor pembelian setiap EPR &amp; kekurangannya.</p>
         </div>
         <span class="badge badge-neutral" id="progSummaryCount">0 program</span>
       </div>
@@ -257,6 +257,40 @@
           </thead>
           <tbody id="progSummaryBody"></tbody>
         </table>
+      </div>
+
+      <div id="progEprPanel" class="prog-epr-panel" hidden>
+        <div class="audit-head-row" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+          <div>
+            <h3 class="audit-subhead" id="progEprTitle">Monitor Pembelian EPR</h3>
+            <p class="card-sub" id="progEprSub"></p>
+          </div>
+          <div class="audit-tools">
+            <select id="progEprMode" aria-label="Filter keikutsertaan EPR">
+              <option value="all">Semua EPR (Ikut &amp; Belum)</option>
+              <option value="joined">Hanya yang Sudah Beli</option>
+              <option value="missing">Belum Beli Program Ini</option>
+            </select>
+            <button class="btn btn-secondary" id="btnCloseProgPanel" style="height:32px;padding:0 10px;font-size:12px">Tutup</button>
+          </div>
+        </div>
+        <div class="table-scroll" style="max-height:360px;overflow:auto">
+          <table>
+            <thead>
+              <tr>
+                <th class="col-rank">#</th>
+                <th>Nama EPR</th>
+                <th>Tier</th>
+                <th class="num">Tx</th>
+                <th class="num">Qty</th>
+                <th class="num">Pembelian Program</th>
+                <th class="num">Target EPR</th>
+                <th class="num">Kekurangan Target</th>
+              </tr>
+            </thead>
+            <tbody id="progEprBody"></tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -504,6 +538,6 @@
   <!-- Printable PDF Report Container (per EPR) -->
   <section id="pdfReport" class="pdf-report" aria-hidden="true"></section>
 
-  <script src="app.js?v=20261114h"></script>
+  <script src="app.js?v=20261114i"></script>
 </body>
 </html>

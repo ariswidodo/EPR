@@ -864,6 +864,9 @@ td {
   white-space: nowrap;
 }
 
+.prog-epr-panel[hidden] { display: none !important; }
+.prog-row-active { background: var(--indigo-soft) !important; }
+
 .modal[hidden],
 .modal-backdrop[hidden],
 .drawer-backdrop[hidden],
