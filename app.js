@@ -949,7 +949,7 @@
 
         return `<tr>
           <td class="mono">${i + 1}</td>
-          <td><b>${esc(p.name)}</b><br><small class="mono">${esc(p.code)} · ${esc(p.city || "-")} · ${esc(p.tier || "-")}</small></td>
+          <td><b>${esc(p.name)}</b> <span class="mono" style="color:#64748b;font-size:9px">· ${esc(p.code)} · ${esc(p.city || "-")} · ${esc(p.tier || "-")}</span></td>
           <td class="num mono">${fmtRp(p.target)}</td>
           ${gapCell}
         </tr>`;
