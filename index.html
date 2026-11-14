@@ -177,6 +177,7 @@
               <th class="col-rank">#</th>
               <th class="sortable" data-sort="name">EPR Partner</th>
               <th class="sortable" data-sort="tier">Tier</th>
+              <th>Beli dari EPP</th>
               <th class="sortable num" data-sort="target">Target</th>
               <th class="sortable num" data-sort="actual">Aktual (Net)</th>
               <th class="sortable num" data-sort="ach">Achievement</th>
@@ -188,6 +189,35 @@
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Ringkasan Kontribusi EPP di Area -->
+    <section class="card epp-summary-card">
+      <div class="card-head">
+        <div>
+          <h2>Ringkasan Kontribusi EPP di Area</h2>
+          <p class="card-sub">Persentase kontribusi setiap EPP terhadap total pencapaian area beserta rincian kategori produknya.</p>
+        </div>
+        <span class="badge badge-neutral" id="eppSummaryCount">0 EPP</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th class="col-rank">#</th>
+              <th>Nama EPP</th>
+              <th>Kota</th>
+              <th class="num">Total Kontribusi</th>
+              <th class="num">Net Revenue</th>
+              <th class="num">Consumer</th>
+              <th class="num">Consumables</th>
+              <th class="num">Scanner</th>
+              <th class="num">Dotmatrix</th>
+            </tr>
+          </thead>
+          <tbody id="eppSummaryBody"></tbody>
         </table>
       </div>
     </section>
@@ -223,8 +253,19 @@
         </div>
 
         <div>
-          <h3 class="audit-subhead">Sampel Data Double yang Ditolak</h3>
-          <div class="table-scroll">
+          <div class="audit-head-row">
+            <h3 class="audit-subhead">Log Data Ditolak (Double &amp; Kurang Sesuai)</h3>
+            <div class="audit-tools">
+              <select id="rejectTypeFilter" aria-label="Filter jenis penolakan">
+                <option value="ALL">Semua Ditolak</option>
+                <option value="double">Double</option>
+                <option value="luar_db">Luar Database EPR</option>
+              </select>
+              <input type="text" id="rejectSearch" class="mini-input" placeholder="Cari invoice / EPR / material..." />
+              <button class="btn btn-secondary" id="btnExportRejected" style="height:32px;padding:0 10px;font-size:12px">Export CSV</button>
+            </div>
+          </div>
+          <div class="table-scroll" style="max-height:340px;overflow:auto">
             <table>
               <thead>
                 <tr>
@@ -294,6 +335,11 @@
         <h3>Rincian Kategori &amp; Split</h3>
         <div class="drawer-list" id="dCatList"></div>
       </div>
+
+      <div class="drawer-section">
+        <h3>Beli dari EPP Mana</h3>
+        <div class="drawer-list" id="dEppList"></div>
+      </div>
     </div>
   </aside>
 
@@ -311,11 +357,32 @@
     </div>
 
     <div class="modal-tabs">
-      <button class="tab-btn active" data-tab="github">Verifikasi di GitHub</button>
-      <button class="tab-btn" data-tab="local">Preview Lokal (.xlsx)</button>
+      <button class="tab-btn active" data-tab="local-server">Verifikasi Lokal</button>
+      <button class="tab-btn" data-tab="local">Preview Excel (.xlsx)</button>
+      <button class="tab-btn" data-tab="github">GitHub Actions</button>
     </div>
 
-    <div class="modal-body" id="tabGithub">
+    <div class="modal-body" id="tabLocalServer">
+      <div class="field">
+        <label>File Sell Out (Belum Terverifikasi)</label>
+        <label class="dropzone">
+          <input type="file" id="srvFileInput" accept=".xlsx,.xlsm" hidden />
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span id="srvFileName">Klik untuk pilih file Sell Out (.xlsx / .xlsm)</span>
+        </label>
+      </div>
+      <label class="check-row">
+        <input type="checkbox" id="chkBuildExcel" />
+        <span>Sekalian buat 3 file Excel output (Data Per Q, Terverifikasi, Ditolak) — <i>lebih lama ±10 detik</i></span>
+      </label>
+      <pre class="log-box" id="srvLogBox" hidden></pre>
+      <div class="upload-status" id="srvStatus" hidden></div>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="btnSrvUpload" disabled>Proses &amp; Verifikasi</button>
+      </div>
+    </div>
+
+    <div class="modal-body" id="tabGithub" hidden>
       <div class="field">
         <label for="ghRepo">Repository GitHub</label>
         <input type="text" id="ghRepo" value="ariswidodo/EPR" />

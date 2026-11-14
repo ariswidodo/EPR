@@ -34,10 +34,24 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
     with open(master_path, encoding="utf-8-sig") as f:
         masters = list(csv.DictReader(f))
 
+    epp_master_path = os.path.join(tool_dir, "data", "epp_master.csv")
+    epp_names = {}
+    epp_cities = {}
+    if os.path.exists(epp_master_path):
+        with open(epp_master_path, encoding="utf-8-sig") as f:
+            for er in csv.DictReader(f):
+                ec = (er.get("EPP CODE") or "").strip()
+                en = (er.get("COMPANY NAME") or er.get("NAMA TOKO") or "").strip()
+                ect = (er.get("CITY") or "").strip()
+                if ec and en and ec not in epp_names:
+                    epp_names[ec] = en
+                if ec and ect and ec not in epp_cities:
+                    epp_cities[ec] = ect
+
     con = sqlite3.connect(db_path)
     con.row_factory = sqlite3.Row
     rows = con.execute(
-        "SELECT epr, kat, month_ser, qty, price, eim, quarter FROM terverifikasi"
+        "SELECT epr, epp, epp_name, kat, month_ser, qty, price, eim, quarter FROM terverifikasi"
     ).fetchall()
     last_proc = con.execute(
         "SELECT waktu, file FROM proses ORDER BY id DESC LIMIT 1"
@@ -63,11 +77,12 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         elif ket == "LUAR DATABASE EPR":
             luar_db += rr["cnt"]
 
-    recent_doubles = [
+    recent_rejected = [
         dict(r) for r in con.execute(
-            "SELECT invoice_date, invoice_no, epr, epr_name, material, qty, total, keterangan, sumber_file, baris_sumber "
-            "FROM data_per_q WHERE is_verified = 0 AND (keterangan LIKE 'SUDAH TERVERIFIKASI%' OR keterangan = 'KEMBAR DALAM INPUT') "
-            "ORDER BY diproses_pada DESC, baris_sumber ASC LIMIT 200"
+            "SELECT invoice_date, invoice_no, epr, epr_name, material, qty, total, keterangan, sumber_file, baris_sumber, "
+            "CASE WHEN keterangan = 'LUAR DATABASE EPR' THEN 'luar_db' ELSE 'double' END AS jenis "
+            "FROM data_per_q WHERE is_verified = 0 "
+            "ORDER BY CASE WHEN keterangan = 'LUAR DATABASE EPR' THEN 1 ELSE 0 END, diproses_pada DESC, baris_sumber ASC LIMIT 500"
         ).fetchall()
     ]
     con.close()
@@ -76,23 +91,44 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
     midhi = defaultdict(float)
     row_count = defaultdict(int)
     qty_sum = defaultdict(float)
+    epp_agg = defaultdict(lambda: defaultdict(lambda: {"total": 0.0, "tx": 0, "name": "", "cats": defaultdict(float)}))
+    global_epp = defaultdict(lambda: {"total": 0.0, "tx": 0, "name": "", "cats": defaultdict(float)})
 
     for r in rows:
         code = (r["epr"] or "").strip()
         kat = (r["kat"] or "").strip()
         mser = r["month_ser"]
         gross = (r["price"] or 0.0) * (r["qty"] or 0.0)
+        net = gross / 1.11
         agg[code][(kat, mser)] += gross
         row_count[code] += 1
         qty_sum[code] += r["qty"] or 0.0
         if (r["eim"] or "").strip() == "Mid High":
             midhi[code] += gross
 
+        ep_code = (r["epp"] or "").strip() or (r["epp_name"] or "").strip() or "TIDAK DIKETAHUI"
+        ep_name = epp_names.get(ep_code) or (r["epp_name"] or "").strip() or ep_code
+        ea = epp_agg[code][ep_code]
+        ea["total"] += net
+        ea["tx"] += 1
+        ea["name"] = ep_name
+        if kat:
+            ea["cats"][kat] += net
+
+        ga = global_epp[ep_code]
+        ga["total"] += net
+        ga["tx"] += 1
+        ga["name"] = ep_name
+        if kat:
+            ga["cats"][kat] += net
+
     partners = []
+    seen_codes = set()
     for m in masters:
         code = (m.get("EPR CODE") or "").strip()
-        if not code:
+        if not code or code in seen_codes:
             continue
+        seen_codes.add(code)
         try:
             target_fy = float(m.get("TARGET EXCL") or 0)
         except ValueError:
@@ -118,6 +154,18 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         mid_hi_val = round(midhi.get(code, 0.0) / 1.11, 2)
         low_end_val = round(max(0.0, total_fy - mid_hi_val), 2)
 
+        epp_sources = [
+            {
+                "code": ec,
+                "name": ev["name"],
+                "city": epp_cities.get(ec, ""),
+                "total": round(ev["total"], 2),
+                "tx": ev["tx"],
+                "cats": {k: round(ev["cats"].get(k, 0.0), 2) for k in CATS},
+            }
+            for ec, ev in sorted(epp_agg[code].items(), key=lambda kv: -kv[1]["total"])
+        ]
+
         partners.append({
             "code": code,
             "name": (m.get("EPR NAME") or "").strip(),
@@ -137,7 +185,20 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             "cat_totals": cat_totals,
             "monthly_total": monthly_total,
             "monthly_by_cat": monthly_by_cat,
+            "epp_sources": epp_sources,
         })
+
+    epp_summary = [
+        {
+            "code": ec,
+            "name": ev["name"],
+            "city": epp_cities.get(ec, ""),
+            "total": round(ev["total"], 2),
+            "tx": ev["tx"],
+            "cats": {k: round(ev["cats"].get(k, 0.0), 2) for k in CATS},
+        }
+        for ec, ev in sorted(global_epp.items(), key=lambda kv: -kv[1]["total"])
+    ]
 
     payload = {
         "meta": {
@@ -158,8 +219,9 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             "luar_db": luar_db,
             "rejected_total": double_existing + double_in_file + luar_db,
             "process_logs": proc_logs,
-            "recent_doubles": recent_doubles,
+            "recent_rejected": recent_rejected,
         },
+        "epp_summary": epp_summary,
         "partners": partners,
     }
 

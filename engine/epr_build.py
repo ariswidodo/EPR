@@ -6,7 +6,7 @@
 
 Sumber: 3 database (SKU, Data Per Q, Data terverifikasi) di data/epr.db
 """
-import zipfile, re, os, time, datetime, collections
+import zipfile, re, os, time, datetime, collections, json
 from xml.sax.saxutils import escape
 import epr_tool as T
 import epr_db as D
@@ -164,7 +164,7 @@ class Pkg:
         if "fullCalcOnLoad" not in wb:
             wb = re.sub(r"<calcPr([^/>]*)/>", r'<calcPr\1 fullCalcOnLoad="1"/>', wb, count=1)
         self.parts["xl/workbook.xml"] = wb.encode("utf-8")
-        with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as zo:
+        with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED, compresslevel=1) as zo:
             for n, d in self.parts.items(): zo.writestr(n, d)
 
 
@@ -329,7 +329,7 @@ def _rejected_workbook(rows, password="epr26"):
 
 
 # ------------------------------------------------------------------ proses
-def build(input_paths, emit=lambda s: None, out_dir=None):
+def build(input_paths, emit=lambda s: None, out_dir=None, build_excel=True):
     t0 = time.time(); lines = []
     def log(m):
         lines.append(m); emit(m)
@@ -351,24 +351,33 @@ def build(input_paths, emit=lambda s: None, out_dir=None):
 
     EPP = [{"code": r.get("EPP CODE","").strip(),
             "keys": [T.norm(r.get("NAMA TOKO","")), T.norm(r.get("COMPANY NAME",""))]} for r in epp_rows]
+    _epp_cache = {}
     def epp_lookup(name):
         k = T.norm(name)
         if not k: return ""
+        if k in _epp_cache: return _epp_cache[k]
+        res = ""
         for strict in (True, False):
             hits = [e for e in EPP if (k in e["keys"] if strict else
                     k.replace(" ","") in [x.replace(" ","") for x in e["keys"]])]
-            if len({e["code"] for e in hits}) == 1: return hits[0]["code"]
-        for e in EPP:
-            for x in e["keys"]:
-                if x and T.same_entity(k, x): return e["code"]
-        return ""
+            if len({e["code"] for e in hits}) == 1:
+                res = hits[0]["code"]; break
+        if not res:
+            for e in EPP:
+                for x in e["keys"]:
+                    if x and T.same_entity(k, x):
+                        res = e["code"]; break
+                if res: break
+        _epp_cache[k] = res
+        return res
 
     st0 = D.stats()
     log(f"Data per Q tersimpan : {st0['input_total']:,} baris ({st0['baris']:,} terverifikasi)")
 
     NEEDS = {"Invoice Date","Invoice No","Material Code","Quantity","Actual Unit Price",
              "Actual Total Amount","UID","Item No","Reseller Name","Dealer Name",
-             "T2 Partner code","T3 Partner code","Product","Rebate product category","Status","Remarks"}
+             "T2 Partner code","T3 Partner code","Product","Rebate product category","Status","Remarks",
+             "City","Reseller City"}
     src = []
     for path in input_paths:
         sh = T.detect_input_sheet(path)
@@ -400,26 +409,70 @@ def build(input_paths, emit=lambda s: None, out_dir=None):
     SELF_EPR = {k: next(iter(v)) for k, v in self_map.items() if len(v) == 1}
     BYKEY = {m["key"]: m for m in MASTER}; BYTIGHT = {}
     for m in MASTER: BYTIGHT.setdefault(m["key"].replace(" ", ""), m)
+    ALIASES = {}
+    alias_path = os.path.join(T.DATA, "epr_aliases.json")
+    if os.path.exists(alias_path):
+        try:
+            with open(alias_path, encoding="utf-8") as af:
+                raw_al = json.load(af)
+            for ak, av in raw_al.items():
+                ALIASES[T.norm(ak)] = av.strip()
+        except Exception:
+            pass
+    def _norm_city(c):
+        s = re.sub(r"[^A-Z0-9 ]", " ", (c or "").upper()).strip()
+        s = re.sub(r"^(KOTA|KAB|KABUPATEN)\s+", "", s).strip()
+        return re.sub(r"\s+", " ", s)
+
+    def _city_ok(in_city, master_city):
+        ic = _norm_city(in_city)
+        mc = _norm_city(master_city)
+        if not ic or not mc:
+            return True
+        return ic == mc or ic in mc or mc in ic
+
     _cache = {}
     def resolve_epr(r):
-        c = r.get("T3 Partner code", "")
-        if c in CODES: return c
-        k = T.norm(r.get("Reseller Name", ""))
+        c = (r.get("T3 Partner code") or "").strip().upper()
+        in_city = r.get("City") or r.get("Reseller City") or ""
+        if c in CODES:
+            return c if _city_ok(in_city, BY_CODE[c].get("city", "")) else None
+        # Jika sudah punya kode EPR-xxxx yang eksplisit tapi tidak ada di master,
+        # jangan dicocokkan paksa lewat nama (mencegah salah masuk ke EPR lain).
+        if c and c.startswith("EPR-"):
+            return None
+        raw_name = r.get("Reseller Name", "")
+        k = T.norm(raw_name)
         if not k: return None
-        if k in _cache: return _cache[k]
+        ck = (k, _norm_city(in_city))
+        if ck in _cache: return _cache[ck]
+        k_clean = re.sub(r"^UNMANAGED[\s\-]+", "", k).strip()
+
+        def _pick(code_cand):
+            if not code_cand or code_cand not in BY_CODE:
+                return None
+            return code_cand if _city_ok(in_city, BY_CODE[code_cand].get("city", "")) else None
+
         res = None
-        m = BYKEY.get(k)
-        if m: res = m["code"]
-        else:
-            m = BYTIGHT.get(k.replace(" ", ""))
-            if m: res = m["code"]
-            else:
-                for cand in MASTER:
-                    if T.same_entity(k, cand["key"]): res = cand["code"]; break
-                else:
-                    c2 = SELF_EPR.get(k)
-                    if c2 and c2 in CODES: res = c2
-        _cache[k] = res
+        if k in ALIASES:
+            res = _pick(ALIASES[k])
+        if not res and k_clean in ALIASES:
+            res = _pick(ALIASES[k_clean])
+        if not res:
+            # Cek semua master yang namanya cocok + kota cocok
+            for cand in MASTER:
+                if cand["key"] in (k, k_clean) or cand["key"].replace(" ", "") in (k.replace(" ", ""), k_clean.replace(" ", "")):
+                    if _city_ok(in_city, cand.get("city", "")):
+                        res = cand["code"]; break
+        if not res:
+            for cand in MASTER:
+                if T.same_entity(k_clean, cand["key"]) and _city_ok(in_city, cand.get("city", "")):
+                    res = cand["code"]; break
+        if not res:
+            c2 = SELF_EPR.get(k) or SELF_EPR.get(k_clean)
+            if c2 and c2 in CODES:
+                res = _pick(c2)
+        _cache[ck] = res
         return res
 
     def make_key(r, code):
@@ -495,6 +548,19 @@ def build(input_paths, emit=lambda s: None, out_dir=None):
 
     stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M")
     files = []
+
+    if not build_excel:
+        log("Mode cepat   : melewati pembuatan 3 file Excel (hanya update database & dashboard)")
+        D.log_run(", ".join(os.path.basename(p) for p in input_paths), len(src), n_ver, n_dbl,
+                  n_out, nilai_baru, "dashboard-only")
+        st2 = D.stats()
+        log(f"Selesai dalam {time.time()-t0:.1f} detik")
+        return {"ok": True, "files": [], "name": "", "log": lines,
+                "stats": {"input": len(src), "kept": n_ver, "doubles": n_dbl, "outside": n_out,
+                          "nilai": nilai_baru, "retail_net": 0.0, "retail_h2": 0.0,
+                          "epr_db": len(CODES), "registry": st2["baris"], "added": added,
+                          "sku": st2["sku"], "input_total": st2["input_total"],
+                          "quarters": dict(st2["quarter"])}}
 
     # ================= 1. workbook DATA PER Q =================
     q = Pkg(T.TEMPLATE_Q)
@@ -694,7 +760,7 @@ def build(input_paths, emit=lambda s: None, out_dir=None):
     rej = D.rejected_all()
     fr = os.path.join(out_dir, f"Data ditolak - {stamp}.xlsx")
     rparts = _rejected_workbook(rej)
-    with zipfile.ZipFile(fr, "w", zipfile.ZIP_DEFLATED) as zo:
+    with zipfile.ZipFile(fr, "w", zipfile.ZIP_DEFLATED, compresslevel=1) as zo:
         for n, d in rparts.items(): zo.writestr(n, d)
     files.append(("Data ditolak", fr))
     log(f"Workbook     : {os.path.basename(fr)} ({len(rej):,} baris ditolak, "

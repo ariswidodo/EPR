@@ -211,6 +211,7 @@
     renderKpis(list);
     renderCharts(list);
     renderTable(list);
+    renderEppSummary(list);
     renderAudit();
   }
 
@@ -433,7 +434,7 @@
     const body = $("tableBody");
 
     if (!list.length) {
-      body.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:32px;color:var(--text-3)">Tidak ada partner yang cocok dengan filter.</td></tr>`;
+      body.innerHTML = `<tr><td colspan="12" style="text-align:center;padding:32px;color:var(--text-3)">Tidak ada partner yang cocok dengan filter.</td></tr>`;
       return;
     }
 
@@ -442,6 +443,10 @@
         const pct = p.ach != null ? p.ach * 100 : null;
         const barW = pct != null ? Math.min(100, Math.max(0, pct)).toFixed(1) : 0;
         const color = achColor(p.ach);
+        const epps = p.epp_sources || [];
+        const eppLabel = epps.length
+          ? `${esc(epps[0].name)}${epps.length > 1 ? ` <span class="badge badge-neutral">+${epps.length - 1}</span>` : ""}`
+          : '<span style="color:var(--text-3)">-</span>';
         return `<tr data-code="${esc(p.code)}">
           <td class="col-rank mono">${i + 1}</td>
           <td>
@@ -451,6 +456,7 @@
             </div>
           </td>
           <td><span class="tier-pill tier-${esc(p.tier)}">${esc(p.tier || "-")}</span></td>
+          <td style="max-width:210px;overflow:hidden;text-overflow:ellipsis" title="${esc(epps.map((e) => e.name).join(", "))}">${eppLabel}</td>
           <td class="num mono">${fmtCompact(p.target)}</td>
           <td class="num mono"><strong>${fmtCompact(p.actual)}</strong></td>
           <td class="num">
@@ -471,6 +477,138 @@
     body.querySelectorAll("tr[data-code]").forEach((tr) => {
       tr.addEventListener("click", () => openDrawer(tr.dataset.code));
     });
+  }
+
+  function renderEppSummary(list) {
+    const map = new Map();
+    let grand = 0;
+    list.forEach((p) => {
+      (p.epp_sources || []).forEach((ep) => {
+        grand += ep.total || 0;
+        let cur = map.get(ep.code);
+        if (!cur) {
+          cur = {
+            code: ep.code,
+            name: ep.name,
+            city: ep.city || "",
+            total: 0,
+            tx: 0,
+            cats: { Consumer: 0, Scanner: 0, Consumables: 0, Dotmatrix: 0 },
+          };
+          map.set(ep.code, cur);
+        }
+        cur.total += ep.total || 0;
+        cur.tx += ep.tx || 0;
+        CATS.forEach((c) => {
+          cur.cats[c] += ep.cats?.[c] || 0;
+        });
+      });
+    });
+
+    const rows = [...map.values()].sort((a, b) => b.total - a.total);
+    $("eppSummaryCount").textContent = `${rows.length} EPP`;
+    const body = $("eppSummaryBody");
+    if (!rows.length || grand <= 0) {
+      body.innerHTML =
+        '<tr><td colspan="9" style="text-align:center;color:var(--text-3);padding:20px">Belum ada data kontribusi EPP.</td></tr>';
+      return;
+    }
+
+    body.innerHTML = rows
+      .map((ep, i) => {
+        const totPct = (ep.total / grand) * 100;
+        const pctOf = (c) => ((ep.cats[c] || 0) / grand) * 100;
+        const barSegs = CATS.map((c) => {
+          const w = pctOf(c);
+          return w > 0 ? `<span style="width:${w.toFixed(2)}%;background:${CAT_COLORS[c]}" title="${c}: ${w.toFixed(1)}%"></span>` : "";
+        }).join("");
+
+        return `<tr>
+          <td class="col-rank mono">${i + 1}</td>
+          <td>
+            <div class="partner-cell">
+              <span class="partner-name">${esc(ep.name)}</span>
+              <span class="partner-meta mono">${esc(ep.code)} · ${ep.tx} transaksi</span>
+            </div>
+          </td>
+          <td>${esc(ep.city || "-")}</td>
+          <td class="num">
+            <div class="ach-cell">
+              <div class="epp-contrib-bar">${barSegs}</div>
+              <span class="mono" style="font-weight:700;min-width:50px;text-align:right">${totPct.toFixed(1)}%</span>
+            </div>
+          </td>
+          <td class="num mono">${fmtCompact(ep.total)}</td>
+          <td class="num mono">${pctOf("Consumer").toFixed(1)}%</td>
+          <td class="num mono">${pctOf("Consumables").toFixed(1)}%</td>
+          <td class="num mono">${pctOf("Scanner").toFixed(1)}%</td>
+          <td class="num mono">${pctOf("Dotmatrix").toFixed(1)}%</td>
+        </tr>`;
+      })
+      .join("");
+  }
+
+  function getFilteredRejected() {
+    const a = rawData?.audit;
+    if (!a) return [];
+    const list = a.recent_rejected || a.recent_doubles || [];
+    const kind = $("rejectTypeFilter")?.value || "ALL";
+    const q = ($("rejectSearch")?.value || "").trim().toLowerCase();
+    return list.filter((d) => {
+      const jenis = d.jenis || (d.keterangan === "LUAR DATABASE EPR" ? "luar_db" : "double");
+      if (kind !== "ALL" && jenis !== kind) return false;
+      if (q) {
+        const hay = `${d.invoice_no || ""} ${d.epr || ""} ${d.epr_name || ""} ${d.material || ""} ${d.keterangan || ""}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderRejectedRows() {
+    const rows = getFilteredRejected();
+    $("doubleRejectBody").innerHTML = rows.length
+      ? rows
+          .slice(0, 100)
+          .map(
+            (d) => `<tr>
+            <td>
+              <div class="partner-cell">
+                <span class="mono" style="font-weight:600">${esc(d.invoice_no || "-")}</span>
+                <span class="partner-meta mono">${esc(d.invoice_date || "-")} · ${esc(d.sumber_file || "-")} baris ${d.baris_sumber || "-"}</span>
+              </div>
+            </td>
+            <td>
+              <div class="partner-cell">
+                <span>${esc(d.epr_name || d.epr || "-")}</span>
+                <span class="partner-meta mono">${esc(d.material || "-")} (qty ${d.qty || 0})</span>
+              </div>
+            </td>
+            <td class="num mono">${fmtCompact(d.total || 0)}</td>
+            <td><span class="badge ${d.jenis === "luar_db" ? "badge-neutral" : "badge-amber"}" title="${esc(d.keterangan)}">${esc(d.keterangan)}</span></td>
+          </tr>`
+          )
+          .join("")
+      : '<tr><td colspan="4" style="text-align:center;color:var(--text-3);padding:18px">Tidak ada data ditolak yang cocok.</td></tr>';
+  }
+
+  function exportRejectedCsv() {
+    const rows = getFilteredRejected();
+    const header = ["Invoice Date", "Invoice No", "EPR Code", "EPR Name", "Material", "Qty", "Total", "Alasan Reject", "File Sumber", "Baris"];
+    const body = rows.map((d) => [
+      d.invoice_date, d.invoice_no, d.epr, d.epr_name, d.material,
+      d.qty, d.total, d.keterangan, d.sumber_file, d.baris_sumber,
+    ]);
+    const csv = [header, ...body]
+      .map((r) => r.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "EPR_Data_Ditolak.csv";
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   function renderAudit() {
@@ -507,30 +645,7 @@
           .join("")
       : '<tr><td colspan="6" style="text-align:center;color:var(--text-3);padding:18px">Belum ada log proses.</td></tr>';
 
-    const dbls = a.recent_doubles || [];
-    $("doubleRejectBody").innerHTML = dbls.length
-      ? dbls
-          .slice(0, 12)
-          .map(
-            (d) => `<tr>
-            <td>
-              <div class="partner-cell">
-                <span class="mono" style="font-weight:600">${esc(d.invoice_no || "-")}</span>
-                <span class="partner-meta mono">${esc(d.invoice_date || "-")} · baris ${d.baris_sumber || "-"}</span>
-              </div>
-            </td>
-            <td>
-              <div class="partner-cell">
-                <span>${esc(d.epr_name || d.epr || "-")}</span>
-                <span class="partner-meta mono">${esc(d.material || "-")} (qty ${d.qty || 0})</span>
-              </div>
-            </td>
-            <td class="num mono">${fmtCompact(d.total || 0)}</td>
-            <td><span class="badge badge-amber" title="${esc(d.keterangan)}">${esc(d.keterangan)}</span></td>
-          </tr>`
-          )
-          .join("")
-      : '<tr><td colspan="4" style="text-align:center;color:var(--text-3);padding:18px">Belum ada baris double yang ditolak.</td></tr>';
+    renderRejectedRows();
   }
 
   // Partner Detail Drawer
@@ -611,6 +726,28 @@
       `<div class="drawer-row"><span>Low End</span><span class="mono"><strong>${fmtRp(p.low_end || 0)}</strong></span></div>`
     );
     $("dCatList").innerHTML = catRows.join("");
+
+    const epps = p.epp_sources || [];
+    $("dEppList").innerHTML = epps.length
+      ? epps
+          .map((ep) => {
+            const share = p.actual_fy > 0 ? ((ep.total / p.actual_fy) * 100).toFixed(1) : "0.0";
+            const catSummary = CATS.filter((c) => (ep.cats?.[c] || 0) > 0)
+              .map((c) => `${c}: ${fmtCompact(ep.cats[c])}`)
+              .join(" · ");
+            return `<div class="drawer-row" style="flex-direction:column;align-items:stretch;gap:4px">
+              <div style="display:flex;justify-content:space-between;gap:8px">
+                <strong>${esc(ep.name)}</strong>
+                <span class="mono"><strong>${fmtCompact(ep.total)}</strong> (${share}%)</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-3)">
+                <span>${esc(ep.code)} · ${ep.tx} transaksi</span>
+                <span>${esc(catSummary || "-")}</span>
+              </div>
+            </div>`;
+          })
+          .join("")
+      : '<div class="drawer-row" style="color:var(--text-3)">Belum ada transaksi terverifikasi.</div>';
 
     $("drawerBackdrop").hidden = false;
     $("partnerDrawer").classList.add("open");
@@ -784,6 +921,9 @@
     });
 
     $("btnExportCsv").addEventListener("click", exportCsv);
+    $("rejectTypeFilter").addEventListener("change", renderRejectedRows);
+    $("rejectSearch").addEventListener("input", renderRejectedRows);
+    $("btnExportRejected").addEventListener("click", exportRejectedCsv);
     $("excelUpload").addEventListener("change", (e) => {
       if (e.target.files?.[0]) {
         handleExcelUpload(e.target.files[0]);
@@ -964,6 +1104,77 @@
     }
   }
 
+  let selectedSrvFile = null;
+
+  async function uploadToLocalServer() {
+    if (!selectedSrvFile) return;
+    const btn = $("btnSrvUpload");
+    const logBox = $("srvLogBox");
+    const st = $("srvStatus");
+    btn.disabled = true;
+    logBox.hidden = false;
+    logBox.textContent = "Mengunggah file ke server lokal...\n";
+    st.hidden = true;
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers: {
+          "X-Filename": encodeURIComponent(selectedSrvFile.name),
+          "X-Build-Excel": $("chkBuildExcel").checked ? "1" : "0",
+        },
+        body: selectedSrvFile,
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `HTTP ${res.status} (Pastikan dijalankan lewat server.py / start_dashboard.bat)`);
+      }
+
+      while (true) {
+        await new Promise((r) => setTimeout(r, 500));
+        const sRes = await fetch("/api/status", { cache: "no-store" });
+        const snap = await sRes.json();
+        logBox.textContent = (snap.logs || []).join("\n");
+        logBox.scrollTop = logBox.scrollHeight;
+        if (!snap.running && snap.done) {
+          if (snap.error) {
+            st.hidden = false;
+            st.className = "upload-status err";
+            st.textContent = "Gagal: " + snap.error;
+          } else {
+            const stInfo = snap.stats || {};
+            const links = (snap.files || [])
+              .map((f) => `<a href="/api/download/${encodeURIComponent(f.name)}" target="_blank">${esc(f.label)}</a>`)
+              .join(" · ");
+            st.hidden = false;
+            st.className = "upload-status ok";
+            st.innerHTML =
+              `<b>Selesai!</b> Terverifikasi: <b>${stInfo.kept ?? 0}</b> · ` +
+              `Double ditolak: <b>${stInfo.doubles ?? 0}</b> · ` +
+              `Luar DB EPR: <b>${stInfo.outside ?? 0}</b>` +
+              (links ? `<div style="margin-top:6px">Unduh: ${links}</div>` : "");
+            const dRes = await fetch(`./data/epr_data.json?t=${Date.now()}`, { cache: "no-store" });
+            if (dRes.ok) {
+              rawData = await dRes.json();
+              populateFilters(rawData.partners || []);
+              render();
+            }
+          }
+          break;
+        }
+      }
+    } catch (err) {
+      st.hidden = false;
+      st.className = "upload-status err";
+      const msg = String(err?.message || err);
+      st.textContent = msg.includes("Failed to fetch") || location.protocol === "file:"
+        ? "Server lokal belum berjalan atau halaman dibuka dari file://. Jalankan start_dashboard.bat lalu buka http://127.0.0.1:8765/"
+        : msg;
+    } finally {
+      btn.disabled = !selectedSrvFile;
+    }
+  }
+
   function bindUploadModal() {
     $("btnOpenUpload").addEventListener("click", openUploadModal);
     $("btnCloseUpload").addEventListener("click", closeUploadModal);
@@ -973,11 +1184,21 @@
       btn.addEventListener("click", () => {
         document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
-        const isGh = btn.dataset.tab === "github";
-        $("tabGithub").hidden = !isGh;
-        $("tabLocal").hidden = isGh;
+        const tab = btn.dataset.tab;
+        $("tabLocalServer").hidden = tab !== "local-server";
+        $("tabLocal").hidden = tab !== "local";
+        $("tabGithub").hidden = tab !== "github";
       });
     });
+
+    $("srvFileInput").addEventListener("change", (e) => {
+      selectedSrvFile = e.target.files?.[0] || null;
+      $("srvFileName").textContent = selectedSrvFile
+        ? `${selectedSrvFile.name} (${(selectedSrvFile.size / 1024 / 1024).toFixed(2)} MB)`
+        : "Klik untuk pilih file Sell Out (.xlsx / .xlsm)";
+      $("btnSrvUpload").disabled = !selectedSrvFile;
+    });
+    $("btnSrvUpload").addEventListener("click", uploadToLocalServer);
 
     $("btnToggleToken").addEventListener("click", () => {
       const inp = $("ghToken");
@@ -1010,7 +1231,7 @@
       render();
     } catch (err) {
       $("metaSubtitle").textContent =
-        "Gagal memuat data/epr_data.json — jalankan lewat server lokal atau Upload Excel.";
+        "Gagal memuat data — pastikan menjalankan start_dashboard.bat lalu buka http://127.0.0.1:8765/";
       console.error(err);
     }
   }
