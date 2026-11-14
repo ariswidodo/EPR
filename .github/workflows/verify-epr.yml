@@ -1,0 +1,52 @@
+name: Verify EPR Sell Out & Update Dashboard
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "inbox/**"
+      - "data/epr_master.csv"
+      - "data/epp_master.csv"
+      - "data/sku.xlsx"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run EPR verification & export dashboard JSON
+        run: python scripts/process_github.py
+
+      - name: Upload generated Excel workbooks as artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: epr-output-workbooks
+          path: out/*.xlsx
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Commit verified database & dashboard data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/epr.db data/epr_data.json inbox/ processed/
+          if git diff --cached --quiet; then
+            echo "Tidak ada perubahan data untuk di-commit."
+          else
+            git commit -m "chore: verify Sell Out & update dashboard data [skip ci]"
+            git push
+          fi

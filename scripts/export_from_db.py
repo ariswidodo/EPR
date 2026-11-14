@@ -9,7 +9,7 @@ import os
 import sqlite3
 from collections import defaultdict
 
-DEFAULT_TOOL_DIR = r"D:\Project Hitung Achv\EPR_Tool"
+DEFAULT_TOOL_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT_PATH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
     "data",
