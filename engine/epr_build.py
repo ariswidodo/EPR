@@ -420,7 +420,8 @@ def build(input_paths, emit=lambda s: None, out_dir=None, build_excel=True):
                 if len(sheets) == 1:
                     raise RuntimeError(f"Kolom wajib tidak ditemukan di {fname}.")
                 continue
-            log(f"Format       : {T.input_version(path, sh)} (sheet '{sh}')")
+            ver = T.input_version(path, sh)
+            log(f"Format       : {ver} (sheet '{sh}')")
             n0 = len(src)
             for rn in sorted(rows):
                 if rn <= first: continue
@@ -433,7 +434,7 @@ def build(input_paths, emit=lambda s: None, out_dir=None, build_excel=True):
                 if not r.get("Actual Unit Price") and r.get("_NewPrice"):
                     r["Actual Unit Price"] = r["_NewPrice"]
                 if not r.get("Invoice Date") and not r.get("Material Code"): continue
-                r["__rn"] = rn; r["__file"] = fname
+                r["__rn"] = rn; r["__file"] = fname; r["__ver"] = ver
                 src.append(r)
             log(f"Input        : {fname} ({sh}) — {len(src)-n0} baris")
     if not src: raise RuntimeError("File input tidak berisi baris data.")
@@ -549,7 +550,8 @@ def build(input_paths, emit=lambda s: None, out_dir=None, build_excel=True):
                "kat": kategori(r.get("Rebate product category","")),
                "am": BY_CODE[code]["am"] if code else "",
                "status": STATUS_MAP.get(r.get("Status",""), r.get("Status","")),
-               "eim": (SKU.get(mat) or {}).get("cat",""), "remarks": rem, "flag": "Valid"}
+               "eim": (SKU.get(mat) or {}).get("cat",""), "remarks": rem,
+               "flag": "Valid (V3)" if r.get("__ver") == "V3" else "Valid"}
         if not code:
             n_out += 1
             k = "OUT|" + (r.get("UID") or f"{r['__file']}|{r['__rn']}")
@@ -689,8 +691,9 @@ def build(input_paths, emit=lambda s: None, out_dir=None, build_excel=True):
     midhi = collections.defaultdict(float)
     for d in allv:
         g = d["total"] if d.get("total") else (d["price"] * d["qty"])
-        agg[d["epr"]][(d["kat"], d["month_ser"])] += g
-        if d["eim"] == "Mid High": midhi[d["epr"]] += g
+        net = g if d.get("flag") == "Valid (V3)" else (g / 1.11)
+        agg[d["epr"]][(d["kat"], d["month_ser"])] += net
+        if d["eim"] == "Mid High": midhi[d["epr"]] += net
 
     v = Pkg(T.TEMPLATE_VER)
     part = v.part_of("RETAIL")
@@ -748,16 +751,16 @@ def build(input_paths, emit=lambda s: None, out_dir=None, build_excel=True):
             sub = 0.0
             for j, mser in enumerate(M12):
                 mc = f0 + j
-                val = agg[code].get((kname, mser), 0.0) / 1.11
+                val = agg[code].get((kname, mser), 0.0)
                 sub += val
                 cc.append(c_num(f"{_cn(mc)}{rn}", V(12), round(val, 4)))
             tc = f0 + 12
             cc.append(c_f(f"{_cn(tc)}{rn}", V(18), f"SUM({_cn(f0)}{rn}:{_cn(f0+11)}{rn})", round(sub, 4)))
             tot_c[kname] = tc
-        gt = sum(sum(agg[code].get((k, m), 0.0) for m in M12) for k in BLK) / 1.11
-        h1 = sum(sum(agg[code].get((k, m), 0.0) for m in M12[:6]) for k in BLK) / 1.11
-        h2 = sum(sum(agg[code].get((k, m), 0.0) for m in M12[6:]) for k in BLK) / 1.11
-        mid = midhi.get(code, 0.0) / 1.11
+        gt = sum(sum(agg[code].get((k, m), 0.0) for m in M12) for k in BLK)
+        h1 = sum(sum(agg[code].get((k, m), 0.0) for m in M12[:6]) for k in BLK)
+        h2 = sum(sum(agg[code].get((k, m), 0.0) for m in M12[6:]) for k in BLK)
+        mid = midhi.get(code, 0.0)
         cc.append(c_f(f"BN{rn}", V(40), "+".join(_cn(tot_c[k]) + str(rn) for k in BLK), round(gt, 4)))
         cc.append(c_f(f"BO{rn}", V(40), "+".join(
             f"SUM({_cn(BLK[k])}{rn}:{_cn(BLK[k]+5)}{rn})" for k in BLK), round(h1, 4)))
@@ -780,8 +783,8 @@ def build(input_paths, emit=lambda s: None, out_dir=None, build_excel=True):
     x = _fix_cols(x, 73)          # tampilkan semua kolom A..BU (template menyembunyikan 23 kolom)
     v.write_sheet(part, x, f"A1:BU{last3}", mx)
 
-    h1_net = sum(sum(agg[c].get((k, m), 0.0) for k in BLK for m in M12[:6]) for c in agg) / 1.11
-    h2_net = sum(sum(agg[c].get((k, m), 0.0) for k in BLK for m in M12[6:]) for c in agg) / 1.11
+    h1_net = sum(sum(agg[c].get((k, m), 0.0) for k in BLK for m in M12[:6]) for c in agg)
+    h2_net = sum(sum(agg[c].get((k, m), 0.0) for k in BLK for m in M12[6:]) for c in agg)
     v.add_sheet("CATATAN", _catatan([
         ("CATATAN — DATA TERVERIFIKASI", None),
         ("Dibuat", datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")),

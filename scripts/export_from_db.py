@@ -52,7 +52,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
     con = sqlite3.connect(db_path)
     con.row_factory = sqlite3.Row
     rows = con.execute(
-        "SELECT epr, epp, epp_name, kat, month_ser, qty, price, total, eim, quarter, remarks, invoice_date, material, description FROM terverifikasi"
+        "SELECT epr, epp, epp_name, kat, month_ser, qty, price, total, eim, quarter, remarks, invoice_date, material, description, flag FROM terverifikasi"
     ).fetchall()
     last_proc = con.execute(
         "SELECT waktu, file FROM proses ORDER BY id DESC LIMIT 1"
@@ -116,12 +116,13 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         kat = (r["kat"] or "").strip()
         mser = r["month_ser"]
         gross = r["total"] if (r["total"] is not None and r["total"] > 0) else ((r["price"] or 0.0) * (r["qty"] or 0.0))
-        net = gross / 1.11
-        agg[code][(kat, mser)] += gross
+        is_v3 = (r["flag"] or "").strip() == "Valid (V3)"
+        net = gross if is_v3 else (gross / 1.11)
+        agg[code][(kat, mser)] += net
         row_count[code] += 1
         qty_sum[code] += r["qty"] or 0.0
         if (r["eim"] or "").strip() == "Mid High":
-            midhi[code] += gross
+            midhi[code] += net
 
         ep_code = (r["epp"] or "").strip() or (r["epp_name"] or "").strip() or "TIDAK DIKETAHUI"
         ep_name = epp_names.get(ep_code) or (r["epp_name"] or "").strip() or ep_code
@@ -189,7 +190,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         monthly_by_cat = {}
         cat_totals = {}
         for kat in CATS:
-            arr = [round(agg[code].get((kat, mser), 0.0) / 1.11, 2) for mser in M12]
+            arr = [round(agg[code].get((kat, mser), 0.0), 2) for mser in M12]
             monthly_by_cat[kat] = arr
             cat_totals[kat] = round(sum(arr), 2)
 
@@ -200,7 +201,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         total_h1 = round(sum(monthly_total[:6]), 2)
         total_h2 = round(sum(monthly_total[6:]), 2)
         total_fy = round(sum(monthly_total), 2)
-        mid_hi_val = round(midhi.get(code, 0.0) / 1.11, 2)
+        mid_hi_val = round(midhi.get(code, 0.0), 2)
         low_end_val = round(max(0.0, total_fy - mid_hi_val), 2)
 
         epp_sources = [
