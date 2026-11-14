@@ -652,9 +652,12 @@
   }
 
   // Partner Detail Drawer
+  let activeDrawerCode = null;
+
   function openDrawer(code) {
     const p = rawData?.partners.find((x) => x.code === code);
     if (!p) return;
+    activeDrawerCode = code;
 
     const achFy = p.target_fy > 0 ? p.actual_fy / p.target_fy : null;
     const achH1 = p.target_h1 > 0 ? p.actual_h1 / p.target_h1 : null;
@@ -765,6 +768,106 @@
     $("drawerBackdrop").hidden = true;
     $("partnerDrawer").classList.remove("open");
     $("partnerDrawer").setAttribute("aria-hidden", "true");
+  }
+
+  function sharePartnerPdf() {
+    const p = rawData?.partners.find((x) => x.code === activeDrawerCode);
+    if (!p) return;
+
+    const achFy = p.target_fy > 0 ? p.actual_fy / p.target_fy : null;
+    const achH1 = p.target_h1 > 0 ? p.actual_h1 / p.target_h1 : null;
+    const achH2 = p.target_h2 > 0 ? p.actual_h2 / p.target_h2 : null;
+    const chartImg = charts.drawer ? charts.drawer.toBase64Image() : "";
+
+    const catRows = CATS.map((c) => {
+      const val = p.cat_totals?.[c] || 0;
+      const pct = p.actual_fy > 0 ? ((val / p.actual_fy) * 100).toFixed(1) : "0.0";
+      return `<tr><td>${c}</td><td class="num mono">${fmtRp(val)}</td><td class="num mono">${pct}%</td></tr>`;
+    }).join("");
+
+    const eppRows = (p.epp_sources || []).length
+      ? (p.epp_sources || [])
+          .map((ep) => {
+            const share = p.actual_fy > 0 ? ((ep.total / p.actual_fy) * 100).toFixed(1) : "0.0";
+            return `<tr>
+              <td><strong>${esc(ep.name)}</strong><br><small>${esc(ep.code)} · ${esc(ep.city || "-")}</small></td>
+              <td class="num mono">${ep.tx}</td>
+              <td class="num mono">${fmtRp(ep.total)}</td>
+              <td class="num mono">${share}%</td>
+            </tr>`;
+          })
+          .join("")
+      : '<tr><td colspan="4" style="text-align:center;color:#64748b">Belum ada transaksi terverifikasi.</td></tr>';
+
+    const origNote =
+      p.target_original && p.target_original !== p.target_fy
+        ? ` · Target Orig: ${fmtCompact(p.target_original)}`
+        : "";
+
+    $("pdfReport").innerHTML = `
+      <div class="pdf-head">
+        <div>
+          <h1>${esc(p.name)}</h1>
+          <div class="pdf-meta">${esc(p.code)} · ${esc(p.city || "-")} · Tier ${esc(p.tier || "-")} · AM: ${esc(p.am || "-")}${esc(origNote)}</div>
+        </div>
+        <div class="pdf-meta" style="text-align:right">
+          <div><b>Laporan Pencapaian EPR FY26</b></div>
+          <div>Dicetak: ${new Date().toLocaleString("id-ID")}</div>
+        </div>
+      </div>
+
+      <div class="pdf-kpis">
+        <div class="pdf-kpi">
+          <span>FY26 Achievement</span>
+          <strong class="mono">${fmtPct(achFy)}</strong>
+          <small class="mono">${fmtCompact(p.actual_fy)} / ${fmtCompact(p.target_fy)}</small>
+        </div>
+        <div class="pdf-kpi">
+          <span>H1 (52% Target)</span>
+          <strong class="mono">${fmtPct(achH1)}</strong>
+          <small class="mono">${fmtCompact(p.actual_h1)} / ${fmtCompact(p.target_h1)}</small>
+        </div>
+        <div class="pdf-kpi">
+          <span>H2 (48% Target)</span>
+          <strong class="mono">${fmtPct(achH2)}</strong>
+          <small class="mono">${fmtCompact(p.actual_h2)} / ${fmtCompact(p.target_h2)}</small>
+        </div>
+      </div>
+
+      ${chartImg ? `<div class="pdf-sec"><h3>Tren Revenue Bulanan (Apr 26 – Mar 27)</h3><img class="pdf-chart-img" src="${chartImg}" alt="Grafik Bulanan" /></div>` : ""}
+
+      <div class="pdf-sec">
+        <h3>Komposisi Kategori &amp; Split (Exclude PPN 11%)</h3>
+        <table class="pdf-table">
+          <thead><tr><th>Kategori</th><th class="num">Net Revenue</th><th class="num">Kontribusi</th></tr></thead>
+          <tbody>
+            ${catRows}
+            <tr><td><b>Mid High</b></td><td class="num mono">${fmtRp(p.mid_hi || 0)}</td><td class="num mono">${p.actual_fy > 0 ? (((p.mid_hi || 0) / p.actual_fy) * 100).toFixed(1) : "0.0"}%</td></tr>
+            <tr><td><b>Low End</b></td><td class="num mono">${fmtRp(p.low_end || 0)}</td><td class="num mono">${p.actual_fy > 0 ? (((p.low_end || 0) / p.actual_fy) * 100).toFixed(1) : "0.0"}%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pdf-sec">
+        <h3>Sumber Pembelian EPP</h3>
+        <table class="pdf-table">
+          <thead><tr><th>Nama EPP</th><th class="num">Tx</th><th class="num">Net Revenue</th><th class="num">Share</th></tr></thead>
+          <tbody>${eppRows}</tbody>
+        </table>
+      </div>
+
+      <div class="pdf-foot">
+        <span>EPR Achievement Dashboard · Semua nilai exclude PPN 11%</span>
+        <span>${esc(rawData.meta?.last_source_file || "")}</span>
+      </div>
+    `;
+
+    const prevTitle = document.title;
+    document.title = `EPR_${p.code}_${p.name.replace(/[^A-Za-z0-9_-]+/g, "_")}`;
+    window.print();
+    setTimeout(() => {
+      document.title = prevTitle;
+    }, 500);
   }
 
   // Export filtered CSV
@@ -921,6 +1024,7 @@
       });
     });
 
+    $("btnSharePdf").addEventListener("click", sharePartnerPdf);
     $("btnCloseDrawer").addEventListener("click", closeDrawer);
     $("drawerBackdrop").addEventListener("click", closeDrawer);
     document.addEventListener("keydown", (e) => {
