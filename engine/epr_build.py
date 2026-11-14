@@ -423,7 +423,7 @@ def build(input_paths, emit=lambda s: None, out_dir=None, build_excel=True):
             for rn in sorted(rows):
                 if rn <= first: continue
                 d = rows[rn]
-                r = {}
+                r = {n: "" for n in NEEDS}
                 for i, n in norm_hdr.items():
                     val = (d.get(i) or "").strip()
                     if val and not r.get(n):
@@ -529,8 +529,11 @@ def build(input_paths, emit=lambda s: None, out_dir=None, build_excel=True):
         d0 = T.parse_inv_date(r.get("Invoice Date", ""))
         if d0 is None: continue
         mat = r["Material Code"].upper()
-        qty = float(r["Quantity"] or 0); price = float(r["Actual Unit Price"] or 0)
-        tot = float(r["Actual Total Amount"] or 0)
+        def _flt(x):
+            try: return float(x) if x else 0.0
+            except ValueError: return 0.0
+        qty = _flt(r["Quantity"]); price = _flt(r["Actual Unit Price"])
+        tot = _flt(r["Actual Total Amount"]) or qty * price
         rem = f"{r.get('Rebate product category','')} | {r.get('Status','')}"
         if r.get("Remarks"): rem += f" | {r['Remarks']}"
         rem += f" | src {r['__rn']}"
