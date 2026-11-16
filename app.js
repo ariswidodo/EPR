@@ -587,6 +587,7 @@
   let selectedProg = null;
   let progAutoSelected = false;
   let lastProgDetailState = null;
+  let activeProgModalCode = null;
 
   function getProgramRules() {
     const base = rawData?.meta?.program_rules || {};
@@ -1189,8 +1190,177 @@
     });
 
     tbody.querySelectorAll("tr[data-code]").forEach((tr) => {
-      tr.addEventListener("click", () => openDrawer(tr.dataset.code));
+      tr.addEventListener("click", () => openProgEprModal(tr.dataset.code));
     });
+  }
+
+  function closeProgEprModal() {
+    activeProgModalCode = null;
+    const bd = $("progEprDetailBackdrop");
+    const md = $("progEprDetailModal");
+    if (bd) bd.hidden = true;
+    if (md) md.hidden = true;
+  }
+
+  function openProgEprModal(code) {
+    if (!lastProgDetailState) return;
+    const { progName, rule, progRuleFull, rows } = lastProgDetailState;
+    const r = rows.find((x) => x.p.code === code);
+    if (!r) return;
+
+    activeProgModalCode = code;
+    const periodTxt =
+      rule && (rule.start || rule.end)
+        ? `${rule.start || "..."} s/d ${rule.end || "..."}`
+        : "Semua Tanggal";
+    const packLabel = r.partInfo?.pack_name || (r.p.tier ? `Tier ${r.p.tier}` : "-");
+
+    $("pmCode").textContent = r.p.code;
+    $("pmPack").textContent = packLabel;
+    $("pmName").textContent = r.p.name;
+    $("pmMeta").textContent =
+      `${r.p.city || "-"} · Program: ${progName} (${periodTxt})` +
+      (r.partInfo?.fy_cat ? ` · FY26 Cat: ${r.partInfo.fy_cat}` : "");
+
+    let bodyHtml = "";
+    if (r.boosterEval && r.partInfo) {
+      const ev = r.boosterEval;
+      const unitLbl = r.partInfo.scheme === "consumables" ? "pcs" : "unit/pcs";
+      const totalBought = ev.lines.reduce((s, l) => s + l.actual, 0);
+      const totalTarget = ev.totalTargetQty || ev.lines.reduce((s, l) => s + l.target, 0);
+      const statusCardVal = ev.achieved
+        ? `<span style="color:var(--emerald,#059669)">Achieved!</span>`
+        : `<span style="color:var(--rose,#e11d48)">Kurang ${ev.totalGap.toLocaleString("id-ID")} ${unitLbl}</span>`;
+      const sourceNote =
+        Array.isArray(progRuleFull?.local_epp_names) && progRuleFull.local_epp_names.length
+          ? `Sumber: EPP Lokal (${progRuleFull.local_epp_names.join(", ")})`
+          : "";
+
+      const tableRows = ev.lines
+        .map((l) => {
+          const pct = l.target > 0 ? Math.min(100, (l.actual / l.target) * 100) : 100;
+          const pctReal = l.target > 0 ? ((l.actual / l.target) * 100).toFixed(1) : "100.0";
+          const surplus = Math.max(0, l.actual - l.target);
+          const color = l.gap === 0 ? "#10b981" : pct >= 50 ? "#f59e0b" : "#f43f5e";
+          const gapBadge =
+            l.gap === 0
+              ? `<span class="booster-ok">&#10003; Tercapai${surplus > 0 ? ` (+${surplus.toLocaleString("id-ID")})` : ""}</span>`
+              : `<span class="booster-warn">Kurang ${l.gap.toLocaleString("id-ID")}</span>`;
+          return `<tr>
+            <td><strong>${esc(l.label)}</strong></td>
+            <td class="num mono">${l.target.toLocaleString("id-ID")}</td>
+            <td class="num mono"><strong>${l.actual.toLocaleString("id-ID")}</strong></td>
+            <td class="num mono">${gapBadge}</td>
+            <td class="num">
+              <div class="ach-cell" style="justify-content:flex-end">
+                <div class="mini-bar"><span style="width:${pct.toFixed(1)}%;background:${color}"></span></div>
+                <span class="mono" style="min-width:48px;text-align:right;font-weight:600">${pctReal}%</span>
+              </div>
+            </td>
+          </tr>`;
+        })
+        .join("");
+
+      const totPct = totalTarget > 0 ? ((totalBought / totalTarget) * 100).toFixed(1) : "0.0";
+      const totGapHtml = ev.achieved
+        ? `<span class="booster-ok">&#10003; Achieved (Hadiah Rp ${ev.reward.toLocaleString("id-ID")})</span>`
+        : `<span class="booster-warn">Kurang ${ev.totalGap.toLocaleString("id-ID")}</span>`;
+
+      bodyHtml += `
+        <div class="pm-kpis">
+          <div class="pm-kpi">
+            <span>Sudah Beli (Total Paket)</span>
+            <strong class="mono">${totalBought.toLocaleString("id-ID")} ${unitLbl}</strong>
+            <small class="mono">Nilai Net: ${fmtCompact(r.progVal)}</small>
+          </div>
+          <div class="pm-kpi">
+            <span>Target Paket (${esc(r.partInfo.pack_name)})</span>
+            <strong class="mono">${totalTarget.toLocaleString("id-ID")} ${unitLbl}</strong>
+            <small class="mono">Hadiah: Rp ${ev.reward.toLocaleString("id-ID")}</small>
+          </div>
+          <div class="pm-kpi">
+            <span>Kekurangan / Status</span>
+            <strong class="mono">${statusCardVal}</strong>
+            <small>${esc(sourceNote || "Sesuai kategori paket")}</small>
+          </div>
+        </div>
+        <div class="pm-sec-title">Rincian Pembelian vs Target Paket</div>
+        <div class="table-scroll">
+          <table class="pm-table">
+            <thead>
+              <tr>
+                <th>Tipe Produk</th>
+                <th class="num">Target Paket</th>
+                <th class="num">Sudah Beli</th>
+                <th class="num">Kurang Berapa</th>
+                <th class="num">Progress</th>
+              </tr>
+            </thead>
+            <tbody>${tableRows}</tbody>
+            <tfoot>
+              <tr>
+                <td>Total Paket</td>
+                <td class="num mono">${totalTarget.toLocaleString("id-ID")}</td>
+                <td class="num mono">${totalBought.toLocaleString("id-ID")}</td>
+                <td class="num mono">${totGapHtml}</td>
+                <td class="num mono">${totPct}%</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      `;
+    } else {
+      const gap = Math.max(0, (r.p.target || 0) - (r.p.actual || 0));
+      bodyHtml += `
+        <div class="pm-kpis">
+          <div class="pm-kpi">
+            <span>Sudah Beli Program</span>
+            <strong class="mono">${r.progQty.toLocaleString("id-ID")} unit</strong>
+            <small class="mono">Net: ${fmtCompact(r.progVal)}</small>
+          </div>
+          <div class="pm-kpi">
+            <span>Target EPR</span>
+            <strong class="mono">${fmtCompact(r.p.target)}</strong>
+            <small class="mono">Ach: ${fmtPct(r.p.ach)}</small>
+          </div>
+          <div class="pm-kpi">
+            <span>Kekurangan Target</span>
+            <strong class="mono">${gap === 0 ? "Achieved" : fmtCompact(gap)}</strong>
+            <small>${gap === 0 ? "Target tercapai" : "Sisa kekurangan target"}</small>
+          </div>
+        </div>
+      `;
+    }
+
+    const skuRows = r.models.length
+      ? r.models
+          .map(
+            ([m, q]) => `<tr>
+              <td>${esc(m)}</td>
+              <td class="num mono"><strong>${q.toLocaleString("id-ID")}</strong></td>
+            </tr>`
+          )
+          .join("")
+      : `<tr><td colspan="2" style="text-align:center;color:var(--text-3)">Belum ada transaksi pada periode &amp; kriteria program ini.</td></tr>`;
+
+    bodyHtml += `
+      <div class="pm-sec-title">Rincian SKU / Model yang Sudah Dibeli (${r.models.length} SKU)</div>
+      <div class="table-scroll" style="max-height:220px;overflow:auto">
+        <table class="pm-table">
+          <thead>
+            <tr>
+              <th>Model / Deskripsi</th>
+              <th class="num">Qty Dibeli</th>
+            </tr>
+          </thead>
+          <tbody>${skuRows}</tbody>
+        </table>
+      </div>
+    `;
+
+    $("pmBody").innerHTML = bodyHtml;
+    $("progEprDetailBackdrop").hidden = false;
+    $("progEprDetailModal").hidden = false;
   }
 
   function getFilteredRejected() {
@@ -2091,8 +2261,16 @@
     $("btnSharePdf").addEventListener("click", sharePartnerPdf);
     $("btnCloseDrawer").addEventListener("click", closeDrawer);
     $("drawerBackdrop").addEventListener("click", closeDrawer);
+    $("btnCloseProgEprModal")?.addEventListener("click", closeProgEprModal);
+    $("progEprDetailBackdrop")?.addEventListener("click", closeProgEprModal);
+    $("btnPmSharePdf")?.addEventListener("click", () => {
+      if (activeProgModalCode) shareProgramResultPdf(activeProgModalCode);
+    });
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeDrawer();
+      if (e.key === "Escape") {
+        closeDrawer();
+        closeProgEprModal();
+      }
     });
 
     $("btnShareAllPdf").addEventListener("click", openSharePdfModal);
