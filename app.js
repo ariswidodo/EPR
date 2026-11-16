@@ -14,7 +14,7 @@
 
   let rawData = null;
   let state = {
-    period: "fy", // fy | h1 | h2
+    period: "h2", // fy | h1 | h2
     search: "",
     tier: "ALL",
     city: "ALL",

@@ -52,7 +52,7 @@
         <div>
           <div class="title-row">
             <h1>EPR Achievement Dashboard</h1>
-            <span class="badge badge-indigo" id="fyBadge">FY26</span>
+            <span class="badge badge-indigo" id="fyBadge">FY26 · Focus H2</span>
           </div>
           <p class="subtitle" id="metaSubtitle">Memuat data pencapaian...</p>
         </div>
@@ -81,9 +81,9 @@
     <!-- Filter Bar -->
     <section class="filter-bar">
       <div class="segmented" role="group" aria-label="Periode">
-        <button class="seg-btn active" data-period="fy">FY26 (Full Year)</button>
-        <button class="seg-btn" data-period="h1">H1 (Apr–Sep)</button>
-        <button class="seg-btn" data-period="h2">H2 (Okt–Mar)</button>
+        <button class="seg-btn active" data-period="h2">H2 (Okt–Mar)</button>
+        <button class="seg-btn" data-period="fy">FY26 (Full Year)</button>
+        <button class="seg-btn" data-period="h1">H1 (Apr–Sep · Closed)</button>
       </div>
 
       <div class="filter-controls">
@@ -566,16 +566,16 @@
       <div class="field">
         <label>Pilih Periode Achievement</label>
         <div class="share-period-list">
-          <button class="btn share-period-btn" data-share-period="h1">
-            <span><b>H1 (Apr – Sep)</b><br><small style="color:var(--text-3)">52% Target Tahunan · Highlight Kekurangan</small></span>
-            <span>&rarr;</span>
-          </button>
           <button class="btn share-period-btn" data-share-period="h2">
-            <span><b>H2 (Okt – Mar)</b><br><small style="color:var(--text-3)">48% Target Tahunan · Highlight Kekurangan</small></span>
+            <span><b>H2 (Okt – Mar) — Fokus Berjalan</b><br><small style="color:var(--text-3)">Target H2 (Orig 48% · Cat 50%) · Highlight Kekurangan</small></span>
             <span>&rarr;</span>
           </button>
           <button class="btn share-period-btn" data-share-period="fy">
             <span><b>FY26 (Full Year)</b><br><small style="color:var(--text-3)">100% Target Tahunan · Highlight Kekurangan</small></span>
+            <span>&rarr;</span>
+          </button>
+          <button class="btn share-period-btn" data-share-period="h1">
+            <span><b>H1 (Apr – Sep · Closed)</b><br><small style="color:var(--text-3)">Arsip H1 · Target H1 (Orig 52% · Cat 50%)</small></span>
             <span>&rarr;</span>
           </button>
         </div>
@@ -608,6 +608,6 @@
   <!-- Printable PDF Report Container (per EPR) -->
   <section id="pdfReport" class="pdf-report" aria-hidden="true"></section>
 
-  <script src="app.js?v=20261116h"></script>
+  <script src="app.js?v=20261116i"></script>
 </body>
 </html>
