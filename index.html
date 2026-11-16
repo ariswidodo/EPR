@@ -287,10 +287,6 @@
             <span style="font-size:12px;color:var(--text-3)">s/d</span>
             <input type="date" id="progEnd" class="mini-input" style="width:132px" title="Akhir periode program" />
             <button class="btn btn-primary" id="btnSaveProgRule" style="height:32px;padding:0 10px;font-size:12px">Simpan Periode</button>
-            <select id="progSchemeFilter" aria-label="Sumber perhitungan transaksi" hidden>
-              <option value="remarks">Hitung: Sesuai Remarks AD</option>
-              <option value="all_period">Hitung: Semua Pembelian di Periode</option>
-            </select>
             <select id="progEprMode" aria-label="Filter keikutsertaan EPR">
               <option value="all">Semua EPR (Ikut &amp; Belum)</option>
               <option value="joined">Hanya yang Sudah Beli</option>
@@ -308,7 +304,7 @@
                 <th class="col-rank">#</th>
                 <th>Nama EPR</th>
                 <th>Paket &amp; Skema</th>
-                <th>Rincian Tipe / Model &amp; Qty</th>
+                <th>Result Pembelian (Ringkasan)</th>
                 <th class="num">Total Qty</th>
                 <th class="num">Pembelian Program</th>
                 <th class="num">Target Paket (Qty)</th>
@@ -565,6 +561,6 @@
   <!-- Printable PDF Report Container (per EPR) -->
   <section id="pdfReport" class="pdf-report" aria-hidden="true"></section>
 
-  <script src="app.js?v=20261116b"></script>
+  <script src="app.js?v=20261116c"></script>
 </body>
 </html>

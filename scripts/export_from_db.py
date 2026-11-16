@@ -99,8 +99,21 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
 
     cons_participants = set((program_rules.get("Q3 Booster Up (Consumables)", {}).get("participants") or {}).keys())
     unit_participants = set((program_rules.get("Q3 Booster Up (Consumer)", {}).get("participants") or {}).keys())
+    LOCAL_BOOSTER_EPPS = {"EPP-0050", "EPP-0055", "EPP-0056", "EPP-0245"}
 
-    def _extract_program(rem_text, epr_code=""):
+    def _is_local_booster_epp(epp_code, epp_name):
+        if (epp_code or "").strip().upper() in LOCAL_BOOSTER_EPPS:
+            return True
+        en = (epp_name or "").upper()
+        return any(k in en for k in ("COMPUTEK", "RAKA PERKASA", "CV COMPUTA", "TOP DISTRIBUSI"))
+
+    def _extract_program(rem_text, epr_code="", inv_date="", epp_code="", epp_name=""):
+        if "2026-10-01" <= (inv_date or "") <= "2026-12-31" and _is_local_booster_epp(epp_code, epp_name):
+            if epr_code in cons_participants:
+                return "Q3 Booster Up (Consumables)"
+            if epr_code in unit_participants:
+                return "Q3 Booster Up (Consumer)"
+
         parts = [x.strip() for x in (rem_text or "").split("|")]
         ad_raw = ""
         if len(parts) >= 4 and parts[-1].lower().startswith("src "):
@@ -112,10 +125,6 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         if m:
             return f"EIN-{m.group(1)}-{m.group(2).zfill(6)}"
         if re.match(r"^q3\s+booster(\s+up)?$", ad_raw, re.I):
-            if epr_code in cons_participants:
-                return "Q3 Booster Up (Consumables)"
-            if epr_code in unit_participants:
-                return "Q3 Booster Up (Consumer)"
             return "Reguler (Tanpa Program)"
         return ad_raw
 
@@ -158,7 +167,8 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         if kat:
             ga["cats"][kat] += net
 
-        prog_name = _extract_program(r["remarks"], code)
+        inv_date = (r["invoice_date"] or "").strip()
+        prog_name = _extract_program(r["remarks"], code, inv_date, ep_code, ep_name)
         pa = prog_agg[code][prog_name]
         pa["total"] += net
         pa["tx"] += 1
@@ -167,7 +177,6 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             pa["cats"][kat] += net
         global_prog[prog_name] += net
 
-        inv_date = (r["invoice_date"] or "").strip()
         mat = (r["material"] or "").strip()
         desc = (r["description"] or "").strip()
         pk = (code, prog_name, inv_date, mat)

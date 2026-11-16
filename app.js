@@ -754,11 +754,16 @@
         : `<th>Paket</th><th class="num">664/003</th><th class="num">Lainnya</th><th class="num">Total</th><th class="num">Hadiah</th><th class="num">Peserta</th>`;
     const bodyCols = schemeKey === "unit_ink" ? ["low_end", "mid_high", "ink_bottle"] : ["ink_664_003", "cons_other"];
 
+    const localEppTxt = Array.isArray(progRule.local_epp_names) && progRule.local_epp_names.length
+      ? `EPP Lokal: ${progRule.local_epp_names.join(", ")}`
+      : "";
+
     el.innerHTML = `<div class="prog-scheme-card">
       <h4>
         <span>${esc(progRule.label || schemeKey)}</span>
         <span class="badge badge-indigo">${esc(participantSummary)}</span>
       </h4>
+      ${localEppTxt ? `<div style="font-size:11.5px;color:var(--text-3);margin:-4px 0 8px 0">${esc(localEppTxt)}</div>` : ""}
       <table class="prog-scheme-table">
         <thead><tr>${headCols}</tr></thead>
         <tbody>${pkgRows(bodyCols, notes)}</tbody>
@@ -911,22 +916,14 @@
     };
     const progRuleFull = getProgramRules()[progName] || {};
     const isBooster = !!(progRuleFull.scheme && progRuleFull.participants);
-
-    const calcModeEl = $("progSchemeFilter");
-    if (calcModeEl) calcModeEl.hidden = !isBooster;
-    const calcMode = isBooster ? calcModeEl?.value || "remarks" : "remarks";
     renderBoosterSchemeInfo(isBooster ? progRuleFull : null);
 
     const participantMap = progRuleFull.participants || {};
-    const items = (rawData?.program_items || []).filter((it) => {
-      if (isBooster && calcMode === "all_period") {
-        return !!participantMap[it.epr];
-      }
-      return it.prog === progName;
-    });
+    const items = (rawData?.program_items || []).filter((it) => it.prog === progName);
 
     const byEpr = new Map();
     const modelTotals = new Map();
+    const grandBucket = { ink_664_003: 0, cons_other: 0, ink_bottle: 0, low_end: 0, mid_high: 0 };
     let excludedTx = 0;
     let excludedQty = 0;
 
@@ -957,21 +954,44 @@
       eo.bucket.low_end += bk.low_end;
       eo.bucket.mid_high += bk.mid_high;
 
+      grandBucket.ink_664_003 += bk.ink_664_003;
+      grandBucket.cons_other += bk.cons_other;
+      grandBucket.ink_bottle += bk.ink_bottle;
+      grandBucket.low_end += bk.low_end;
+      grandBucket.mid_high += bk.mid_high;
+
       const mKey = it.desc ? `${it.model} (${it.desc})` : it.model || "-";
       eo.models.set(mKey, (eo.models.get(mKey) || 0) + (it.qty || 0));
       modelTotals.set(mKey, (modelTotals.get(mKey) || 0) + (it.qty || 0));
     });
 
-    const topModels = [...modelTotals.entries()].sort((a, b) => b[1] - a[1]);
-    $("progModelSummary").innerHTML = topModels.length
-      ? topModels
-          .slice(0, 14)
-          .map(
-            ([m, q]) =>
-              `<span class="model-chip"><span>${esc(m)}</span><strong class="mono">${q.toLocaleString("id-ID")} unit</strong></span>`
-          )
-          .join("")
-      : '<span style="font-size:12px;color:var(--text-3)">Tidak ada transaksi pada rentang tanggal ini.</span>';
+    if (isBooster) {
+      const summaryChips =
+        progRuleFull.scheme === "unit_ink"
+          ? [
+              ["Ink Bottle", `${grandBucket.ink_bottle.toLocaleString("id-ID")} pcs`],
+              ["Low End", `${grandBucket.low_end.toLocaleString("id-ID")} Unit`],
+              ["Mid High", `${grandBucket.mid_high.toLocaleString("id-ID")} Unit`],
+            ]
+          : [
+              ["664/003", `${grandBucket.ink_664_003.toLocaleString("id-ID")} pcs`],
+              ["Lainnya", `${grandBucket.cons_other.toLocaleString("id-ID")} pcs`],
+            ];
+      $("progModelSummary").innerHTML = summaryChips
+        .map(([lbl, val]) => `<span class="model-chip"><span>${lbl}:</span><strong class="mono">${val}</strong></span>`)
+        .join("");
+    } else {
+      const topModels = [...modelTotals.entries()].sort((a, b) => b[1] - a[1]);
+      $("progModelSummary").innerHTML = topModels.length
+        ? topModels
+            .slice(0, 14)
+            .map(
+              ([m, q]) =>
+                `<span class="model-chip"><span>${esc(m)}</span><strong class="mono">${q.toLocaleString("id-ID")} unit</strong></span>`
+            )
+            .join("")
+        : '<span style="font-size:12px;color:var(--text-3)">Tidak ada transaksi pada rentang tanggal ini.</span>';
+    }
 
     const candidatePartners = isBooster ? list.filter((p) => !!participantMap[p.code]) : list;
 
@@ -979,11 +999,17 @@
       .map((p) => {
         const hit = byEpr.get(p.code);
         const progVal = hit ? hit.net : 0;
-        const progQty = hit ? hit.qty : 0;
-        const models = hit ? [...hit.models.entries()].sort((a, b) => b[1] - a[1]) : [];
         const bucket = hit
           ? hit.bucket
           : { ink_664_003: 0, cons_other: 0, ink_bottle: 0, low_end: 0, mid_high: 0 };
+        const progQty = isBooster
+          ? progRuleFull.scheme === "unit_ink"
+            ? bucket.ink_bottle + bucket.low_end + bucket.mid_high
+            : bucket.ink_664_003 + bucket.cons_other
+          : hit
+          ? hit.qty
+          : 0;
+        const models = hit ? [...hit.models.entries()].sort((a, b) => b[1] - a[1]) : [];
         const shortfall = Math.max(0, (p.target || 0) - (p.actual || 0));
         let boosterEval = null;
         let partInfo = null;
@@ -1009,7 +1035,7 @@
     $("progEprTitle").textContent = `Monitor EPR — ${progName}`;
     $("progEprSub").textContent =
       (isBooster
-        ? `${joinedCount} dari ${candidatePartners.length} EPR peserta terdaftar sudah ada transaksi`
+        ? `${joinedCount} dari ${candidatePartners.length} EPR peserta · Sumber: EPP Lokal (${(progRuleFull.local_epp_names || []).join(", ")})`
         : `${joinedCount} EPR ikut dalam periode`) +
       (excludedTx > 0
         ? ` · ${excludedTx} tx (${excludedQty.toLocaleString("id-ID")} unit) di luar periode tidak dihitung`
@@ -1023,11 +1049,29 @@
 
     tbody.innerHTML = rows
       .map((r, i) => {
-        const modelHtml = r.models.length
-          ? `<div class="model-list-cell">${r.models
-              .map(([m, q]) => `<span class="badge badge-neutral mono">${esc(m)}: ${q.toLocaleString("id-ID")}</span>`)
-              .join("")}</div>`
-          : '<span class="badge badge-neutral">Belum Beli</span>';
+        let modelHtml;
+        if (isBooster) {
+          if (!r.joined) {
+            modelHtml = '<span class="badge badge-neutral">Belum Beli</span>';
+          } else if (progRuleFull.scheme === "unit_ink") {
+            modelHtml = `<div class="model-list-cell">
+              <span class="badge badge-neutral mono">Ink Bottle: ${r.bucket.ink_bottle.toLocaleString("id-ID")} pcs</span>
+              <span class="badge badge-neutral mono">Low End: ${r.bucket.low_end.toLocaleString("id-ID")} Unit</span>
+              <span class="badge badge-neutral mono">Mid High: ${r.bucket.mid_high.toLocaleString("id-ID")} Unit</span>
+            </div>`;
+          } else {
+            modelHtml = `<div class="model-list-cell">
+              <span class="badge badge-neutral mono">664/003: ${r.bucket.ink_664_003.toLocaleString("id-ID")} pcs</span>
+              <span class="badge badge-neutral mono">Lainnya: ${r.bucket.cons_other.toLocaleString("id-ID")} pcs</span>
+            </div>`;
+          }
+        } else {
+          modelHtml = r.models.length
+            ? `<div class="model-list-cell">${r.models
+                .map(([m, q]) => `<span class="badge badge-neutral mono">${esc(m)}: ${q.toLocaleString("id-ID")}</span>`)
+                .join("")}</div>`
+            : '<span class="badge badge-neutral">Belum Beli</span>';
+        }
 
         let pkgCellHtml = `<span class="tier-pill tier-${esc(r.p.tier)}">${esc(r.p.tier || "-")}</span>`;
         let targetCellHtml = `<span class="mono">${fmtCompact(r.p.target)}</span>`;
@@ -1745,9 +1789,6 @@
       render();
     });
     $("progEprMode").addEventListener("change", () => {
-      if (selectedProg) renderProgramEprDetail(getFilteredPartners(), selectedProg);
-    });
-    $("progSchemeFilter")?.addEventListener("change", () => {
       if (selectedProg) renderProgramEprDetail(getFilteredPartners(), selectedProg);
     });
     $("progStart").addEventListener("change", () => {

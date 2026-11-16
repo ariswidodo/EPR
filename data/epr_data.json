@@ -2,7 +2,7 @@
   "meta": {
     "title": "EPR FY26 Achievement Dashboard",
     "fiscal_year": "FY26 (Apr 2026 - Mar 2027)",
-    "generated_at": "2026-11-16 08:45:59",
+    "generated_at": "2026-11-16 08:54:29",
     "last_source_file": "Q2 FY26.xlsx",
     "last_processed_at": "2026-11-14 22:04:13",
     "verified_rows": 8705,
@@ -29,7 +29,6 @@
     "programs": [
       "Reguler (Tanpa Program)",
       "Q3 Booster Up (Consumer)",
-      "COMPUMART SALES PACKAGE",
       "Q3 Booster Up (Consumables)",
       "SN DOUBLE",
       "Low End"
@@ -44,6 +43,18 @@
         "end": "2026-12-31",
         "scheme": "unit_ink",
         "label": "Program Q3 Booster Up (Consumer — Unit + Ink Bottle)",
+        "local_epps": [
+          "EPP-0056",
+          "EPP-0245",
+          "EPP-0050",
+          "EPP-0055"
+        ],
+        "local_epp_names": [
+          "PT Computek",
+          "Raka Perkasa",
+          "Computa",
+          "Top Distribusi"
+        ],
         "packages": {
           "SUN": {
             "categories": [
@@ -179,6 +190,18 @@
         "end": "2026-12-31",
         "scheme": "consumables",
         "label": "Program Q3 Booster Up (Consumables)",
+        "local_epps": [
+          "EPP-0056",
+          "EPP-0245",
+          "EPP-0050",
+          "EPP-0055"
+        ],
+        "local_epp_names": [
+          "PT Computek",
+          "Raka Perkasa",
+          "Computa",
+          "Top Distribusi"
+        ],
         "packages": {
           "SUN": {
             "categories": [
@@ -7264,7 +7287,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-12",
       "model": "C11CJ65504",
       "desc": "L5290 INDO",
@@ -7336,7 +7359,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-01",
       "model": "B11B253502",
       "desc": "ES-60W",
@@ -7684,7 +7707,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T09D499",
       "desc": "L8050 YELLOW DYE 70ML INK BOTTLE",
@@ -7696,7 +7719,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -7744,7 +7767,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C11CL43501",
       "desc": "L6370 STD",
@@ -7768,7 +7791,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T06G299",
       "desc": "008 CYAN PIGMENT, 70ML (EIN)",
@@ -7852,7 +7875,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -7864,7 +7887,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T03Y400",
       "desc": "INK BOTTLE,Y,A/A,70ML",
@@ -7924,7 +7947,7 @@
     },
     {
       "epr": "EPR-1967",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-08",
       "model": "C13T664399",
       "desc": "MAGENTA 70ML INK BOTTLE (EIN)",
@@ -8020,7 +8043,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T03Y300",
       "desc": "INK BOTTLE,M,A/A,70ML",
@@ -8116,7 +8139,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T06G499",
       "desc": "008 YELLOW PIGMENT, 70ML (EIN)",
@@ -8128,7 +8151,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T09D199",
       "desc": "L8050 BLACK DYE 70ML INK BOTTLE",
@@ -8152,7 +8175,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-21",
       "model": "V11H982055",
       "desc": "PROJECTOR EB-X600 EIN",
@@ -8188,7 +8211,7 @@
     },
     {
       "epr": "EPR-1967",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-08",
       "model": "C13T664299",
       "desc": "CYAN 70ML INK BOTTLE (EIN)",
@@ -8200,7 +8223,7 @@
     },
     {
       "epr": "EPR-1967",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-08",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -8224,7 +8247,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T664499",
       "desc": "YELLOW 70ML INK BOTTLE (EIN)",
@@ -8272,7 +8295,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -8284,7 +8307,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -8320,7 +8343,7 @@
     },
     {
       "epr": "EPR-1967",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-08",
       "model": "C13T664499",
       "desc": "YELLOW 70ML INK BOTTLE (EIN)",
@@ -8356,7 +8379,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T664299",
       "desc": "CYAN 70ML INK BOTTLE (EIN)",
@@ -8386,13 +8409,13 @@
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
       "kat": "Consumables",
       "eim": "",
-      "qty": 2820,
-      "net": 212837837.84,
-      "tx": 5
+      "qty": 420,
+      "net": 31216216.22,
+      "tx": 1
     },
     {
       "epr": "EPR-1966",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T03Y200",
       "desc": "INK BOTTLE,C,A/A,70ML",
@@ -8416,7 +8439,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumables)",
       "date": "2026-10-22",
       "model": "C43S015374",
       "desc": "ERC-38(B) RIBBON CASSETTE.",
@@ -8428,7 +8451,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-02",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -8476,7 +8499,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T06G399",
       "desc": "008 MAGENTA PIGMENT, 70ML (EIN)",
@@ -8488,7 +8511,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T06G199",
       "desc": "008 BLACK PIGMENT, 127ML (EIN)",
@@ -8548,7 +8571,7 @@
     },
     {
       "epr": "EPR-1967",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-08",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -8596,7 +8619,7 @@
     },
     {
       "epr": "EPR-1967",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-08",
       "model": "C13T664199",
       "desc": "BLACK 70ML INK BOTTLE (EIN)",
@@ -8656,7 +8679,7 @@
     },
     {
       "epr": "EPR-1967",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-08",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -8740,7 +8763,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-29",
       "model": "C11CL40502",
       "desc": "L6390 STD",
@@ -8764,7 +8787,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T664199",
       "desc": "BLACK 70ML INK BOTTLE (EIN)",
@@ -8836,7 +8859,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T03Y100",
       "desc": "INK BOTTLE,BK,A/A",
@@ -8896,7 +8919,7 @@
     },
     {
       "epr": "EPR-1967",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-08",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -8920,7 +8943,7 @@
     },
     {
       "epr": "EPR-1967",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-08",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -8932,7 +8955,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-28",
       "model": "V11H982055",
       "desc": "PROJECTOR EB-X600 EIN",
@@ -8944,7 +8967,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T09D399",
       "desc": "L8050 MAGENTA DYE 70ML INK BOTTLE",
@@ -8980,7 +9003,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13T664399",
       "desc": "MAGENTA 70ML INK BOTTLE (EIN)",
@@ -9088,7 +9111,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-12",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -9100,7 +9123,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-07",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -9112,7 +9135,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-24",
       "model": "C11CJ65504",
       "desc": "L5290 INDO",
@@ -9124,7 +9147,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-24",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -9136,7 +9159,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-12",
       "model": "C11CJ65504",
       "desc": "L5290 INDO",
@@ -9148,7 +9171,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-24",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -9160,7 +9183,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-12",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -9172,7 +9195,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-07",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -9184,7 +9207,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-07",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -9196,7 +9219,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-12",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -9304,7 +9327,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-14",
       "model": "C11CJ65504",
       "desc": "L5290 INDO",
@@ -9328,7 +9351,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-09",
       "model": "C11CH96502",
       "desc": "L14150 STD",
@@ -9340,7 +9363,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-05",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -9484,7 +9507,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-09",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -9496,7 +9519,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-23",
       "model": "C11CK39502",
       "desc": "L11050 INDO",
@@ -9640,7 +9663,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-15",
       "model": "C43S015354",
       "desc": "ERC-09(B) RIBBON CASSETTE",
@@ -9652,7 +9675,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-14",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -9760,7 +9783,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-05",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -9784,7 +9807,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-05",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -9856,7 +9879,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-23",
       "model": "C11CH96502",
       "desc": "L14150 STD",
@@ -9904,7 +9927,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-23",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -9916,7 +9939,7 @@
     },
     {
       "epr": "EPR-0650",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-06",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -9928,7 +9951,7 @@
     },
     {
       "epr": "EPR-0650",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-06",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -9940,7 +9963,7 @@
     },
     {
       "epr": "EPR-0650",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-06",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -9952,7 +9975,7 @@
     },
     {
       "epr": "EPR-0650",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-06",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -9976,7 +9999,7 @@
     },
     {
       "epr": "EPR-0650",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-06",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -9988,7 +10011,7 @@
     },
     {
       "epr": "EPR-0650",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-08",
       "model": "C11CK37502",
       "desc": "L8050 INDO",
@@ -10000,7 +10023,7 @@
     },
     {
       "epr": "EPR-0650",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-06",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -10024,7 +10047,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-23",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -10036,7 +10059,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-23",
       "model": "C13T03Q100",
       "desc": "INK BOTTLE,BK,A/A",
@@ -10048,7 +10071,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-16",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -10072,7 +10095,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-23",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -10084,7 +10107,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-23",
       "model": "C13T03Y100",
       "desc": "INK BOTTLE,BK,A/A",
@@ -10096,7 +10119,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-06",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -10120,7 +10143,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-23",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -10132,7 +10155,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-23",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -10144,7 +10167,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-08",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -10156,7 +10179,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-23",
       "model": "C13T664199",
       "desc": "BLACK 70ML INK BOTTLE (EIN)",
@@ -10168,7 +10191,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-16",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -10180,7 +10203,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-08",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -10192,7 +10215,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-23",
       "model": "C13T774100",
       "desc": "INK BOTTLE,BK,140ML",
@@ -10204,7 +10227,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-23",
       "model": "C11CJ65504",
       "desc": "L5290 INDO",
@@ -10216,7 +10239,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-23",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -10240,7 +10263,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-19",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -10264,7 +10287,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-14",
       "model": "C13S015592",
       "desc": "RIBBON,S015339(B),ESP,3PCS",
@@ -10288,7 +10311,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-19",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -10312,7 +10335,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-14",
       "model": "C11CJ65504",
       "desc": "L5290 INDO",
@@ -10348,7 +10371,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-19",
       "model": "C11CJ65504",
       "desc": "L5290 INDO",
@@ -10360,7 +10383,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-14",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -10372,7 +10395,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-19",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -10408,7 +10431,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-19",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -10420,7 +10443,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-14",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -10444,7 +10467,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-14",
       "model": "C43S015374",
       "desc": "ERC-38(B) RIBBON CASSETTE.",
@@ -10492,7 +10515,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-14",
       "model": "C13T664499",
       "desc": "YELLOW 70ML INK BOTTLE (EIN)",
@@ -10516,7 +10539,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-13",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -10540,7 +10563,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-13",
       "model": "C13T664299",
       "desc": "CYAN 70ML INK BOTTLE (EIN)",
@@ -10588,7 +10611,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-20",
       "model": "C11CK39502",
       "desc": "L11050 INDO",
@@ -10600,7 +10623,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-14",
       "model": "C13T664399",
       "desc": "MAGENTA 70ML INK BOTTLE (EIN)",
@@ -10636,7 +10659,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-30",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -10660,7 +10683,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-14",
       "model": "C13T664199",
       "desc": "BLACK 70ML INK BOTTLE (EIN)",
@@ -10672,7 +10695,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-14",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -10684,7 +10707,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-30",
       "model": "C11CJ65504",
       "desc": "L5290 INDO",
@@ -10696,7 +10719,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-14",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -10708,7 +10731,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-13",
       "model": "C13T664399",
       "desc": "MAGENTA 70ML INK BOTTLE (EIN)",
@@ -10720,7 +10743,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-13",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -10732,7 +10755,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-30",
       "model": "C11CH96502",
       "desc": "L14150 STD",
@@ -10744,7 +10767,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-22",
       "model": "C13T664199",
       "desc": "BLACK 70ML INK BOTTLE (EIN)",
@@ -10756,7 +10779,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-22",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -10768,7 +10791,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-22",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -10780,7 +10803,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-22",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -10792,7 +10815,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-19",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -10804,7 +10827,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-22",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -10816,7 +10839,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-22",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -10828,7 +10851,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-22",
       "model": "C11CL41504",
       "desc": "L4360 INDO",
@@ -10840,7 +10863,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-22",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -10852,7 +10875,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-08",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -10864,7 +10887,7 @@
     },
     {
       "epr": "EPR-1966",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-16",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -10876,7 +10899,7 @@
     },
     {
       "epr": "EPR-1999",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-17",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -10888,7 +10911,7 @@
     },
     {
       "epr": "EPR-1999",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C13T664199",
       "desc": "BLACK 70ML INK BOTTLE (EIN)",
@@ -10900,7 +10923,7 @@
     },
     {
       "epr": "EPR-1999",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -10912,7 +10935,7 @@
     },
     {
       "epr": "EPR-1999",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -10924,7 +10947,7 @@
     },
     {
       "epr": "EPR-1999",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-10",
       "model": "C11CJ65504",
       "desc": "L5290 INDO",
@@ -10936,7 +10959,7 @@
     },
     {
       "epr": "EPR-1999",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-17",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -10948,7 +10971,7 @@
     },
     {
       "epr": "EPR-1999",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -10960,7 +10983,7 @@
     },
     {
       "epr": "EPR-1999",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -10972,7 +10995,7 @@
     },
     {
       "epr": "EPR-1999",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-17",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -10984,7 +11007,7 @@
     },
     {
       "epr": "EPR-1999",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -10996,7 +11019,7 @@
     },
     {
       "epr": "EPR-1999",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -11008,7 +11031,7 @@
     },
     {
       "epr": "EPR-1999",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -11080,7 +11103,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-24",
       "model": "C11CK37502",
       "desc": "L8050 INDO",
@@ -11104,7 +11127,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-24",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -11128,7 +11151,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-24",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -11140,7 +11163,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-24",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -11188,7 +11211,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-09",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -11200,7 +11223,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-09",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -11368,7 +11391,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-07",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -11380,7 +11403,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-05",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -11596,7 +11619,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-14",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -11632,7 +11655,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-20",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -11728,7 +11751,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-09",
       "model": "C11CH72502",
       "desc": "L15150 STD",
@@ -11752,7 +11775,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-07",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -11788,7 +11811,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-16",
       "model": "C11CH72502",
       "desc": "L15150 STD",
@@ -11860,7 +11883,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-27",
       "model": "C13S015632",
       "desc": "RIBBON,S015632(B), ASIA,B,9",
@@ -11956,7 +11979,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -11968,7 +11991,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -11992,7 +12015,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -12004,7 +12027,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-19",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -12040,7 +12063,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-19",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -12052,7 +12075,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-20",
       "model": "C13S015639",
       "desc": "RIBBON,S015634(B), ASIA,B,24",
@@ -12100,7 +12123,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-19",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -12124,7 +12147,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-19",
       "model": "C13T664199",
       "desc": "BLACK 70ML INK BOTTLE (EIN)",
@@ -12136,7 +12159,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-16",
       "model": "C11CL43501",
       "desc": "L6370 STD",
@@ -12160,7 +12183,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-16",
       "model": "C11CL41504",
       "desc": "L4360 INDO",
@@ -12184,7 +12207,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Reguler (Tanpa Program)",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-28",
       "model": "C13S010068",
       "desc": "RIBBON,PACK,#8758(B),ASIA",
@@ -12232,7 +12255,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-19",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -12376,7 +12399,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -12388,7 +12411,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C11CJ65504",
       "desc": "L5290 INDO",
@@ -12400,7 +12423,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-16",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -12412,7 +12435,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-02",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -12424,7 +12447,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-02",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -12436,7 +12459,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -12460,7 +12483,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -12472,7 +12495,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C11CK39502",
       "desc": "L11050 INDO",
@@ -12496,7 +12519,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-19",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -12556,7 +12579,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-02",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -12568,7 +12591,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-14",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -12580,7 +12603,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-19",
       "model": "C13T664399",
       "desc": "MAGENTA 70ML INK BOTTLE (EIN)",
@@ -12592,7 +12615,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-14",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -12604,7 +12627,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C11CK37502",
       "desc": "L8050 INDO",
@@ -12616,7 +12639,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-06",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -12628,7 +12651,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -12652,7 +12675,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -12664,7 +12687,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-19",
       "model": "C13T664199",
       "desc": "BLACK 70ML INK BOTTLE (EIN)",
@@ -12676,7 +12699,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-19",
       "model": "C13T664299",
       "desc": "CYAN 70ML INK BOTTLE (EIN)",
@@ -12688,7 +12711,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-25",
       "model": "C11CK38502",
       "desc": "L18050 INDO",
@@ -12700,7 +12723,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "COMPUMART SALES PACKAGE",
+      "prog": "Q3 Booster Up (Consumer)",
       "date": "2026-10-19",
       "model": "C13T664499",
       "desc": "YELLOW 70ML INK BOTTLE (EIN)",
@@ -12892,7 +12915,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-01",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -12904,7 +12927,19 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Reguler (Tanpa Program)",
+      "date": "2026-10-01",
+      "model": "C13T00V199",
+      "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
+      "kat": "Consumables",
+      "eim": "",
+      "qty": 2400,
+      "net": 181621621.62,
+      "tx": 4
+    },
+    {
+      "epr": "EPR-1768",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-01",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -12916,7 +12951,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-01",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -46921,37 +46956,25 @@
       "program_sources": [
         {
           "name": "Reguler (Tanpa Program)",
-          "total": 1351772245.95,
-          "tx": 412,
-          "qty": 4137,
+          "total": 1327826300.0,
+          "tx": 409,
+          "qty": 4094,
           "cats": {
-            "Consumer": 1009471621.62,
+            "Consumer": 987850000.0,
             "Scanner": 3900000.0,
-            "Consumables": 314570624.32,
+            "Consumables": 312246300.0,
             "Dotmatrix": 23830000.0
           }
         },
         {
-          "name": "COMPUMART SALES PACKAGE",
-          "total": 118828828.83,
-          "tx": 8,
-          "qty": 232,
-          "cats": {
-            "Consumer": 105126126.13,
-            "Scanner": 0.0,
-            "Consumables": 13702702.7,
-            "Dotmatrix": 0.0
-          }
-        },
-        {
           "name": "Q3 Booster Up (Consumer)",
-          "total": 12186486.49,
-          "tx": 9,
-          "qty": 92,
+          "total": 154961261.26,
+          "tx": 20,
+          "qty": 367,
           "cats": {
-            "Consumer": 0.0,
+            "Consumer": 126747747.75,
             "Scanner": 0.0,
-            "Consumables": 12186486.49,
+            "Consumables": 28213513.51,
             "Dotmatrix": 0.0
           }
         },
@@ -47174,25 +47197,13 @@
         },
         {
           "name": "Q3 Booster Up (Consumer)",
-          "total": 386990990.99,
-          "tx": 15,
-          "qty": 5140,
-          "cats": {
-            "Consumer": 0.0,
-            "Scanner": 0.0,
-            "Consumables": 386990990.99,
-            "Dotmatrix": 0.0
-          }
-        },
-        {
-          "name": "COMPUMART SALES PACKAGE",
-          "total": 122563063.06,
-          "tx": 6,
-          "qty": 232,
+          "total": 509554054.05,
+          "tx": 21,
+          "qty": 5372,
           "cats": {
             "Consumer": 108941441.44,
             "Scanner": 0.0,
-            "Consumables": 13621621.62,
+            "Consumables": 400612612.61,
             "Dotmatrix": 0.0
           }
         }
@@ -47325,26 +47336,14 @@
         },
         {
           "name": "Q3 Booster Up (Consumer)",
-          "total": 702306306.31,
-          "tx": 37,
-          "qty": 2213,
+          "total": 883166666.67,
+          "tx": 44,
+          "qty": 2445,
           "cats": {
-            "Consumer": 319797297.3,
+            "Consumer": 486873873.87,
             "Scanner": 52360360.36,
-            "Consumables": 204270270.27,
+            "Consumables": 218054054.05,
             "Dotmatrix": 125878378.38
-          }
-        },
-        {
-          "name": "COMPUMART SALES PACKAGE",
-          "total": 180860360.36,
-          "tx": 7,
-          "qty": 232,
-          "cats": {
-            "Consumer": 167076576.58,
-            "Scanner": 0.0,
-            "Consumables": 13783783.78,
-            "Dotmatrix": 0.0
           }
         }
       ]
@@ -47514,26 +47513,14 @@
           }
         },
         {
-          "name": "COMPUMART SALES PACKAGE",
-          "total": 122887387.39,
-          "tx": 9,
-          "qty": 232,
-          "cats": {
-            "Consumer": 109265765.77,
-            "Scanner": 0.0,
-            "Consumables": 13621621.62,
-            "Dotmatrix": 0.0
-          }
-        },
-        {
           "name": "Q3 Booster Up (Consumer)",
-          "total": 116504504.5,
-          "tx": 8,
-          "qty": 83,
+          "total": 239391891.89,
+          "tx": 17,
+          "qty": 315,
           "cats": {
-            "Consumer": 111396396.4,
+            "Consumer": 220662162.16,
             "Scanner": 0.0,
-            "Consumables": 5108108.11,
+            "Consumables": 18729729.73,
             "Dotmatrix": 0.0
           }
         }
@@ -47693,37 +47680,25 @@
       "program_sources": [
         {
           "name": "Reguler (Tanpa Program)",
-          "total": 736796884.05,
-          "tx": 272,
-          "qty": 1879,
+          "total": 718742830.0,
+          "tx": 264,
+          "qty": 1639,
           "cats": {
             "Consumer": 563855000.0,
             "Scanner": 5800000.0,
-            "Consumables": 148871884.05,
+            "Consumables": 130817830.0,
             "Dotmatrix": 18270000.0
           }
         },
         {
-          "name": "COMPUMART SALES PACKAGE",
-          "total": 90459459.46,
-          "tx": 13,
-          "qty": 310,
+          "name": "Q3 Booster Up (Consumer)",
+          "total": 116370270.27,
+          "tx": 29,
+          "qty": 596,
           "cats": {
             "Consumer": 69270270.27,
             "Scanner": 0.0,
-            "Consumables": 21189189.19,
-            "Dotmatrix": 0.0
-          }
-        },
-        {
-          "name": "Q3 Booster Up (Consumer)",
-          "total": 7856756.76,
-          "tx": 8,
-          "qty": 46,
-          "cats": {
-            "Consumer": 0.0,
-            "Scanner": 0.0,
-            "Consumables": 7856756.76,
+            "Consumables": 47100000.0,
             "Dotmatrix": 0.0
           }
         }
@@ -47869,6 +47844,18 @@
       ],
       "program_sources": [
         {
+          "name": "Q3 Booster Up (Consumer)",
+          "total": 148518018.02,
+          "tx": 29,
+          "qty": 303,
+          "cats": {
+            "Consumer": 117076576.58,
+            "Scanner": 0.0,
+            "Consumables": 20378378.38,
+            "Dotmatrix": 11063063.06
+          }
+        },
+        {
           "name": "Reguler (Tanpa Program)",
           "total": 138699000.0,
           "tx": 57,
@@ -47877,18 +47864,6 @@
             "Consumer": 79321000.0,
             "Scanner": 0.0,
             "Consumables": 59378000.0,
-            "Dotmatrix": 0.0
-          }
-        },
-        {
-          "name": "COMPUMART SALES PACKAGE",
-          "total": 130779279.28,
-          "tx": 22,
-          "qty": 232,
-          "cats": {
-            "Consumer": 117076576.58,
-            "Scanner": 0.0,
-            "Consumables": 13702702.7,
             "Dotmatrix": 0.0
           }
         },
@@ -47902,18 +47877,6 @@
             "Scanner": 0.0,
             "Consumables": 0.0,
             "Dotmatrix": 0.0
-          }
-        },
-        {
-          "name": "Q3 Booster Up (Consumer)",
-          "total": 17738738.74,
-          "tx": 7,
-          "qty": 71,
-          "cats": {
-            "Consumer": 0.0,
-            "Scanner": 0.0,
-            "Consumables": 6675675.68,
-            "Dotmatrix": 11063063.06
           }
         }
       ]
@@ -48428,38 +48391,26 @@
       "program_sources": [
         {
           "name": "Reguler (Tanpa Program)",
-          "total": 2196878911.54,
-          "tx": 460,
-          "qty": 6754,
+          "total": 2196826659.29,
+          "tx": 459,
+          "qty": 6752,
           "cats": {
             "Consumer": 1265967622.62,
             "Scanner": 76155000.0,
-            "Consumables": 532272702.25,
+            "Consumables": 532220450.0,
             "Dotmatrix": 317975478.56
           }
         },
         {
           "name": "Q3 Booster Up (Consumer)",
-          "total": 169054051.35,
-          "tx": 54,
-          "qty": 1125,
+          "total": 299673871.17,
+          "tx": 65,
+          "qty": 1359,
           "cats": {
-            "Consumer": 56788288.29,
+            "Consumer": 173734234.23,
             "Scanner": 0.0,
-            "Consumables": 93031528.83,
+            "Consumables": 106705402.7,
             "Dotmatrix": 19234234.23
-          }
-        },
-        {
-          "name": "COMPUMART SALES PACKAGE",
-          "total": 130567567.57,
-          "tx": 10,
-          "qty": 232,
-          "cats": {
-            "Consumer": 116945945.95,
-            "Scanner": 0.0,
-            "Consumables": 13621621.62,
-            "Dotmatrix": 0.0
           }
         },
         {
@@ -48809,37 +48760,25 @@
       "program_sources": [
         {
           "name": "Reguler (Tanpa Program)",
-          "total": 266950018.02,
-          "tx": 87,
-          "qty": 1048,
+          "total": 252436504.5,
+          "tx": 86,
+          "qty": 1045,
           "cats": {
-            "Consumer": 132506513.51,
+            "Consumer": 117993000.0,
             "Scanner": 16416108.11,
             "Consumables": 83631000.0,
             "Dotmatrix": 0.0
           }
         },
         {
-          "name": "COMPUMART SALES PACKAGE",
-          "total": 75012612.61,
-          "tx": 15,
-          "qty": 167,
-          "cats": {
-            "Consumer": 63855855.86,
-            "Scanner": 0.0,
-            "Consumables": 11156756.76,
-            "Dotmatrix": 0.0
-          }
-        },
-        {
           "name": "Q3 Booster Up (Consumer)",
-          "total": 7198198.2,
-          "tx": 3,
-          "qty": 31,
+          "total": 96724324.32,
+          "tx": 19,
+          "qty": 201,
           "cats": {
-            "Consumer": 5878378.38,
+            "Consumer": 84247747.75,
             "Scanner": 0.0,
-            "Consumables": 1319819.82,
+            "Consumables": 12476576.58,
             "Dotmatrix": 0.0
           }
         }
@@ -48999,38 +48938,26 @@
       "program_sources": [
         {
           "name": "Reguler (Tanpa Program)",
-          "total": 8000738161.0,
-          "tx": 977,
-          "qty": 19806,
+          "total": 7989550773.61,
+          "tx": 973,
+          "qty": 19602,
           "cats": {
             "Consumer": 6079135450.45,
-            "Scanner": 88138873.87,
-            "Consumables": 1459755674.51,
+            "Scanner": 84265000.0,
+            "Consumables": 1452442161.0,
             "Dotmatrix": 373708162.16
           }
         },
         {
           "name": "Q3 Booster Up (Consumer)",
-          "total": 195108108.11,
-          "tx": 20,
-          "qty": 757,
+          "total": 345034234.23,
+          "tx": 34,
+          "qty": 1433,
           "cats": {
-            "Consumer": 100153153.15,
-            "Scanner": 10576576.58,
-            "Consumables": 60256756.76,
+            "Consumer": 207108108.11,
+            "Scanner": 14450450.45,
+            "Consumables": 99354054.05,
             "Dotmatrix": 24121621.62
-          }
-        },
-        {
-          "name": "COMPUMART SALES PACKAGE",
-          "total": 138738738.74,
-          "tx": 10,
-          "qty": 472,
-          "cats": {
-            "Consumer": 106954954.95,
-            "Scanner": 0.0,
-            "Consumables": 31783783.78,
-            "Dotmatrix": 0.0
           }
         }
       ]
@@ -49521,25 +49448,25 @@
       "program_sources": [
         {
           "name": "Reguler (Tanpa Program)",
-          "total": 8820081362.63,
-          "tx": 366,
-          "qty": 110697,
+          "total": 9270459741.01,
+          "tx": 375,
+          "qty": 116577,
           "cats": {
             "Consumer": 39053000.0,
             "Scanner": 0.0,
-            "Consumables": 3649384332.63,
+            "Consumables": 4099762711.01,
             "Dotmatrix": 0.0
           }
         },
         {
           "name": "Q3 Booster Up (Consumables)",
-          "total": 1306281621.62,
-          "tx": 49,
-          "qty": 17029,
+          "total": 855903243.24,
+          "tx": 40,
+          "qty": 11149,
           "cats": {
             "Consumer": 0.0,
             "Scanner": 0.0,
-            "Consumables": 1306281621.62,
+            "Consumables": 855903243.24,
             "Dotmatrix": 0.0
           }
         }
@@ -49839,9 +49766,9 @@
       "program_sources": [
         {
           "name": "Reguler (Tanpa Program)",
-          "total": 2125784452.52,
-          "tx": 486,
-          "qty": 11585,
+          "total": 2115694364.23,
+          "tx": 485,
+          "qty": 11583,
           "cats": {
             "Consumer": 1151254960.0,
             "Scanner": 29397000.0,
@@ -49850,26 +49777,14 @@
           }
         },
         {
-          "name": "COMPUMART SALES PACKAGE",
-          "total": 110513513.51,
-          "tx": 10,
-          "qty": 232,
-          "cats": {
-            "Consumer": 96891891.89,
-            "Scanner": 0.0,
-            "Consumables": 13621621.62,
-            "Dotmatrix": 0.0
-          }
-        },
-        {
           "name": "Q3 Booster Up (Consumer)",
-          "total": 103463963.96,
-          "tx": 14,
-          "qty": 748,
+          "total": 224067565.77,
+          "tx": 25,
+          "qty": 982,
           "cats": {
-            "Consumer": 48977477.48,
+            "Consumer": 145869369.37,
             "Scanner": 0.0,
-            "Consumables": 54486486.49,
+            "Consumables": 68108108.11,
             "Dotmatrix": 0.0
           }
         }
@@ -50449,25 +50364,25 @@
       "program_sources": [
         {
           "name": "Reguler (Tanpa Program)",
-          "total": 460503033.33,
-          "tx": 147,
-          "qty": 1055,
+          "total": 431571500.0,
+          "tx": 133,
+          "qty": 1028,
           "cats": {
-            "Consumer": 328925864.86,
+            "Consumer": 319061000.0,
             "Scanner": 7296000.0,
-            "Consumables": 109146036.04,
+            "Consumables": 105214500.0,
             "Dotmatrix": 0.0
           }
         },
         {
-          "name": "COMPUMART SALES PACKAGE",
-          "total": 118572072.07,
-          "tx": 12,
-          "qty": 232,
+          "name": "Q3 Booster Up (Consumer)",
+          "total": 147503605.41,
+          "tx": 26,
+          "qty": 259,
           "cats": {
-            "Consumer": 104950450.45,
+            "Consumer": 114815315.32,
             "Scanner": 0.0,
-            "Consumables": 13621621.62,
+            "Consumables": 17553157.66,
             "Dotmatrix": 0.0
           }
         }
@@ -50614,14 +50529,26 @@
       "program_sources": [
         {
           "name": "Reguler (Tanpa Program)",
-          "total": 496136298.85,
-          "tx": 204,
-          "qty": 1951,
+          "total": 459674136.68,
+          "tx": 195,
+          "qty": 1703,
           "cats": {
-            "Consumer": 237895558.56,
+            "Consumer": 219337000.0,
             "Scanner": 20390000.0,
-            "Consumables": 176182596.14,
+            "Consumables": 158278992.54,
             "Dotmatrix": 32789765.77
+          }
+        },
+        {
+          "name": "Q3 Booster Up (Consumer)",
+          "total": 36462162.16,
+          "tx": 9,
+          "qty": 248,
+          "cats": {
+            "Consumer": 18558558.56,
+            "Scanner": 0.0,
+            "Consumables": 17903603.6,
+            "Dotmatrix": 0.0
           }
         }
       ]
@@ -50765,7 +50692,7 @@
           }
         },
         {
-          "name": "COMPUMART SALES PACKAGE",
+          "name": "Q3 Booster Up (Consumer)",
           "total": 128441441.44,
           "tx": 14,
           "qty": 313,
