@@ -85,8 +85,9 @@
       "EPR-0054": { "scheme": "unit_ink", "pkg": "SUN", "pack_name": "SUN Consumer", "fy_cat": "SUN" },
       "EPR-1413": { "scheme": "unit_ink", "pkg": "SUN", "pack_name": "SUN Consumer", "fy_cat": "SUN" },
       "EPR-0881": { "scheme": "unit_ink", "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
-      "EPR-2013": { "scheme": "consumables", "pkg": "SUN", "pack_name": "SUN Consumables", "fy_cat": "CRESCENT" },
-      "EPR-1768": { "scheme": "consumables", "pkg": "SUN", "pack_name": "SUN Consumables", "fy_cat": "SUN" }
+      "EPR-2013": { "scheme": "consumables", "pkg": "MOON", "pack_name": "MOON Consumables", "fy_cat": "CRESCENT" },
+      "EPR-1768": { "scheme": "consumables", "pkg": "SUN", "pack_name": "SUN Consumables", "fy_cat": "SUN" },
+      "EPR-1845": { "scheme": "unit_ink", "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" }
     }
   }
 }

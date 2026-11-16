@@ -2,7 +2,7 @@
   "meta": {
     "title": "EPR FY26 Achievement Dashboard",
     "fiscal_year": "FY26 (Apr 2026 - Mar 2027)",
-    "generated_at": "2026-11-16 09:49:31",
+    "generated_at": "2026-11-16 10:13:57",
     "last_source_file": "Q2 FY26.xlsx",
     "last_processed_at": "2026-11-14 22:04:13",
     "verified_rows": 8705,
@@ -282,8 +282,8 @@
           },
           "EPR-2013": {
             "scheme": "consumables",
-            "pkg": "SUN",
-            "pack_name": "SUN Consumables",
+            "pkg": "MOON",
+            "pack_name": "MOON Consumables",
             "fy_cat": "CRESCENT"
           },
           "EPR-1768": {
@@ -291,6 +291,12 @@
             "pkg": "SUN",
             "pack_name": "SUN Consumables",
             "fy_cat": "SUN"
+          },
+          "EPR-1845": {
+            "scheme": "unit_ink",
+            "pkg": "MOON",
+            "pack_name": "MOON Consumer",
+            "fy_cat": "CRESCENT"
           }
         }
       }
