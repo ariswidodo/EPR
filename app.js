@@ -584,13 +584,20 @@
       .join("");
   }
 
+  let selectedProg = null;
+  let progAutoSelected = false;
+
   function getProgramRules() {
     const base = rawData?.meta?.program_rules || {};
     let local = {};
     try {
       local = JSON.parse(localStorage.getItem("epr_program_rules") || "{}");
     } catch (_) {}
-    return { ...base, ...local };
+    const merged = {};
+    new Set([...Object.keys(base), ...Object.keys(local)]).forEach((k) => {
+      merged[k] = { ...(base[k] || {}), ...(local[k] || {}) };
+    });
+    return merged;
   }
 
   function inProgPeriod(dateStr, rule) {
@@ -601,11 +608,153 @@
     return true;
   }
 
+  function getBoosterOverrides() {
+    try {
+      return JSON.parse(localStorage.getItem("epr_booster_overrides") || "{}");
+    } catch (_) {
+      return {};
+    }
+  }
+
+  function saveBoosterOverride(code, patch) {
+    const ov = getBoosterOverrides();
+    ov[code] = { ...(ov[code] || {}), ...patch };
+    localStorage.setItem("epr_booster_overrides", JSON.stringify(ov));
+  }
+
+  function classifyBoosterItem(it) {
+    const kat = it.kat || "";
+    const eim = it.eim || "";
+    const model = (it.model || "").toUpperCase();
+    const desc = (it.desc || "").toUpperCase();
+    const qty = it.qty || 0;
+    if (kat === "Consumables") {
+      const is664Or003 =
+        model.startsWith("C13T00V") ||
+        model.startsWith("C13T664") ||
+        desc.includes("003") ||
+        desc.includes("664");
+      const isInkBottle = model.startsWith("C13T") || desc.includes("INK");
+      return {
+        ink_664_003: is664Or003 ? qty : 0,
+        cons_other: is664Or003 ? 0 : qty,
+        ink_bottle: isInkBottle ? qty : 0,
+        low_end: 0,
+        mid_high: 0,
+      };
+    }
+    if (kat === "Consumer") {
+      const isMid = eim === "Mid High";
+      const isMaint = desc.includes("MAINTENANCE BOX");
+      return {
+        ink_664_003: 0,
+        cons_other: 0,
+        ink_bottle: 0,
+        mid_high: isMid ? qty : 0,
+        low_end: !isMid && !isMaint ? qty : 0,
+      };
+    }
+    return { ink_664_003: 0, cons_other: 0, ink_bottle: 0, low_end: 0, mid_high: 0 };
+  }
+
+  function defaultBoosterPackage(tier) {
+    const t = (tier || "").toUpperCase();
+    if (t === "SUN") return "SUN";
+    if (t === "STAR" || t === "PLANET" || t === "EARTH") return "STAR";
+    return "MOON";
+  }
+
+  function defaultBoosterScheme(bucket) {
+    if ((bucket.low_end || 0) > 0 || (bucket.mid_high || 0) > 0) return "unit_ink";
+    if ((bucket.ink_664_003 || 0) + (bucket.cons_other || 0) > 0) return "consumables";
+    return "unit_ink";
+  }
+
+  const BOOSTER_FIELDS = {
+    unit_ink: [
+      { key: "low_end", label: "Low End" },
+      { key: "mid_high", label: "Mid High" },
+      { key: "ink_bottle", label: "Ink Bottle" },
+    ],
+    consumables: [
+      { key: "ink_664_003", label: "664/003" },
+      { key: "cons_other", label: "Lainnya" },
+    ],
+  };
+
+  function evaluateBoosterPackage(bucket, schemeKey, pkgKey, schemes) {
+    const scheme = schemes?.[schemeKey];
+    const pkg = scheme?.packages?.[pkgKey];
+    const fields = BOOSTER_FIELDS[schemeKey] || [];
+    if (!pkg) return null;
+    const lines = fields.map((f) => {
+      const target = pkg.targets?.[f.key] || 0;
+      const actual = bucket?.[f.key] || 0;
+      const gap = Math.max(0, target - actual);
+      return { key: f.key, label: f.label, actual, target, gap };
+    });
+    const totalGap = lines.reduce((s, l) => s + l.gap, 0);
+    return {
+      schemeKey,
+      pkgKey,
+      reward: pkg.reward || 0,
+      totalTargetQty: pkg.total_qty || lines.reduce((s, l) => s + l.target, 0),
+      lines,
+      totalGap,
+      achieved: totalGap === 0,
+    };
+  }
+
+  function renderBoosterSchemeInfo(schemes) {
+    const el = $("progSchemeInfo");
+    if (!el) return;
+    if (!schemes) {
+      el.innerHTML = "";
+      return;
+    }
+    const uiPkgs = schemes.unit_ink?.packages || {};
+    const coPkgs = schemes.consumables?.packages || {};
+    const pkgRows = (pkgs, keys, catNotes) =>
+      ["SUN", "STAR", "MOON"]
+        .filter((k) => pkgs[k])
+        .map((k) => {
+          const p = pkgs[k];
+          const nums = keys
+            .map((fk) => `<td class="num mono">${(p.targets?.[fk] || 0).toLocaleString("id-ID")}</td>`)
+            .join("");
+          return `<tr>
+            <td><b>${k}</b> <span style="color:var(--text-3)">(${catNotes[k]})</span></td>
+            ${nums}
+            <td class="num mono"><b>${(p.total_qty || 0).toLocaleString("id-ID")}</b></td>
+            <td class="num mono">Rp ${(p.reward || 0).toLocaleString("id-ID")}</td>
+          </tr>`;
+        })
+        .join("");
+    const notes = { SUN: "Sun", STAR: "Star, Earth, Moon", MOON: "Moon, Crescent" };
+    el.innerHTML = `<div class="prog-scheme-grid">
+      <div class="prog-scheme-card">
+        <h4><span>${esc(schemes.unit_ink?.label || "Program Q3 Booster Up")}</span><span class="badge badge-indigo">Unit + Ink Bottle</span></h4>
+        <table class="prog-scheme-table">
+          <thead><tr><th>Paket</th><th class="num">Low End</th><th class="num">Mid High</th><th class="num">Ink Bottle</th><th class="num">Total</th><th class="num">Hadiah</th></tr></thead>
+          <tbody>${pkgRows(uiPkgs, ["low_end", "mid_high", "ink_bottle"], notes)}</tbody>
+        </table>
+      </div>
+      <div class="prog-scheme-card">
+        <h4><span>${esc(schemes.consumables?.label || "Program Q3 Booster Up (Consumables)")}</span><span class="badge badge-indigo">Consumables</span></h4>
+        <table class="prog-scheme-table">
+          <thead><tr><th>Paket</th><th class="num">664/003</th><th class="num">Lainnya</th><th class="num">Total</th><th class="num">Hadiah</th></tr></thead>
+          <tbody>${pkgRows(coPkgs, ["ink_664_003", "cons_other"], notes)}</tbody>
+        </table>
+      </div>
+    </div>`;
+  }
+
   function renderProgramSummary(list) {
     const rules = getProgramRules();
     const visibleCodes = new Set(list.map((p) => p.code));
     const items = rawData?.program_items || [];
     const map = new Map();
+    const catByProg = new Map();
     let grand = 0;
 
     if (items.length) {
@@ -623,6 +772,14 @@
         cur.tx += it.tx || 0;
         cur.qty += it.qty || 0;
         cur.total += it.net || 0;
+
+        if (!catByProg.has(it.prog)) {
+          catByProg.set(it.prog, { Consumer: 0, Scanner: 0, Consumables: 0, Dotmatrix: 0 });
+        }
+        const cObj = catByProg.get(it.prog);
+        if (it.kat && Object.prototype.hasOwnProperty.call(cObj, it.kat)) {
+          cObj[it.kat] += it.net || 0;
+        }
       });
     } else {
       list.forEach((p) => {
@@ -637,32 +794,35 @@
           cur.tx += pr.tx || 0;
           cur.qty += pr.qty || 0;
           cur.total += pr.total || 0;
+
+          if (!catByProg.has(pr.name)) {
+            catByProg.set(pr.name, { Consumer: 0, Scanner: 0, Consumables: 0, Dotmatrix: 0 });
+          }
+          const cObj = catByProg.get(pr.name);
+          CATS.forEach((c) => {
+            cObj[c] += pr.cats?.[c] || 0;
+          });
         });
       });
     }
 
     const rows = [...map.values()].sort((a, b) => b.total - a.total);
+    if (!progAutoSelected && !selectedProg && rows.some((r) => r.name === "Q3 Booster Up")) {
+      progAutoSelected = true;
+      selectedProg = "Q3 Booster Up";
+      const r = rules[selectedProg] || {};
+      $("progStart").value = r.start || "2026-10-01";
+      $("progEnd").value = r.end || "2026-12-31";
+    }
+
     $("progSummaryCount").textContent = `${rows.length} program`;
     const body = $("progSummaryBody");
     if (!rows.length || grand <= 0) {
       body.innerHTML =
         '<tr><td colspan="12" style="text-align:center;color:var(--text-3);padding:20px">Belum ada data program.</td></tr>';
+      $("progEprPanel").hidden = true;
       return;
     }
-
-    // Ambil rincian kategori dari program_sources (atau tampilkan - jika difilter tanggal)
-    const catByProg = new Map();
-    list.forEach((p) => {
-      (p.program_sources || []).forEach((pr) => {
-        if (!catByProg.has(pr.name)) {
-          catByProg.set(pr.name, { Consumer: 0, Scanner: 0, Consumables: 0, Dotmatrix: 0 });
-        }
-        const cObj = catByProg.get(pr.name);
-        CATS.forEach((c) => {
-          cObj[c] += pr.cats?.[c] || 0;
-        });
-      });
-    });
 
     body.innerHTML = rows
       .map((pr, i) => {
@@ -715,8 +875,6 @@
     }
   }
 
-  let selectedProg = null;
-
   function renderProgramEprDetail(list, progName) {
     const panel = $("progEprPanel");
     panel.hidden = false;
@@ -725,6 +883,14 @@
       start: $("progStart").value || "",
       end: $("progEnd").value || "",
     };
+    const progRuleFull = getProgramRules()[progName] || {};
+    const schemes = progRuleFull.schemes || null;
+    const isBooster = progName === "Q3 Booster Up" && !!schemes;
+
+    const schemeFilterEl = $("progSchemeFilter");
+    if (schemeFilterEl) schemeFilterEl.hidden = !isBooster;
+    const schemeFilter = isBooster ? schemeFilterEl?.value || "auto" : "auto";
+    renderBoosterSchemeInfo(isBooster ? schemes : null);
 
     const items = (rawData?.program_items || []).filter((it) => it.prog === progName);
     const byEpr = new Map();
@@ -739,12 +905,25 @@
         return;
       }
       if (!byEpr.has(it.epr)) {
-        byEpr.set(it.epr, { net: 0, tx: 0, qty: 0, models: new Map() });
+        byEpr.set(it.epr, {
+          net: 0,
+          tx: 0,
+          qty: 0,
+          models: new Map(),
+          bucket: { ink_664_003: 0, cons_other: 0, ink_bottle: 0, low_end: 0, mid_high: 0 },
+        });
       }
       const eo = byEpr.get(it.epr);
       eo.net += it.net || 0;
       eo.tx += it.tx || 0;
       eo.qty += it.qty || 0;
+
+      const bk = classifyBoosterItem(it);
+      eo.bucket.ink_664_003 += bk.ink_664_003;
+      eo.bucket.cons_other += bk.cons_other;
+      eo.bucket.ink_bottle += bk.ink_bottle;
+      eo.bucket.low_end += bk.low_end;
+      eo.bucket.mid_high += bk.mid_high;
 
       const mKey = it.desc ? `${it.model} (${it.desc})` : it.model || "-";
       eo.models.set(mKey, (eo.models.get(mKey) || 0) + (it.qty || 0));
@@ -762,21 +941,36 @@
           .join("")
       : '<span style="font-size:12px;color:var(--text-3)">Tidak ada transaksi pada rentang tanggal ini.</span>';
 
+    const overrides = isBooster ? getBoosterOverrides() : {};
+
     const rows = list
       .map((p) => {
         const hit = byEpr.get(p.code);
         const progVal = hit ? hit.net : 0;
         const progQty = hit ? hit.qty : 0;
         const models = hit ? [...hit.models.entries()].sort((a, b) => b[1] - a[1]) : [];
+        const bucket = hit
+          ? hit.bucket
+          : { ink_664_003: 0, cons_other: 0, ink_bottle: 0, low_end: 0, mid_high: 0 };
         const shortfall = Math.max(0, (p.target || 0) - (p.actual || 0));
-        return { p, progVal, progQty, models, shortfall, joined: !!hit && progQty > 0 };
+        let boosterEval = null;
+        if (isBooster) {
+          const ov = overrides[p.code] || {};
+          const pkgKey = ov.pkg || defaultBoosterPackage(p.tier);
+          const schemeKey =
+            schemeFilter !== "auto"
+              ? schemeFilter
+              : ov.scheme || defaultBoosterScheme(bucket);
+          boosterEval = evaluateBoosterPackage(bucket, schemeKey, pkgKey, schemes);
+        }
+        return { p, progVal, progQty, models, bucket, shortfall, boosterEval, joined: !!hit && progQty > 0 };
       })
       .filter((r) => {
         if (mode === "joined") return r.joined;
         if (mode === "missing") return !r.joined;
         return true;
       })
-      .sort((a, b) => b.progVal - a.progVal || b.shortfall - a.shortfall);
+      .sort((a, b) => b.progQty - a.progQty || b.progVal - a.progVal || b.shortfall - a.shortfall);
 
     const joinedCount = rows.filter((r) => r.joined).length;
     $("progEprTitle").textContent = `Monitor EPR — ${progName}`;
@@ -788,24 +982,60 @@
 
     const tbody = $("progEprBody");
     if (!rows.length) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-3);padding:18px">Tidak ada EPR pada filter ini.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-3);padding:18px">Tidak ada EPR pada filter ini.</td></tr>';
       return;
     }
 
     tbody.innerHTML = rows
       .map((r, i) => {
-        const gapHtml =
+        const modelHtml = r.models.length
+          ? `<div class="model-list-cell">${r.models
+              .map(([m, q]) => `<span class="badge badge-neutral mono">${esc(m)}: ${q.toLocaleString("id-ID")}</span>`)
+              .join("")}</div>`
+          : '<span class="badge badge-neutral">Belum Beli</span>';
+
+        let pkgCellHtml = `<span class="tier-pill tier-${esc(r.p.tier)}">${esc(r.p.tier || "-")}</span>`;
+        let targetCellHtml = `<span class="mono">${fmtCompact(r.p.target)}</span>`;
+        let gapCellHtml =
           r.p.target <= 0
             ? '<span style="color:var(--text-3)">-</span>'
             : r.shortfall === 0
             ? `<span class="badge badge-emerald">Achieved (${fmtPct(r.p.ach)})</span>`
             : `<span class="mono" style="color:var(--rose);font-weight:700">${fmtCompact(r.shortfall)}</span>`;
 
-        const modelHtml = r.models.length
-          ? `<div class="model-list-cell">${r.models
-              .map(([m, q]) => `<span class="badge badge-neutral mono">${esc(m)}: ${q}</span>`)
-              .join("")}</div>`
-          : '<span class="badge badge-neutral">Belum Beli</span>';
+        if (r.boosterEval) {
+          const ev = r.boosterEval;
+          pkgCellHtml = `<div class="prog-select-stack" data-no-drawer>
+            <select class="prog-select-mini" data-booster-pkg="${esc(r.p.code)}" title="Pilih Paket Booster">
+              <option value="SUN"${ev.pkgKey === "SUN" ? " selected" : ""}>Paket SUN</option>
+              <option value="STAR"${ev.pkgKey === "STAR" ? " selected" : ""}>Paket STAR</option>
+              <option value="MOON"${ev.pkgKey === "MOON" ? " selected" : ""}>Paket MOON</option>
+            </select>
+            <select class="prog-select-mini" data-booster-scheme="${esc(r.p.code)}" title="Pilih Skema Program"${schemeFilter !== "auto" ? " disabled" : ""}>
+              <option value="unit_ink"${ev.schemeKey === "unit_ink" ? " selected" : ""}>Unit + Ink Bottle</option>
+              <option value="consumables"${ev.schemeKey === "consumables" ? " selected" : ""}>Consumables</option>
+            </select>
+          </div>`;
+
+          targetCellHtml = `<div class="booster-lines mono">${ev.lines
+            .map(
+              (l) =>
+                `<div class="booster-line"><span>${esc(l.label)}</span><span><b>${l.actual.toLocaleString("id-ID")}</b> / ${l.target.toLocaleString("id-ID")}</span></div>`
+            )
+            .join("")}</div>`;
+
+          if (ev.achieved) {
+            gapCellHtml = `<span class="badge badge-emerald">Achieved · Hadiah Rp ${ev.reward.toLocaleString("id-ID")}</span>`;
+          } else {
+            gapCellHtml = `<div class="booster-lines mono">${ev.lines
+              .map((l) =>
+                l.gap === 0
+                  ? `<div class="booster-line"><span>${esc(l.label)}</span><span class="booster-ok">&#10003; Tercapai</span></div>`
+                  : `<div class="booster-line"><span>${esc(l.label)}</span><span class="booster-warn">Kurang ${l.gap.toLocaleString("id-ID")}</span></div>`
+              )
+              .join("")}</div>`;
+          }
+        }
 
         return `<tr data-code="${esc(r.p.code)}">
           <td class="col-rank mono">${i + 1}</td>
@@ -815,14 +1045,33 @@
               <span class="partner-meta mono">${esc(r.p.code)} · ${esc(r.p.city || "-")} · ${esc(r.p.tier || "-")}</span>
             </div>
           </td>
+          <td>${pkgCellHtml}</td>
           <td>${modelHtml}</td>
           <td class="num mono"><strong>${r.progQty.toLocaleString("id-ID")}</strong></td>
           <td class="num mono">${r.joined ? `<strong>${fmtCompact(r.progVal)}</strong>` : "-"}</td>
-          <td class="num mono">${fmtCompact(r.p.target)}</td>
-          <td class="num">${gapHtml}</td>
+          <td class="num">${targetCellHtml}</td>
+          <td class="num">${gapCellHtml}</td>
         </tr>`;
       })
       .join("");
+
+    tbody.querySelectorAll("[data-booster-pkg]").forEach((sel) => {
+      sel.addEventListener("click", (e) => e.stopPropagation());
+      sel.addEventListener("change", (e) => {
+        e.stopPropagation();
+        saveBoosterOverride(sel.dataset.boosterPkg, { pkg: sel.value });
+        renderProgramEprDetail(list, progName);
+      });
+    });
+
+    tbody.querySelectorAll("[data-booster-scheme]").forEach((sel) => {
+      sel.addEventListener("click", (e) => e.stopPropagation());
+      sel.addEventListener("change", (e) => {
+        e.stopPropagation();
+        saveBoosterOverride(sel.dataset.boosterScheme, { scheme: sel.value });
+        renderProgramEprDetail(list, progName);
+      });
+    });
 
     tbody.querySelectorAll("tr[data-code]").forEach((tr) => {
       tr.addEventListener("click", () => openDrawer(tr.dataset.code));
@@ -1488,6 +1737,9 @@
     $("progEprMode").addEventListener("change", () => {
       if (selectedProg) renderProgramEprDetail(getFilteredPartners(), selectedProg);
     });
+    $("progSchemeFilter")?.addEventListener("change", () => {
+      if (selectedProg) renderProgramEprDetail(getFilteredPartners(), selectedProg);
+    });
     $("progStart").addEventListener("change", () => {
       if (selectedProg) renderProgramEprDetail(getFilteredPartners(), selectedProg);
     });
@@ -1500,11 +1752,12 @@
       const end = $("progEnd").value || "";
       let local = {};
       try { local = JSON.parse(localStorage.getItem("epr_program_rules") || "{}"); } catch (_) {}
-      if (start || end) local[selectedProg] = { start, end };
+      if (start || end) local[selectedProg] = { ...(local[selectedProg] || {}), start, end };
       else delete local[selectedProg];
       localStorage.setItem("epr_program_rules", JSON.stringify(local));
 
       try {
+        const prevSchemes = rawData?.meta?.program_rules?.[selectedProg]?.schemes;
         const res = await fetch("/api/program-rules", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -1512,7 +1765,12 @@
         });
         if (res.ok) {
           const data = await res.json();
-          if (rawData?.meta) rawData.meta.program_rules = data.rules || {};
+          if (rawData?.meta) {
+            rawData.meta.program_rules = data.rules || {};
+            if (prevSchemes && rawData.meta.program_rules[selectedProg]) {
+              rawData.meta.program_rules[selectedProg].schemes = prevSchemes;
+            }
+          }
         }
       } catch (_) {}
       renderProgramSummary(getFilteredPartners());

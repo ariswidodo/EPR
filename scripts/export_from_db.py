@@ -93,12 +93,14 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         ad_raw = ""
         if len(parts) >= 4 and parts[-1].lower().startswith("src "):
             ad_raw = " | ".join(parts[2:-1]).strip()
-        ad_raw = ad_raw.strip().strip('"').strip()
+        ad_raw = ad_raw.strip().strip('"\'“”‘’').strip()
         if not ad_raw:
             return "Reguler (Tanpa Program)"
         m = re.match(r"^EIN-(\d{2})-(\d+)$", ad_raw, re.I)
         if m:
             return f"EIN-{m.group(1)}-{m.group(2).zfill(6)}"
+        if re.match(r"^q3\s+booster(\s+up)?$", ad_raw, re.I):
+            return "Q3 Booster Up"
         return ad_raw
 
     agg = defaultdict(lambda: defaultdict(float))
@@ -109,7 +111,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
     global_epp = defaultdict(lambda: {"total": 0.0, "tx": 0, "name": "", "cats": defaultdict(float)})
     prog_agg = defaultdict(lambda: defaultdict(lambda: {"total": 0.0, "tx": 0, "qty": 0.0, "cats": defaultdict(float)}))
     global_prog = defaultdict(float)
-    prog_items_map = defaultdict(lambda: {"qty": 0.0, "net": 0.0, "tx": 0, "desc": ""})
+    prog_items_map = defaultdict(lambda: {"qty": 0.0, "net": 0.0, "tx": 0, "desc": "", "kat": "", "eim": ""})
 
     for r in rows:
         code = (r["epr"] or "").strip()
@@ -159,6 +161,11 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         pi["tx"] += 1
         if desc and not pi["desc"]:
             pi["desc"] = desc
+        if kat and not pi["kat"]:
+            pi["kat"] = kat
+        eim_val = (r["eim"] or "").strip()
+        if eim_val and not pi["eim"]:
+            pi["eim"] = eim_val
 
     partners = []
     seen_codes = set()
@@ -281,6 +288,8 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             "date": k[2],
             "model": k[3],
             "desc": v["desc"],
+            "kat": v["kat"],
+            "eim": v["eim"],
             "qty": round(v["qty"]),
             "net": round(v["net"], 2),
             "tx": v["tx"],

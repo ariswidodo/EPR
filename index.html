@@ -8,6 +8,21 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css?v=20261114j" />
+  <style>
+    .prog-scheme-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; margin-bottom: 10px; }
+    .prog-scheme-card { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: var(--surface-2, var(--surface)); }
+    .prog-scheme-card h4 { margin: 0 0 8px 0; font-size: 12.5px; font-weight: 700; color: var(--text-1); display: flex; justify-content: space-between; align-items: center; }
+    .prog-scheme-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+    .prog-scheme-table th, .prog-scheme-table td { padding: 4px 6px; border-bottom: 1px solid var(--border); text-align: left; }
+    .prog-scheme-table th.num, .prog-scheme-table td.num { text-align: right; }
+    .prog-scheme-table tr:last-child td { border-bottom: none; }
+    .prog-select-stack { display: flex; flex-direction: column; gap: 4px; min-width: 118px; }
+    .prog-select-mini { height: 24px; font-size: 11px; padding: 0 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text-1); }
+    .booster-lines { display: flex; flex-direction: column; gap: 3px; font-size: 11.5px; min-width: 170px; }
+    .booster-line { display: flex; justify-content: space-between; gap: 8px; white-space: nowrap; }
+    .booster-ok { color: var(--emerald, #059669); font-weight: 600; }
+    .booster-warn { color: var(--rose, #e11d48); font-weight: 600; }
+  </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -272,6 +287,11 @@
             <span style="font-size:12px;color:var(--text-3)">s/d</span>
             <input type="date" id="progEnd" class="mini-input" style="width:132px" title="Akhir periode program" />
             <button class="btn btn-primary" id="btnSaveProgRule" style="height:32px;padding:0 10px;font-size:12px">Simpan Periode</button>
+            <select id="progSchemeFilter" aria-label="Filter skema program" hidden>
+              <option value="auto">Skema: Auto per EPR</option>
+              <option value="unit_ink">Semua Skema: Unit + Ink</option>
+              <option value="consumables">Semua Skema: Consumables</option>
+            </select>
             <select id="progEprMode" aria-label="Filter keikutsertaan EPR">
               <option value="all">Semua EPR (Ikut &amp; Belum)</option>
               <option value="joined">Hanya yang Sudah Beli</option>
@@ -280,18 +300,20 @@
             <button class="btn btn-secondary" id="btnCloseProgPanel" style="height:32px;padding:0 10px;font-size:12px">Tutup</button>
           </div>
         </div>
+        <div id="progSchemeInfo" style="margin-bottom:12px"></div>
         <div id="progModelSummary" class="prog-model-chips"></div>
-        <div class="table-scroll" style="max-height:360px;overflow:auto">
+        <div class="table-scroll" style="max-height:420px;overflow:auto">
           <table>
             <thead>
               <tr>
                 <th class="col-rank">#</th>
                 <th>Nama EPR</th>
-                <th>Tipe / Model &amp; Qty</th>
+                <th>Paket &amp; Skema</th>
+                <th>Rincian Tipe / Model &amp; Qty</th>
                 <th class="num">Total Qty</th>
                 <th class="num">Pembelian Program</th>
-                <th class="num">Target EPR</th>
-                <th class="num">Kekurangan Target</th>
+                <th class="num">Target Paket (Qty)</th>
+                <th class="num">Kekurangan per Tipe / Status</th>
               </tr>
             </thead>
             <tbody id="progEprBody"></tbody>
@@ -544,6 +566,6 @@
   <!-- Printable PDF Report Container (per EPR) -->
   <section id="pdfReport" class="pdf-report" aria-hidden="true"></section>
 
-  <script src="app.js?v=20261114k"></script>
+  <script src="app.js?v=20261116a"></script>
 </body>
 </html>
