@@ -2,20 +2,23 @@
 
 Dashboard web lokal yang bersih dan modern untuk memantau pencapaian **EPR Sell In** (data terverifikasi, *exclude* PPN 11%), lengkap dengan mesin verifikasi Python, monitoring **2 target (Target Original & Target Category)**, **Paket Program Berjalan (`Q3 Booster Up`)**, kontribusi EPP, audit data ditolak, serta **Share to PDF** 1 halaman A4.
 
-## Cara Menjalankan Secara Lokal
+## Cara Menjalankan Secara Mandiri (Tanpa AI)
 
-Klik ganda **`start_dashboard.bat`**, atau jalankan melalui terminal:
+Aplikasi ini berjalan mandiri di Windows (`http://127.0.0.1:8765/`) menggunakan Python standard library:
 
-```powershell
-python server.py
-```
-
-Browser otomatis terbuka ke `http://127.0.0.1:8765/`. Hentikan server dengan `Ctrl+C`.
+- **Shortcut Desktop (`EPR Dashboard`)** atau klik ganda **`start_dashboard.bat`**: menjalankan server di background (`pythonw.exe`, tanpa jendela CMD) lalu langsung membuka dashboard di browser. Jika server sudah berjalan, otomatis hanya membuka browser.
+- **Auto-start saat Login Windows**: jalankan **`install_autostart.bat`** sekali (jika pindah PC/folder) untuk memasang shortcut di folder **Startup Windows** dan **Desktop**.
+- **Menghentikan Server Background**: klik ganda **`stop_dashboard.bat`** (atau `Ctrl+C` jika dijalankan manual lewat `python server.py`).
 
 ## Fitur Utama
 
-### 1. Upload & Verifikasi Sell Out (Template V1, V2 & V3)
-- Klik **Upload Data** → tab **Verifikasi Lokal** → pilih file Sell Out (`.xlsx` / `.xlsm`).
+### 1. Upload & Verifikasi Sell Out + Update Master Mandiri
+- **Tab `Verifikasi Lokal`**: klik **Upload Data** → pilih file Sell Out (`.xlsx` / `.xlsm`).
+- **Tab `Update Master`** (`POST /api/update-master`, [scripts/sync_master.py](scripts/sync_master.py)): update langsung dari browser untuk file master Excel berikut tanpa perlu edit CSV manual:
+  1. **Update Target EPR (`db target.xlsx`)** → memperbarui `data/epr_master.csv`.
+  2. **Update Peserta Paket Booster & AE/AM (`.xlsx`)** → upsert ke `data/peserta_booster.csv` dan `data/program_rules.json` (mendukung `Peserta Paket Booster.xlsx` maupun `Update Nama AM.xlsx`).
+  3. **Update SKU Tinta Paket Booster (`.xlsx`)** → memperbarui `data/booster_consumables_sku.csv` dan `data/program_rules.json`.
+  4. **Refresh Hitungan Dashboard**: menyegarkan `data/epr_data.json` langsung dari database & master terbaru.
 - Mendukung **3 versi template upload** secara otomatis ([engine/epr_tool.py](engine/epr_tool.py) & [engine/epr_build.py](engine/epr_build.py)):
   - **Template V1** (`Sheet1`) & **Template V2** (`Partner Hub`): nilai transaksi masih gross sehingga saat agregasi dibagi `1,11` (*exclude* PPN 11%).
   - **Template V3** (mis. `Report Retail Q1`/`Q2`): memakai **`Product Rebate` (Kolom U)** untuk pemetaan kategori produk (`Consumer`, `Scanner`, `Consumables`, `Dotmatrix`) dan **`Total Price` (Kolom Z)** sebagai nilai pembelian yang dihitung langsung (**tidak dibagi `1,11` lagi**, karena hitungan di Template V3 sudah dipotong PPN 11%).
@@ -60,8 +63,10 @@ Browser otomatis terbuka ke `http://127.0.0.1:8765/`. Hentikan server dengan `Ct
 
 ```text
 EPR_Dashboard/
-├─ server.py                 Server lokal (dashboard + API upload/verifikasi)
-├─ start_dashboard.bat       Launcher double-click Windows
+├─ server.py                 Server lokal (dashboard + API upload/verifikasi/update master)
+├─ start_dashboard.bat       Launcher background (pythonw) + buka browser
+├─ stop_dashboard.bat        Menghentikan proses background server.py
+├─ install_autostart.bat     Pasang shortcut Startup Windows & Desktop
 ├─ index.html / styles.css / app.js
 ├─ engine/
 │  ├─ epr_tool.py            Pembaca Excel (V1/V2/V3) & normalisasi master
@@ -70,6 +75,7 @@ EPR_Dashboard/
 │  └─ seed.py
 ├─ scripts/
 │  ├─ export_from_db.py      Ekspor data/epr.db -> data/epr_data.json
+│  ├─ sync_master.py         Sinkronisasi Excel master (Target/Peserta/SKU)
 │  └─ process_github.py      Entrypoint opsional untuk GitHub Actions
 └─ data/
    ├─ epr.db                 Database SQLite terverifikasi (git-ignored)
