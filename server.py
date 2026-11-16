@@ -6,6 +6,7 @@ import json
 import mimetypes
 import os
 import shutil
+import socket
 import sys
 import threading
 import urllib.parse
@@ -203,14 +204,41 @@ class Handler(BaseHTTPRequestHandler):
         return self._send_json({"ok": True})
 
 
+def _setup_headless_streams():
+    if sys.stdout is not None and sys.stderr is not None:
+        return
+    log_path = os.path.join(ROOT, "data", "server.log")
+    os.makedirs(os.path.dirname(log_path), exist_ok=True)
+    log_f = open(log_path, "a", encoding="utf-8", buffering=1)
+    if sys.stdout is None:
+        sys.stdout = log_f
+    if sys.stderr is None:
+        sys.stderr = log_f
+
+
+def _is_port_open(port):
+    try:
+        with socket.create_connection(("127.0.0.1", port), timeout=0.6):
+            return True
+    except OSError:
+        return False
+
+
 def main():
+    _setup_headless_streams()
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, default=8765)
     ap.add_argument("--no-browser", action="store_true")
     args = ap.parse_args()
 
-    srv = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
     url = f"http://127.0.0.1:{args.port}/"
+    if _is_port_open(args.port):
+        print(f"EPR Dashboard sudah berjalan di {url}")
+        if not args.no_browser:
+            webbrowser.open(url)
+        return
+
+    srv = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
     print(f"EPR Dashboard berjalan di {url}")
     print("Tekan Ctrl+C untuk berhenti.")
     if not args.no_browser:
