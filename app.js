@@ -2604,10 +2604,63 @@
         btn.classList.add("active");
         const tab = btn.dataset.tab;
         $("tabLocalServer").hidden = tab !== "local-server";
+        if ($("tabMaster")) $("tabMaster").hidden = tab !== "master";
         $("tabLocal").hidden = tab !== "local";
         $("tabGithub").hidden = tab !== "github";
       });
     });
+
+    let selectedMasterFile = null;
+    $("masterFileInput")?.addEventListener("change", (e) => {
+      selectedMasterFile = e.target.files?.[0] || null;
+      $("masterFileName").textContent = selectedMasterFile
+        ? `${selectedMasterFile.name} (${(selectedMasterFile.size / 1024).toFixed(1)} KB)`
+        : "Klik untuk pilih file Excel master (.xlsx)";
+      $("btnMasterUpload").disabled = !selectedMasterFile;
+    });
+
+    async function runMasterUpdate(kind, file) {
+      const st = $("masterStatus");
+      const btnUp = $("btnMasterUpload");
+      const btnRef = $("btnRefreshExport");
+      st.hidden = false;
+      st.className = "upload-status";
+      st.textContent = kind === "refresh" ? "Menyegarkan data dashboard..." : "Memproses update master...";
+      if (btnUp) btnUp.disabled = true;
+      if (btnRef) btnRef.disabled = true;
+      try {
+        const headers = { "X-Master-Kind": kind };
+        if (file) headers["X-Filename"] = encodeURIComponent(file.name);
+        const res = await fetch("/api/update-master", {
+          method: "POST",
+          headers,
+          body: file || null,
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || `HTTP ${res.status}`);
+        }
+        st.className = "upload-status ok";
+        st.textContent = data.message || "Berhasil diperbarui.";
+        const dRes = await fetch(`./data/epr_data.json?t=${Date.now()}`, { cache: "no-store" });
+        if (dRes.ok) {
+          rawData = await dRes.json();
+          populateFilters(rawData.partners || []);
+          render();
+        }
+      } catch (err) {
+        st.className = "upload-status err";
+        st.textContent = "Gagal: " + err.message;
+      } finally {
+        if (btnRef) btnRef.disabled = false;
+        if (btnUp) btnUp.disabled = !selectedMasterFile;
+      }
+    }
+
+    $("btnMasterUpload")?.addEventListener("click", () => {
+      if (selectedMasterFile) runMasterUpdate($("masterKind").value, selectedMasterFile);
+    });
+    $("btnRefreshExport")?.addEventListener("click", () => runMasterUpdate("refresh", null));
 
     $("srvFileInput").addEventListener("change", (e) => {
       selectedSrvFile = e.target.files?.[0] || null;

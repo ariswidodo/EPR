@@ -29,6 +29,7 @@ import epr_build as B
 import epr_db as D
 import epr_tool as T
 import export_from_db
+import sync_master
 
 LOCK = threading.Lock()
 JOB = {
@@ -167,6 +168,33 @@ class Handler(BaseHTTPRequestHandler):
                     out_path=os.path.join(ROOT, "data", "epr_data.json"),
                 )
                 return self._send_json({"ok": True, "rules": rules})
+            except Exception as exc:
+                return self._send_json({"ok": False, "error": str(exc)}, 500)
+
+        if parsed.path == "/api/update-master":
+            kind = (self.headers.get("X-Master-Kind") or "").strip().lower()
+            try:
+                if kind == "refresh":
+                    info = sync_master.refresh_export(ROOT)
+                    return self._send_json({"ok": True, **info})
+                length = int(self.headers.get("Content-Length") or 0)
+                if length <= 0:
+                    return self._send_json({"ok": False, "error": "File kosong."}, 400)
+                raw_name = urllib.parse.unquote(self.headers.get("X-Filename", "master.xlsx"))
+                fname = os.path.basename(raw_name) or "master.xlsx"
+                dst = os.path.join(INBOX_DIR, f"master_{kind}_{fname}")
+                data = self.rfile.read(length)
+                with open(dst, "wb") as f:
+                    f.write(data)
+                if kind == "targets":
+                    info = sync_master.sync_targets(dst, ROOT)
+                elif kind == "participants":
+                    info = sync_master.sync_booster_participants(dst, ROOT)
+                elif kind == "skus":
+                    info = sync_master.sync_booster_skus(dst, ROOT)
+                else:
+                    return self._send_json({"ok": False, "error": f"Jenis master tidak dikenal: {kind}"}, 400)
+                return self._send_json({"ok": True, **info})
             except Exception as exc:
                 return self._send_json({"ok": False, "error": str(exc)}, 500)
 
