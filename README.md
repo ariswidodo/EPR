@@ -25,8 +25,9 @@ Browser otomatis terbuka ke `http://127.0.0.1:8765/`. Hentikan server dengan `Ct
   - **Cek Kode EPR & Kota**: kode `EPR-xxxx` yang tidak terdaftar di `data/epr_master.csv` langsung ditolak (tidak dicocokkan paksa lewat nama), dan kolom `City` ikut diverifikasi agar nama yang sama dari kota berbeda tidak salah masuk.
   - **Alias EPR**: pemetaan nama alternatif diatur di `data/epr_aliases.json`.
 
-### 2. Monitoring 2 Target (Target Original & Target Category) vs Total Pembelian
-- Data master EPR di `data/epr_master.csv` menyimpan dua acuan target sekaligus:
+### 2. Monitoring 2 Target (Target Original & Target Category) vs Total Pembelian (Focus H2)
+- Karena **H1 (Apr–Sep) sudah Closed**, dashboard otomatis terbuka pada periode fokus **`H2 (Okt–Mar)`** (arsip `H1 (Apr–Sep · Closed)` dan `FY26 (Full Year)` tetap dapat dipilih kapan saja).
+- Data master EPR di `data/epr_master.csv` (24 EPR area `ARIS`) menyimpan dua acuan target sekaligus:
   - **Target Original**: target tahunan original (`H1 = 52%`, `H2 = 48%`).
   - **Target Category**: target sesuai tier/kategori (`SUN`, `STAR`, `PLANET`, `MOON`, `CRESCENT`) dengan pembagian **`H1 = 50%`** dan **`H2 = 50%`**.
 - **Dashboard & Drawer Detail Partner**:
@@ -37,17 +38,18 @@ Browser otomatis terbuka ke `http://127.0.0.1:8765/`. Hentikan server dengan `Ct
 - Mendukung aturan **Periode Program** di `data/program_rules.json` (dapat juga diedit di UI) — transaksi di luar periode program tidak dihitung.
 - **Aturan Khusus Program `Q3 Booster Up` (Periode 1 Okt – 31 Des 2026)**:
   - **Sumber Pembelian**: hanya dihitung dari **4 EPP Lokal** (`PT Computek`, `Raka Perkasa`, `Computa`, `Top Distribusi`).
-  - **Peserta & Paket Resmi (`data/peserta_booster.csv`)**: terdiri dari **20 EPR** peserta:
-    - **Paket Consumer / Unit + Ink Bottle (18 EPR)**: target & hadiah per paket **`SUN`** (`500` Low End / `40` Mid High / `4.200` Ink Bottle — Rp 20 jt), **`STAR`** (`250` / `25` / `2.000` — Rp 10 jt), **`MOON`** (`120` / `10` / `450` — Rp 3,9 jt).
-    - **Paket Consumables (2 EPR)** — `EPR-1768 CV Karya Hidup Mulya` (`SUN Consumables`) & `EPR-2013 CV Jaya Makmur Stationary` (`MOON Consumables`): target **`SUN`** (`18.200` `664/003` / `300` `Lainnya` — Rp 20 jt), **`STAR`** (`9.000` / `200` — Rp 10 jt), **`MOON`** (`4.000` / `100` — Rp 3,9 jt).
+  - **Peserta, Paket & AE/AM Resmi (`data/peserta_booster.csv`)**: terdiri dari **82 EPR** peserta lintas AE/AM (`ARIS`: 20 EPR, `HERDIAN`: 42 EPR, `SIGIT`: 20 EPR):
+    - **Khusus Paketan Berjalan**: 62 EPR tambahan dari `HERDIAN` & `SIGIT` (`program_partners`) **hanya** dihitung untuk monitoring **Paketan Berjalan (`Q3 Booster Up`)** dan **tidak** dimasukkan ke perhitungan **Per Q, Per H, maupun Per Tahun**.
+    - **Paket Consumer / Unit + Ink Bottle (75 EPR)**: target & hadiah per paket **`SUN`** (`500` Low End / `40` Mid High / `4.200` Ink Bottle — Rp 20 jt), **`STAR`** (`250` / `25` / `2.000` — Rp 10 jt), **`MOON`** (`120` / `10` / `450` — Rp 3,9 jt).
+    - **Paket Consumables (7 EPR)**: target **`SUN`** (`18.200` `664/003` / `300` `Lainnya` — Rp 20 jt), **`STAR`** (`9.000` / `200` — Rp 10 jt), **`MOON`** (`4.000` / `100` — Rp 3,9 jt).
   - **Filter 31 SKU Tinta Resmi (`data/booster_consumables_sku.csv`)**: hanya menghitung `8` SKU **`INK BOTTLE`** (`664/003`) dan `23` SKU **`OTHERS INK BOTTLE`** (`Lainnya`); produk `Consumables` di luar daftar tersebut (seperti Ribbon/cartridge non-botol) tidak dihitung ke Paket Booster.
-  - **Tampilan Ringkas & Pop-up Detail EPR**:
+  - **Tampilan Ringkas, Filter AE/AM & Pop-up Detail EPR**:
     - Kolom **Result Pembelian (Ringkasan)** merangkum total per tipe (`Ink Bottle: ... pcs`, `Low End: ... Unit`, `Mid High: ... Unit` atau `664/003: ... pcs`, `Lainnya: ... pcs`).
     - **Klik Nama EPR** di tabel Result Paketan untuk membuka **pop-up detail** berisi perbandingan **Target Paket**, **Sudah Beli**, **Kurang Berapa**, progres bar per tipe, serta rincian SKU yang dibeli.
-    - Tersedia filter **`Semua Paket (20 EPR)` / `Paket Consumables (2 EPR)` / `Paket Consumer (18 EPR)`** dan filter status keikutsertaan EPR.
+    - Tersedia filter **`Semua AE/AM` (`ARIS` / `HERDIAN` / `SIGIT`)**, **`Semua Paket (82 EPR)` / `Paket Consumables (7 EPR)` / `Paket Consumer (75 EPR)`**, dan filter status keikutsertaan EPR.
 
 ### 4. Share to PDF (1 Halaman A4)
-- **Share PDF Achievement (Semua EPR)** *(tombol di kanan atas)*: pilih periode **H1**, **H2**, atau **FY26** → mencetak daftar **Target Original**, **Target Category**, **Total Pembelian**, **Ach Orig**, **Ach Cat**, dan **Kekurangan (Cat)** **tanpa nama EPP**.
+- **Share PDF Achievement (Semua EPR)** *(tombol di kanan atas)*: pilih periode **H2 (Fokus Berjalan)**, **FY26**, atau **H1 (Closed)** → mencetak daftar **Target Original**, **Target Category**, **Total Pembelian**, **Ach Orig**, **Ach Cat**, dan **Kekurangan (Cat)** **tanpa nama EPP**.
 - **Share PDF Achievement (Per EPR)** *(di dalam Drawer Detail Partner)*: mencetak laporan lengkap 1 EPR (`FY26`, `H1`, `H2` untuk Target Original & Category), grafik bulanan, komposisi kategori, dan sumber pembelian EPP-nya.
 - **Share PDF Result Paket** *(di toolbar Monitor EPR Program Berjalan, tombol **`PDF`** di tiap baris EPR, dan di dalam pop-up detail EPR)*: mencetak ringkasan pembelian paket semua peserta sesuai filter aktif atau laporan khusus 1 EPR.
 
@@ -76,7 +78,7 @@ EPR_Dashboard/
    ├─ epp_master.csv         Master EPP & Kota
    ├─ epr_aliases.json       Mapping alias nama EPR
    ├─ program_rules.json     Aturan periode tanggal & skema paket program
-   ├─ peserta_booster.csv    Daftar resmi 20 EPR peserta Paket Booster
+   ├─ peserta_booster.csv    Daftar resmi 82 EPR peserta Paket Booster & AE/AM (ARIS, HERDIAN, SIGIT)
    ├─ booster_consumables_sku.csv  Daftar resmi 31 SKU tinta Paket Booster
    └─ sku.xlsx / template_*.xlsx
 ```
