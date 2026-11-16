@@ -586,6 +586,7 @@
 
   let selectedProg = null;
   let progAutoSelected = false;
+  let lastProgDetailState = null;
 
   function getProgramRules() {
     const base = rawData?.meta?.program_rules || {};
@@ -990,9 +991,10 @@
         })
       : list;
 
+    const unitTot = { ink_bottle: 0, low_end: 0, mid_high: 0 };
+    const consTot = { ink_664_003: 0, cons_other: 0 };
+
     if (isBooster) {
-      const unitTot = { ink_bottle: 0, low_end: 0, mid_high: 0 };
-      const consTot = { ink_664_003: 0, cons_other: 0 };
       candidatePartners.forEach((p) => {
         const hit = byEpr.get(p.code);
         const pi = participantMap[p.code];
@@ -1078,6 +1080,16 @@
         : "");
 
     const tbody = $("progEprBody");
+    lastProgDetailState = {
+      progName,
+      rule,
+      progRuleFull,
+      isBooster,
+      packFilter,
+      rows,
+      unitTot,
+      consTot,
+    };
     if (!rows.length) {
       tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-3);padding:18px">Tidak ada EPR pada filter ini.</td></tr>';
       return;
@@ -1109,7 +1121,12 @@
             : '<span class="badge badge-neutral">Belum Beli</span>';
         }
 
-        let pkgCellHtml = `<span class="tier-pill tier-${esc(r.p.tier)}">${esc(r.p.tier || "-")}</span>`;
+        const pdfBtnHtml = `<button type="button" class="btn btn-secondary" data-share-prog-epr="${esc(r.p.code)}" style="height:22px;padding:0 7px;font-size:10.5px;margin-top:4px;width:fit-content" title="Share PDF Result Paket EPR ini">PDF</button>`;
+
+        let pkgCellHtml = `<div style="display:flex;flex-direction:column;gap:3px">
+          <span class="tier-pill tier-${esc(r.p.tier)}" style="width:fit-content">${esc(r.p.tier || "-")}</span>
+          ${pdfBtnHtml}
+        </div>`;
         let targetCellHtml = `<span class="mono">${fmtCompact(r.p.target)}</span>`;
         let gapCellHtml =
           r.p.target <= 0
@@ -1121,8 +1138,9 @@
         if (r.boosterEval && r.partInfo) {
           const ev = r.boosterEval;
           pkgCellHtml = `<div style="display:flex;flex-direction:column;gap:3px">
-            <span class="badge badge-indigo">${esc(r.partInfo.pack_name)}</span>
+            <span class="badge badge-indigo" style="width:fit-content">${esc(r.partInfo.pack_name)}</span>
             <span class="partner-meta mono">FY26 Cat: ${esc(r.partInfo.fy_cat)}</span>
+            ${pdfBtnHtml}
           </div>`;
 
           targetCellHtml = `<div class="booster-lines mono">${ev.lines
@@ -1162,6 +1180,13 @@
         </tr>`;
       })
       .join("");
+
+    tbody.querySelectorAll("[data-share-prog-epr]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        shareProgramResultPdf(btn.dataset.shareProgEpr);
+      });
+    });
 
     tbody.querySelectorAll("tr[data-code]").forEach((tr) => {
       tr.addEventListener("click", () => openDrawer(tr.dataset.code));
@@ -1683,6 +1708,178 @@
     }, 500);
   }
 
+  function shareProgramResultPdf(singleEprCode = null) {
+    if (!lastProgDetailState) {
+      alert("Pilih program terlebih dahulu untuk mencetak Result Paket.");
+      return;
+    }
+    const { progName, rule, progRuleFull, isBooster, packFilter, rows, unitTot, consTot } = lastProgDetailState;
+    const printRows = singleEprCode ? rows.filter((r) => r.p.code === singleEprCode) : rows;
+    if (!printRows.length) {
+      alert("Tidak ada data EPR untuk dicetak.");
+      return;
+    }
+
+    const periodTxt = rule && (rule.start || rule.end)
+      ? `${rule.start || "..."} s/d ${rule.end || "..."}`
+      : "Semua Tanggal";
+    const sourceTxt = isBooster && Array.isArray(progRuleFull.local_epp_names) && progRuleFull.local_epp_names.length
+      ? `EPP Lokal: ${progRuleFull.local_epp_names.join(", ")}`
+      : "Semua Sumber EPP";
+    const singleRow = singleEprCode ? printRows[0] : null;
+    const headTitle = singleRow
+      ? `Result Paket ${progName} — ${singleRow.p.name}`
+      : `Result Paket — ${progName}`;
+
+    let kpiHtml = "";
+    if (singleRow && singleRow.boosterEval && singleRow.partInfo) {
+      const ev = singleRow.boosterEval;
+      kpiHtml = `<div class="pdf-kpis">
+        <div class="pdf-kpi">
+          <span>Paket Diambil</span>
+          <strong>${esc(singleRow.partInfo.pack_name)}</strong>
+          <small class="mono">${esc(singleRow.p.code)} · FY26 Cat: ${esc(singleRow.partInfo.fy_cat)}</small>
+        </div>
+        <div class="pdf-kpi">
+          <span>Total Qty Paket</span>
+          <strong class="mono">${singleRow.progQty.toLocaleString("id-ID")}</strong>
+          <small class="mono">Periode ${esc(periodTxt)}</small>
+        </div>
+        <div class="pdf-kpi">
+          <span>Status &amp; Hadiah</span>
+          <strong>${ev.achieved ? "Achieved" : `Kurang ${ev.totalGap.toLocaleString("id-ID")}`}</strong>
+          <small class="mono">Hadiah Rp ${ev.reward.toLocaleString("id-ID")}</small>
+        </div>
+      </div>`;
+    } else if (isBooster) {
+      const joinedCnt = printRows.filter((r) => r.joined).length;
+      const achCnt = printRows.filter((r) => r.boosterEval?.achieved).length;
+      kpiHtml = `<div class="pdf-kpis">
+        <div class="pdf-kpi">
+          <span>Peserta Program</span>
+          <strong class="mono">${joinedCnt} / ${printRows.length} EPR</strong>
+          <small class="mono">${achCnt} EPR Achieved</small>
+        </div>
+        ${
+          packFilter === "all" || packFilter === "unit_ink"
+            ? `<div class="pdf-kpi">
+                <span>Total Booster Consumer</span>
+                <strong class="mono">${unitTot.ink_bottle.toLocaleString("id-ID")} pcs Ink</strong>
+                <small class="mono">Low End: ${unitTot.low_end.toLocaleString("id-ID")} Unit · Mid High: ${unitTot.mid_high.toLocaleString("id-ID")} Unit</small>
+              </div>`
+            : ""
+        }
+        ${
+          packFilter === "all" || packFilter === "consumables"
+            ? `<div class="pdf-kpi">
+                <span>Total Booster Consumables</span>
+                <strong class="mono">${consTot.ink_664_003.toLocaleString("id-ID")} pcs 664/003</strong>
+                <small class="mono">Lainnya: ${consTot.cons_other.toLocaleString("id-ID")} pcs</small>
+              </div>`
+            : ""
+        }
+      </div>`;
+    }
+
+    const rowsHtml = printRows
+      .map((r, i) => {
+        let pkgLabel = esc(r.p.tier || "-");
+        let resultSummary = "-";
+        let targetTxt = fmtRp(r.p.target || 0);
+        let statusHtml =
+          r.p.target <= 0
+            ? "-"
+            : r.shortfall === 0
+            ? '<span class="pdf-gap-ok">Achieved</span>'
+            : `<span class="pdf-gap-warn">Kurang ${fmtRp(r.shortfall)}</span>`;
+
+        if (r.boosterEval && r.partInfo) {
+          pkgLabel = `<b>${esc(r.partInfo.pack_name)}</b><br><small>FY26: ${esc(r.partInfo.fy_cat)}</small>`;
+          if (!r.joined) {
+            resultSummary = "Belum Beli";
+          } else if (r.partInfo.scheme === "consumables") {
+            resultSummary = `664/003: <b>${r.bucket.ink_664_003.toLocaleString("id-ID")} pcs</b><br>Lainnya: <b>${r.bucket.cons_other.toLocaleString("id-ID")} pcs</b>`;
+          } else {
+            resultSummary = `Ink Bottle: <b>${r.bucket.ink_bottle.toLocaleString("id-ID")} pcs</b><br>Low End: <b>${r.bucket.low_end.toLocaleString("id-ID")} Unit</b><br>Mid High: <b>${r.bucket.mid_high.toLocaleString("id-ID")} Unit</b>`;
+          }
+          const ev = r.boosterEval;
+          targetTxt = ev.lines
+            .map((l) => `${esc(l.label)}: <b>${l.actual.toLocaleString("id-ID")}</b> / ${l.target.toLocaleString("id-ID")}`)
+            .join("<br>");
+          statusHtml = ev.achieved
+            ? `<span class="pdf-gap-ok">Achieved<br>Hadiah Rp ${ev.reward.toLocaleString("id-ID")}</span>`
+            : ev.lines
+                .map((l) =>
+                  l.gap === 0
+                    ? `<span class="pdf-gap-ok">${esc(l.label)}: &#10003; Tercapai</span>`
+                    : `<span class="pdf-gap-warn">${esc(l.label)}: Kurang ${l.gap.toLocaleString("id-ID")}</span>`
+                )
+                .join("<br>");
+        } else {
+          resultSummary = r.models.length
+            ? r.models.slice(0, 6).map(([m, q]) => `${esc(m)}: ${q.toLocaleString("id-ID")}`).join("<br>")
+            : "Belum Beli";
+        }
+
+        return `<tr>
+          <td class="mono">${i + 1}</td>
+          <td><b>${esc(r.p.name)}</b><br><small class="mono">${esc(r.p.code)} · ${esc(r.p.city || "-")}</small></td>
+          <td>${pkgLabel}</td>
+          <td class="mono">${resultSummary}</td>
+          <td class="num mono"><b>${r.progQty.toLocaleString("id-ID")}</b></td>
+          <td class="mono">${targetTxt}</td>
+          <td class="mono">${statusHtml}</td>
+        </tr>`;
+      })
+      .join("");
+
+    $("pdfReport").innerHTML = `
+      <div class="pdf-head">
+        <div>
+          <h1>${esc(headTitle)}</h1>
+          <div class="pdf-meta">Periode: ${esc(periodTxt)} · ${esc(sourceTxt)}</div>
+        </div>
+        <div class="pdf-meta" style="text-align:right">
+          <div><b>Monitoring Result Paket Program</b></div>
+          <div>Dicetak: ${new Date().toLocaleString("id-ID")}</div>
+        </div>
+      </div>
+
+      ${kpiHtml}
+
+      <div class="pdf-sec">
+        <h3>Rincian Result Pembelian &amp; Kekurangan Target Paket</h3>
+        <table class="pdf-table">
+          <thead>
+            <tr>
+              <th style="width:26px">#</th>
+              <th>Nama EPR</th>
+              <th>Paket</th>
+              <th>Result Pembelian (Ringkasan)</th>
+              <th class="num">Total Qty</th>
+              <th>Target Paket (Qty)</th>
+              <th>Kekurangan / Status</th>
+            </tr>
+          </thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
+      </div>
+
+      <div class="pdf-foot">
+        <span>${esc(progName)} · ${esc(periodTxt)} · ${esc(sourceTxt)}</span>
+        <span>${printRows.length} EPR</span>
+      </div>
+    `;
+
+    const prevTitle = document.title;
+    const suffix = singleRow ? `_${singleRow.p.code}` : "_Semua";
+    document.title = `Result_Paket_${progName.replace(/[^A-Za-z0-9_-]+/g, "_")}${suffix}`;
+    window.print();
+    setTimeout(() => {
+      document.title = prevTitle;
+    }, 500);
+  }
+
   // Export filtered CSV
   function exportCsv() {
     const list = getFilteredPartners();
@@ -1868,6 +2065,7 @@
       } catch (_) {}
       renderProgramSummary(getFilteredPartners());
     });
+    $("btnShareProgPdf")?.addEventListener("click", () => shareProgramResultPdf(null));
     $("btnCloseProgPanel").addEventListener("click", () => {
       selectedProg = null;
       renderProgramSummary(getFilteredPartners());
