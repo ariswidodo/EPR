@@ -793,6 +793,7 @@
   function renderProgramSummary(list) {
     const rules = getProgramRules();
     const visibleCodes = new Set(list.map((p) => p.code));
+    const progOnlyCodes = new Set((rawData?.program_partners || []).map((p) => p.code));
     const items = rawData?.program_items || [];
     const map = new Map();
     const catByProg = new Map();
@@ -800,7 +801,7 @@
 
     if (items.length) {
       items.forEach((it) => {
-        if (!visibleCodes.has(it.epr)) return;
+        if (!visibleCodes.has(it.epr) && !(it.prog === "Q3 Booster Up" && progOnlyCodes.has(it.epr))) return;
         const rule = rules[it.prog];
         if (!inProgPeriod(it.date, rule)) return;
         grand += it.net || 0;
@@ -935,12 +936,42 @@
     };
     const progRuleFull = getProgramRules()[progName] || {};
     const isBooster = !!(progRuleFull.schemes && progRuleFull.participants);
+    const participantMap = progRuleFull.participants || {};
+    const aeFilterEl = $("progBoosterAeFilter");
     const packFilterEl = $("progBoosterPackFilter");
-    if (packFilterEl) packFilterEl.hidden = !isBooster;
+    if (aeFilterEl) {
+      aeFilterEl.hidden = !isBooster;
+      if (isBooster) {
+        const curAe = aeFilterEl.value || "ALL";
+        const aes = [...new Set(Object.values(participantMap).map((v) => v.ae || "ARIS"))].sort();
+        aeFilterEl.innerHTML =
+          `<option value="ALL">Semua AE/AM (${Object.keys(participantMap).length})</option>` +
+          aes
+            .map((a) => {
+              const cnt = Object.values(participantMap).filter((v) => (v.ae || "ARIS") === a).length;
+              return `<option value="${esc(a)}">${esc(a)} (${cnt})</option>`;
+            })
+            .join("");
+        aeFilterEl.value = aes.includes(curAe) ? curAe : "ALL";
+      }
+    }
+    if (packFilterEl) {
+      packFilterEl.hidden = !isBooster;
+      if (isBooster) {
+        const curPack = packFilterEl.value || "all";
+        const vals = Object.values(participantMap);
+        const tot = vals.length;
+        const consCnt = vals.filter((v) => v.scheme === "consumables").length;
+        const unitCnt = vals.filter((v) => v.scheme === "unit_ink").length;
+        packFilterEl.options[0].textContent = `Semua Paket (${tot} EPR)`;
+        packFilterEl.options[1].textContent = `Paket Consumables (${consCnt} EPR)`;
+        packFilterEl.options[2].textContent = `Paket Consumer (${unitCnt} EPR)`;
+        packFilterEl.value = curPack;
+      }
+    }
+    const aeFilter = isBooster ? aeFilterEl?.value || "ALL" : "ALL";
     const packFilter = isBooster ? packFilterEl?.value || "all" : "all";
     renderBoosterSchemeInfo(isBooster ? progRuleFull : null);
-
-    const participantMap = progRuleFull.participants || {};
     const items = (rawData?.program_items || []).filter(
       (it) => it.prog === progName || (progName === "Q3 Booster Up" && it.prog && it.prog.startsWith("Q3 Booster Up"))
     );
@@ -983,10 +1014,34 @@
       modelTotals.set(mKey, (modelTotals.get(mKey) || 0) + (it.qty || 0));
     });
 
+    const allBoosterPartners = (() => {
+      const byCode = new Map();
+      list.forEach((p) => byCode.set(p.code, p));
+      if (isBooster) {
+        const q = state.search.trim().toLowerCase();
+        (rawData?.program_partners || []).forEach((pp) => {
+          if (byCode.has(pp.code)) return;
+          if (state.tier !== "ALL" && pp.tier !== state.tier) return;
+          if (state.city !== "ALL" && pp.city !== state.city) return;
+          if (
+            q &&
+            !pp.name.toLowerCase().includes(q) &&
+            !pp.code.toLowerCase().includes(q) &&
+            !(pp.city || "").toLowerCase().includes(q)
+          ) {
+            return;
+          }
+          byCode.set(pp.code, pp);
+        });
+      }
+      return [...byCode.values()];
+    })();
+
     const candidatePartners = isBooster
-      ? list.filter((p) => {
+      ? allBoosterPartners.filter((p) => {
           const pi = participantMap[p.code];
           if (!pi) return false;
+          if (aeFilter !== "ALL" && (pi.ae || "ARIS") !== aeFilter) return false;
           if (packFilter !== "all" && pi.scheme !== packFilter) return false;
           return true;
         })
@@ -1169,7 +1224,7 @@
           <td>
             <div class="partner-cell">
               <span class="partner-name">${esc(r.p.name)}</span>
-              <span class="partner-meta mono">${esc(r.p.code)} · ${esc(r.p.city || "-")} · ${esc(r.p.tier || "-")}</span>
+              <span class="partner-meta mono">${esc(r.p.code)} · ${esc(r.p.city || "-")} · ${esc(r.p.tier || "-")}${r.partInfo?.ae ? ` · AE: ${esc(r.partInfo.ae)}` : ""}</span>
             </div>
           </td>
           <td>${pkgCellHtml}</td>
@@ -1220,6 +1275,7 @@
     $("pmName").textContent = r.p.name;
     $("pmMeta").textContent =
       `${r.p.city || "-"} · Program: ${progName} (${periodTxt})` +
+      (r.partInfo?.ae ? ` · AE: ${r.partInfo.ae}` : "") +
       (r.partInfo?.fy_cat ? ` · FY26 Cat: ${r.partInfo.fy_cat}` : "");
 
     let bodyHtml = "";
@@ -2192,6 +2248,9 @@
       render();
     });
     $("progEprMode").addEventListener("change", () => {
+      if (selectedProg) renderProgramEprDetail(getFilteredPartners(), selectedProg);
+    });
+    $("progBoosterAeFilter")?.addEventListener("change", () => {
       if (selectedProg) renderProgramEprDetail(getFilteredPartners(), selectedProg);
     });
     $("progBoosterPackFilter")?.addEventListener("change", () => {

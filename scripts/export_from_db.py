@@ -86,6 +86,12 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             "ORDER BY CASE WHEN keterangan = 'LUAR DATABASE EPR' THEN 1 ELSE 0 END, diproses_pada DESC, baris_sumber ASC LIMIT 500"
         ).fetchall()
     ]
+    prog_only_rows = con.execute(
+        "SELECT epr, epr_name, epp, epp_name, kat, qty, price, total, eim, remarks, invoice_date, material, description, flag "
+        "FROM data_per_q "
+        "WHERE is_verified = 0 AND keterangan = 'LUAR DATABASE EPR' "
+        "AND invoice_date >= '2026-10-01' AND LOWER(remarks) LIKE '%booster%'"
+    ).fetchall()
     con.close()
 
     rules_path = os.path.join(tool_dir, "data", "program_rules.json")
@@ -97,14 +103,24 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         except Exception:
             program_rules = {}
 
+    def _norm_epr_name(s):
+        return re.sub(r"[^A-Z0-9]+", " ", (s or "").upper()).strip()
+
+    master_codes = {(m.get("EPR CODE") or "").strip().upper() for m in masters if (m.get("EPR CODE") or "").strip()}
     booster_map = {}
+    program_only_partners = []
+    prog_only_by_name = {}
+    prog_only_codes = set()
     peserta_csv = os.path.join(tool_dir, "data", "peserta_booster.csv")
     if os.path.exists(peserta_csv):
         with open(peserta_csv, encoding="utf-8-sig") as pf:
             for pr in csv.DictReader(pf):
                 ec = (pr.get("EPR CODE") or "").strip().upper()
+                en = (pr.get("EPR NAME") or "").strip()
+                city = (pr.get("CITY") or "").strip()
                 pack = (pr.get("PACK NAME") or "").strip()
                 fy_cat = (pr.get("FY26 TARGET CATEGORY") or "").strip()
+                ae = (pr.get("AE") or "ARIS").strip() or "ARIS"
                 if not ec or not pack:
                     continue
                 pkg = pack.split()[0].upper()
@@ -119,7 +135,21 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
                     "pkg": pkg,
                     "pack_name": pack,
                     "fy_cat": fy_cat,
+                    "ae": ae,
                 }
+                if ec not in master_codes:
+                    prog_only_codes.add(ec)
+                    if en:
+                        prog_only_by_name[_norm_epr_name(en)] = ec
+                    program_only_partners.append({
+                        "code": ec,
+                        "name": en,
+                        "city": city,
+                        "tier": fy_cat,
+                        "am": ae,
+                        "target": 0,
+                        "actual": 0,
+                    })
         if "Q3 Booster Up" in program_rules:
             program_rules["Q3 Booster Up"]["participants"] = booster_map
 
@@ -238,6 +268,37 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             pa["cats"][kat] += net
         global_prog[prog_name] += net
 
+        desc = (r["description"] or "").strip()
+        pk = (code, prog_name, inv_date, mat)
+        pi = prog_items_map[pk]
+        pi["qty"] += r["qty"] or 0.0
+        pi["net"] += net
+        pi["tx"] += 1
+        if desc and not pi["desc"]:
+            pi["desc"] = desc
+        if kat and not pi["kat"]:
+            pi["kat"] = kat
+        eim_val = (r["eim"] or "").strip()
+        if eim_val and not pi["eim"]:
+            pi["eim"] = eim_val
+
+    for r in prog_only_rows:
+        ec_raw = (r["epr"] or "").strip().upper()
+        code = ec_raw if ec_raw in prog_only_codes else prog_only_by_name.get(_norm_epr_name(r["epr_name"]))
+        if not code:
+            continue
+        kat = (r["kat"] or "").strip()
+        inv_date = (r["invoice_date"] or "").strip()
+        mat = (r["material"] or "").strip()
+        ep_code = (r["epp"] or "").strip() or (r["epp_name"] or "").strip() or "TIDAK DIKETAHUI"
+        ep_name = epp_names.get(ep_code) or (r["epp_name"] or "").strip() or ep_code
+        prog_name = _extract_program(r["remarks"], code, inv_date, ep_code, ep_name, kat, mat)
+        if prog_name != "Q3 Booster Up":
+            continue
+        gross = r["total"] if (r["total"] is not None and r["total"] > 0) else ((r["price"] or 0.0) * (r["qty"] or 0.0))
+        is_v3 = (r["flag"] or "").strip() == "Valid (V3)"
+        net = gross if is_v3 else (gross / 1.11)
+        global_prog[prog_name] += net
         desc = (r["description"] or "").strip()
         pk = (code, prog_name, inv_date, mat)
         pi = prog_items_map[pk]
@@ -398,6 +459,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         },
         "epp_summary": epp_summary,
         "program_items": program_items,
+        "program_partners": program_only_partners,
         "partners": partners,
     }
 
