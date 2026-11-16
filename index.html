@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20261114j" />
+  <link rel="stylesheet" href="styles.css?v=20261116k" />
   <style>
     .prog-scheme-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; margin-bottom: 10px; }
     .prog-scheme-card { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: var(--surface-2, var(--surface)); }
@@ -78,36 +78,82 @@
       </div>
     </header>
 
-    <!-- Filter Bar -->
-    <section class="filter-bar">
-      <div class="segmented" role="group" aria-label="Periode">
-        <button class="seg-btn active" data-period="h2">H2 (Okt–Mar)</button>
-        <button class="seg-btn" data-period="fy">FY26 (Full Year)</button>
-        <button class="seg-btn" data-period="h1">H1 (Apr–Sep · Closed)</button>
-      </div>
+    <!-- Power BI Page Navigation -->
+    <nav class="pbi-nav" role="tablist" aria-label="Halaman Dashboard">
+      <button type="button" class="pbi-nav-btn active" data-page="overview" role="tab" aria-selected="true">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        <span>Overview &amp; Target H2</span>
+      </button>
+      <button type="button" class="pbi-nav-btn" data-page="program" role="tab" aria-selected="false">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        <span>Paketan Berjalan (Booster)</span>
+      </button>
+      <button type="button" class="pbi-nav-btn" data-page="audit" role="tab" aria-selected="false">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span>Kontribusi EPP &amp; Audit</span>
+      </button>
+    </nav>
 
-      <div class="filter-controls">
-        <div class="search-box">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          <input type="text" id="searchInput" placeholder="Cari EPR Name / Code..." />
+    <!-- Power BI Workspace: Left Slicers + Right Canvas -->
+    <div class="pbi-workspace">
+      <aside class="pbi-sidebar" aria-label="Panel Filter Slicer">
+        <div class="pbi-slicer-head">
+          <h3>Filter / Slicer</h3>
+          <button type="button" class="btn btn-secondary" id="btnResetFilters" style="height:24px;padding:0 8px;font-size:11px">Reset</button>
         </div>
-        <select id="tierFilter" aria-label="Filter Tier">
-          <option value="ALL">Semua Tier</option>
-        </select>
-        <select id="cityFilter" aria-label="Filter Kota">
-          <option value="ALL">Semua Kota</option>
-        </select>
-        <select id="statusFilter" aria-label="Filter Status Pencapaian">
-          <option value="ALL">Semua Status</option>
-          <option value="achieved">Achieved (&ge; 100%)</option>
-          <option value="ontrack">On Track (75–99%)</option>
-          <option value="behind">Perlu Perhatian (&lt; 75%)</option>
-        </select>
-        <select id="programFilter" aria-label="Filter Program">
-          <option value="ALL">Semua Program</option>
-        </select>
-      </div>
-    </section>
+
+        <div class="pbi-slicer-group">
+          <span class="pbi-slicer-label">Periode</span>
+          <div class="segmented" role="group" aria-label="Periode">
+            <button class="seg-btn active" data-period="h2">H2 (Okt–Mar)</button>
+            <button class="seg-btn" data-period="fy">FY26 (Full Year)</button>
+            <button class="seg-btn" data-period="h1">H1 (Apr–Sep · Closed)</button>
+          </div>
+        </div>
+
+        <div class="pbi-slicer-group">
+          <span class="pbi-slicer-label">Cari EPR</span>
+          <div class="search-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" id="searchInput" placeholder="Cari EPR Name / Code..." />
+          </div>
+        </div>
+
+        <div class="pbi-slicer-group">
+          <span class="pbi-slicer-label">Tier Category</span>
+          <select id="tierFilter" aria-label="Filter Tier">
+            <option value="ALL">Semua Tier</option>
+          </select>
+        </div>
+
+        <div class="pbi-slicer-group">
+          <span class="pbi-slicer-label">Kota</span>
+          <select id="cityFilter" aria-label="Filter Kota">
+            <option value="ALL">Semua Kota</option>
+          </select>
+        </div>
+
+        <div class="pbi-slicer-group">
+          <span class="pbi-slicer-label">Status Pencapaian</span>
+          <select id="statusFilter" aria-label="Filter Status Pencapaian">
+            <option value="ALL">Semua Status</option>
+            <option value="achieved">Achieved (&ge; 100%)</option>
+            <option value="ontrack">On Track (75–99%)</option>
+            <option value="behind">Perlu Perhatian (&lt; 75%)</option>
+          </select>
+        </div>
+
+        <div class="pbi-slicer-group">
+          <span class="pbi-slicer-label">Program</span>
+          <select id="programFilter" aria-label="Filter Program">
+            <option value="ALL">Semua Program</option>
+          </select>
+        </div>
+      </aside>
+
+      <main class="pbi-canvas">
+        <!-- Page 1: Overview & Target H2 -->
+        <div class="pbi-page" id="pageOverview">
 
     <!-- KPI Cards -->
     <section class="kpi-grid">
@@ -228,36 +274,11 @@
         </table>
       </div>
     </section>
+    </div>
+    <!-- /Page 1 -->
 
-    <!-- Ringkasan Kontribusi EPP di Area -->
-    <section class="card epp-summary-card">
-      <div class="card-head">
-        <div>
-          <h2>Ringkasan Kontribusi EPP di Area</h2>
-          <p class="card-sub">Persentase kontribusi setiap EPP terhadap total pencapaian area beserta rincian kategori produknya.</p>
-        </div>
-        <span class="badge badge-neutral" id="eppSummaryCount">0 EPP</span>
-      </div>
-      <div class="table-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th class="col-rank">#</th>
-              <th>Nama EPP</th>
-              <th>Kota</th>
-              <th class="num">Total Kontribusi</th>
-              <th class="num">Net Revenue</th>
-              <th class="num">Consumer</th>
-              <th class="num">Consumables</th>
-              <th class="num">Scanner</th>
-              <th class="num">Dotmatrix</th>
-            </tr>
-          </thead>
-          <tbody id="eppSummaryBody"></tbody>
-        </table>
-      </div>
-    </section>
-
+    <!-- Page 2: Paketan Berjalan (Booster) -->
+    <div class="pbi-page" id="pageProgram" hidden>
     <!-- Ringkasan Program Berjalan (Remarks AD) -->
     <section class="card epp-summary-card">
       <div class="card-head">
@@ -341,6 +362,39 @@
         </div>
       </div>
     </section>
+    </div>
+    <!-- /Page 2 -->
+
+    <!-- Page 3: Kontribusi EPP & Audit -->
+    <div class="pbi-page" id="pageAudit" hidden>
+    <!-- Ringkasan Kontribusi EPP di Area -->
+    <section class="card epp-summary-card">
+      <div class="card-head">
+        <div>
+          <h2>Ringkasan Kontribusi EPP di Area</h2>
+          <p class="card-sub">Persentase kontribusi setiap EPP terhadap total pencapaian area beserta rincian kategori produknya.</p>
+        </div>
+        <span class="badge badge-neutral" id="eppSummaryCount">0 EPP</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th class="col-rank">#</th>
+              <th>Nama EPP</th>
+              <th>Kota</th>
+              <th class="num">Total Kontribusi</th>
+              <th class="num">Net Revenue</th>
+              <th class="num">Consumer</th>
+              <th class="num">Consumables</th>
+              <th class="num">Scanner</th>
+              <th class="num">Dotmatrix</th>
+            </tr>
+          </thead>
+          <tbody id="eppSummaryBody"></tbody>
+        </table>
+      </div>
+    </section>
 
     <!-- Audit & Data Ditolak -->
     <section class="card audit-card">
@@ -401,6 +455,11 @@
         </div>
       </div>
     </section>
+    </div>
+    <!-- /Page 3 -->
+    </main>
+    </div>
+    <!-- /pbi-workspace -->
 
     <footer class="footer">
       <span>Data bersumber dari <strong>EPR Sell In Tool</strong> &middot; Seluruh angka revenue exclude PPN 11% (dibagi 1,11)</span>
@@ -633,6 +692,6 @@
   <!-- Printable PDF Report Container (per EPR) -->
   <section id="pdfReport" class="pdf-report" aria-hidden="true"></section>
 
-  <script src="app.js?v=20261116j"></script>
+  <script src="app.js?v=20261116k"></script>
 </body>
 </html>

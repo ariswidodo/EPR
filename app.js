@@ -2218,6 +2218,38 @@
   }
 
   function bindEvents() {
+    document.querySelectorAll(".pbi-nav-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".pbi-nav-btn").forEach((b) => {
+          b.classList.remove("active");
+          b.setAttribute("aria-selected", "false");
+        });
+        btn.classList.add("active");
+        btn.setAttribute("aria-selected", "true");
+        const page = btn.dataset.page;
+        $("pageOverview").hidden = page !== "overview";
+        $("pageProgram").hidden = page !== "program";
+        $("pageAudit").hidden = page !== "audit";
+        if (page === "overview") {
+          [charts.monthly, charts.category, charts.partner].forEach((ch) => ch && ch.resize());
+        }
+      });
+    });
+
+    $("btnResetFilters")?.addEventListener("click", () => {
+      state.search = "";
+      state.tier = "ALL";
+      state.city = "ALL";
+      state.status = "ALL";
+      state.program = "ALL";
+      $("searchInput").value = "";
+      $("tierFilter").value = "ALL";
+      $("cityFilter").value = "ALL";
+      $("statusFilter").value = "ALL";
+      $("programFilter").value = "ALL";
+      render();
+    });
+
     document.querySelectorAll(".seg-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".seg-btn").forEach((b) => b.classList.remove("active"));
