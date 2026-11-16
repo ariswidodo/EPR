@@ -2,7 +2,7 @@
   "meta": {
     "title": "EPR FY26 Achievement Dashboard",
     "fiscal_year": "FY26 (Apr 2026 - Mar 2027)",
-    "generated_at": "2026-11-16 09:26:25",
+    "generated_at": "2026-11-16 09:49:31",
     "last_source_file": "Q2 FY26.xlsx",
     "last_processed_at": "2026-11-14 22:04:13",
     "verified_rows": 8705,
@@ -52,6 +52,41 @@
           "Raka Perkasa",
           "Computa",
           "Top Distribusi"
+        ],
+        "ink_bottle_skus": [
+          "C13T664199",
+          "C13T664299",
+          "C13T664399",
+          "C13T664499",
+          "C13T00V199",
+          "C13T00V299",
+          "C13T00V399",
+          "C13T00V499"
+        ],
+        "other_ink_skus": [
+          "C13T774100",
+          "C13T01P100",
+          "C13T03Q100",
+          "C13T03Y100",
+          "C13T03Y200",
+          "C13T03Y300",
+          "C13T03Y400",
+          "C13T06G199",
+          "C13T06G299",
+          "C13T06G399",
+          "C13T06G499",
+          "C13T673199",
+          "C13T673299",
+          "C13T673399",
+          "C13T673499",
+          "C13T673599",
+          "C13T673699",
+          "C13T09D199",
+          "C13T09D299",
+          "C13T09D399",
+          "C13T09D499",
+          "C13T09D599",
+          "C13T09D699"
         ],
         "schemes": {
           "unit_ink": {
@@ -7580,7 +7615,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-02",
       "model": "C13S015531",
       "desc": "RIBBON,S015086(B),ASIA",
@@ -7616,7 +7651,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-16",
       "model": "C13S015639",
       "desc": "RIBBON,S015634(B), ASIA,B,24",
@@ -8468,7 +8503,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-09",
       "model": "C13S015516",
       "desc": "RIBBON,#8750(B),ASIA",
@@ -8492,7 +8527,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-22",
       "model": "C13S015516",
       "desc": "RIBBON,#8750(B),ASIA",
@@ -9272,7 +9307,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-05",
       "model": "C43S015374",
       "desc": "ERC-38(B) RIBBON CASSETTE.",
@@ -9380,7 +9415,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-21",
       "model": "C11CC24341",
       "desc": "LX-310 (INDO) IMPACT PRINTER",
@@ -9464,7 +9499,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-02",
       "model": "C13S015639",
       "desc": "RIBBON,S015634(B), ASIA,B,24",
@@ -9548,7 +9583,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-06",
       "model": "C13S015531",
       "desc": "RIBBON,S015086(B),ASIA",
@@ -9620,7 +9655,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-15",
       "model": "C11CC24341",
       "desc": "LX-310 (INDO) IMPACT PRINTER",
@@ -9716,7 +9751,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-02",
       "model": "C13S010068",
       "desc": "RIBBON,PACK,#8758(B),ASIA",
@@ -9776,7 +9811,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-02",
       "model": "C13S015632",
       "desc": "RIBBON,S015632(B), ASIA,B,9",
@@ -10040,7 +10075,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-28",
       "model": "C13S015639",
       "desc": "RIBBON,S015634(B), ASIA,B,24",
@@ -10088,7 +10123,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-28",
       "model": "C13S015632",
       "desc": "RIBBON,S015632(B), ASIA,B,9",
@@ -10424,7 +10459,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-27",
       "model": "C13S015639",
       "desc": "RIBBON,S015634(B), ASIA,B,24",
@@ -10460,7 +10495,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-27",
       "model": "C13S015531",
       "desc": "RIBBON,S015086(B),ASIA",
@@ -10556,7 +10591,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-09",
       "model": "C13S015592",
       "desc": "RIBBON,S015339(B),ESP,3PCS",
@@ -10640,7 +10675,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-09",
       "model": "C13S015639",
       "desc": "RIBBON,S015634(B), ASIA,B,24",
@@ -10652,7 +10687,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-09",
       "model": "C13S015632",
       "desc": "RIBBON,S015632(B), ASIA,B,9",
@@ -11540,7 +11575,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-27",
       "model": "C13S010068",
       "desc": "RIBBON,PACK,#8758(B),ASIA",
@@ -11576,7 +11611,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-03",
       "model": "C11CC25341",
       "desc": "LQ-310 (INDO) IMPACT PRINTER",
@@ -11588,7 +11623,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-14",
       "model": "C13S010068",
       "desc": "RIBBON,PACK,#8758(B),ASIA",
@@ -11600,7 +11635,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-30",
       "model": "C11CC25341",
       "desc": "LQ-310 (INDO) IMPACT PRINTER",
@@ -11648,7 +11683,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-30",
       "model": "C13S015639",
       "desc": "RIBBON,S015634(B), ASIA,B,24",
@@ -11684,7 +11719,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-22",
       "model": "C11CC24341",
       "desc": "LX-310 (INDO) IMPACT PRINTER",
@@ -11804,7 +11839,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-16",
       "model": "C13S015639",
       "desc": "RIBBON,S015634(B), ASIA,B,24",
@@ -11828,7 +11863,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-01",
       "model": "B11B249501",
       "desc": "DS-410",
@@ -11960,7 +11995,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-07",
       "model": "C13T290090",
       "desc": "WF-100 CL INK (PIGMENT)",
@@ -11972,7 +12007,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-07",
       "model": "C13T289190",
       "desc": "WF-100 BK INK (PIGMENT)",
@@ -12116,7 +12151,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-19",
       "model": "B11B249501",
       "desc": "DS-410",
@@ -12176,7 +12211,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-16",
       "model": "C11CA92031",
       "desc": "LQ-2190 (INT'L) IMPACT PRINTER",
@@ -12548,7 +12583,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-28",
       "model": "C11CC24341",
       "desc": "LX-310 (INDO) IMPACT PRINTER",
@@ -12572,7 +12607,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-12",
       "model": "C11CC24341",
       "desc": "LX-310 (INDO) IMPACT PRINTER",
@@ -12668,7 +12703,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "Q3 Booster Up",
+      "prog": "Reguler (Tanpa Program)",
       "date": "2026-10-28",
       "model": "C13S015632",
       "desc": "RIBBON,S015632(B), ASIA,B,9",
@@ -46961,13 +46996,13 @@
       "program_sources": [
         {
           "name": "Reguler (Tanpa Program)",
-          "total": 1351772245.95,
-          "tx": 412,
-          "qty": 4137,
+          "total": 1354929903.6,
+          "tx": 414,
+          "qty": 4177,
           "cats": {
             "Consumer": 1009471621.62,
             "Scanner": 3900000.0,
-            "Consumables": 314570624.32,
+            "Consumables": 317728281.98,
             "Dotmatrix": 23830000.0
           }
         },
@@ -46985,13 +47020,13 @@
         },
         {
           "name": "Q3 Booster Up",
-          "total": 12186486.49,
-          "tx": 9,
-          "qty": 92,
+          "total": 9028828.83,
+          "tx": 7,
+          "qty": 52,
           "cats": {
             "Consumer": 0.0,
             "Scanner": 0.0,
-            "Consumables": 12186486.49,
+            "Consumables": 9028828.83,
             "Dotmatrix": 0.0
           }
         },
@@ -47353,26 +47388,26 @@
       "program_sources": [
         {
           "name": "Reguler (Tanpa Program)",
-          "total": 7347777200.0,
-          "tx": 889,
-          "qty": 18566,
+          "total": 7536664587.39,
+          "tx": 897,
+          "qty": 18871,
           "cats": {
             "Consumer": 4118029000.0,
-            "Scanner": 255768000.0,
-            "Consumables": 1609566000.0,
-            "Dotmatrix": 1364414200.0
+            "Scanner": 308128360.36,
+            "Consumables": 1620214648.65,
+            "Dotmatrix": 1490292578.38
           }
         },
         {
           "name": "Q3 Booster Up",
-          "total": 702306306.31,
-          "tx": 37,
-          "qty": 2213,
+          "total": 513418918.92,
+          "tx": 29,
+          "qty": 1908,
           "cats": {
             "Consumer": 319797297.3,
-            "Scanner": 52360360.36,
-            "Consumables": 204270270.27,
-            "Dotmatrix": 125878378.38
+            "Scanner": 0.0,
+            "Consumables": 193621621.62,
+            "Dotmatrix": 0.0
           }
         },
         {
@@ -47733,13 +47768,13 @@
       "program_sources": [
         {
           "name": "Reguler (Tanpa Program)",
-          "total": 736796884.05,
-          "tx": 272,
-          "qty": 1879,
+          "total": 739742830.0,
+          "tx": 275,
+          "qty": 1899,
           "cats": {
             "Consumer": 563855000.0,
             "Scanner": 5800000.0,
-            "Consumables": 148871884.05,
+            "Consumables": 151817830.0,
             "Dotmatrix": 18270000.0
           }
         },
@@ -47757,13 +47792,13 @@
         },
         {
           "name": "Q3 Booster Up",
-          "total": 7856756.76,
-          "tx": 8,
-          "qty": 46,
+          "total": 4910810.81,
+          "tx": 5,
+          "qty": 26,
           "cats": {
             "Consumer": 0.0,
             "Scanner": 0.0,
-            "Consumables": 7856756.76,
+            "Consumables": 4910810.81,
             "Dotmatrix": 0.0
           }
         }
@@ -47910,14 +47945,14 @@
       "program_sources": [
         {
           "name": "Reguler (Tanpa Program)",
-          "total": 138699000.0,
-          "tx": 57,
-          "qty": 563,
+          "total": 150581882.88,
+          "tx": 60,
+          "qty": 587,
           "cats": {
             "Consumer": 79321000.0,
             "Scanner": 0.0,
-            "Consumables": 59378000.0,
-            "Dotmatrix": 0.0
+            "Consumables": 60197819.82,
+            "Dotmatrix": 11063063.06
           }
         },
         {
@@ -47946,14 +47981,14 @@
         },
         {
           "name": "Q3 Booster Up",
-          "total": 17738738.74,
-          "tx": 7,
-          "qty": 71,
+          "total": 5855855.86,
+          "tx": 4,
+          "qty": 47,
           "cats": {
             "Consumer": 0.0,
             "Scanner": 0.0,
-            "Consumables": 6675675.68,
-            "Dotmatrix": 11063063.06
+            "Consumables": 5855855.86,
+            "Dotmatrix": 0.0
           }
         }
       ]
@@ -48468,26 +48503,26 @@
       "program_sources": [
         {
           "name": "Reguler (Tanpa Program)",
-          "total": 2196878911.54,
-          "tx": 460,
-          "qty": 6754,
+          "total": 2219209542.17,
+          "tx": 468,
+          "qty": 6809,
           "cats": {
             "Consumer": 1265967622.62,
             "Scanner": 76155000.0,
-            "Consumables": 532272702.25,
-            "Dotmatrix": 317975478.56
+            "Consumables": 535369098.65,
+            "Dotmatrix": 337209712.79
           }
         },
         {
           "name": "Q3 Booster Up",
-          "total": 169054051.35,
-          "tx": 54,
-          "qty": 1125,
+          "total": 146723420.72,
+          "tx": 46,
+          "qty": 1070,
           "cats": {
             "Consumer": 56788288.29,
             "Scanner": 0.0,
-            "Consumables": 93031528.83,
-            "Dotmatrix": 19234234.23
+            "Consumables": 89935132.43,
+            "Dotmatrix": 0.0
           }
         },
         {
@@ -48849,13 +48884,13 @@
       "program_sources": [
         {
           "name": "Reguler (Tanpa Program)",
-          "total": 266950018.02,
-          "tx": 87,
-          "qty": 1048,
+          "total": 268269837.84,
+          "tx": 89,
+          "qty": 1078,
           "cats": {
             "Consumer": 132506513.51,
             "Scanner": 16416108.11,
-            "Consumables": 83631000.0,
+            "Consumables": 84950819.82,
             "Dotmatrix": 0.0
           }
         },
@@ -48873,13 +48908,13 @@
         },
         {
           "name": "Q3 Booster Up",
-          "total": 7198198.2,
-          "tx": 3,
-          "qty": 31,
+          "total": 5878378.38,
+          "tx": 1,
+          "qty": 1,
           "cats": {
             "Consumer": 5878378.38,
             "Scanner": 0.0,
-            "Consumables": 1319819.82,
+            "Consumables": 0.0,
             "Dotmatrix": 0.0
           }
         }
@@ -49039,26 +49074,26 @@
       "program_sources": [
         {
           "name": "Reguler (Tanpa Program)",
-          "total": 8000738161.0,
-          "tx": 977,
-          "qty": 19806,
+          "total": 8036747170.01,
+          "tx": 981,
+          "qty": 19817,
           "cats": {
             "Consumer": 6079135450.45,
-            "Scanner": 88138873.87,
-            "Consumables": 1459755674.51,
-            "Dotmatrix": 373708162.16
+            "Scanner": 98715450.45,
+            "Consumables": 1461066485.32,
+            "Dotmatrix": 397829783.78
           }
         },
         {
           "name": "Q3 Booster Up",
-          "total": 195108108.11,
-          "tx": 20,
-          "qty": 757,
+          "total": 159099099.1,
+          "tx": 16,
+          "qty": 746,
           "cats": {
             "Consumer": 100153153.15,
-            "Scanner": 10576576.58,
-            "Consumables": 60256756.76,
-            "Dotmatrix": 24121621.62
+            "Scanner": 0.0,
+            "Consumables": 58945945.95,
+            "Dotmatrix": 0.0
           }
         },
         {
@@ -49561,25 +49596,25 @@
       "program_sources": [
         {
           "name": "Reguler (Tanpa Program)",
-          "total": 9274135416.68,
-          "tx": 376,
-          "qty": 116697,
+          "total": 9288369741.01,
+          "tx": 379,
+          "qty": 116937,
           "cats": {
             "Consumer": 39053000.0,
             "Scanner": 0.0,
-            "Consumables": 4103438386.68,
+            "Consumables": 4117672711.01,
             "Dotmatrix": 0.0
           }
         },
         {
           "name": "Q3 Booster Up",
-          "total": 852227567.57,
-          "tx": 39,
-          "qty": 11029,
+          "total": 837993243.24,
+          "tx": 36,
+          "qty": 10789,
           "cats": {
             "Consumer": 0.0,
             "Scanner": 0.0,
-            "Consumables": 852227567.57,
+            "Consumables": 837993243.24,
             "Dotmatrix": 0.0
           }
         }

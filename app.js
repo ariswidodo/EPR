@@ -622,23 +622,45 @@
     localStorage.setItem("epr_booster_overrides", JSON.stringify(ov));
   }
 
-  function classifyBoosterItem(it) {
+  const DEFAULT_INK_BOTTLE_SKUS = [
+    "C13T664199", "C13T664299", "C13T664399", "C13T664499",
+    "C13T00V199", "C13T00V299", "C13T00V399", "C13T00V499",
+  ];
+  const DEFAULT_OTHER_INK_SKUS = [
+    "C13T774100", "C13T01P100", "C13T03Q100",
+    "C13T03Y100", "C13T03Y200", "C13T03Y300", "C13T03Y400",
+    "C13T06G199", "C13T06G299", "C13T06G399", "C13T06G499",
+    "C13T673199", "C13T673299", "C13T673399", "C13T673499", "C13T673599", "C13T673699",
+    "C13T09D199", "C13T09D299", "C13T09D399", "C13T09D499", "C13T09D599", "C13T09D699",
+  ];
+
+  function getBoosterSkuSets() {
+    const r = rawData?.meta?.program_rules?.["Q3 Booster Up"] || {};
+    const inkList = Array.isArray(r.ink_bottle_skus) && r.ink_bottle_skus.length
+      ? r.ink_bottle_skus
+      : DEFAULT_INK_BOTTLE_SKUS;
+    const othList = Array.isArray(r.other_ink_skus) && r.other_ink_skus.length
+      ? r.other_ink_skus
+      : DEFAULT_OTHER_INK_SKUS;
+    return {
+      inkBottleSet: new Set(inkList.map((s) => String(s).toUpperCase())),
+      otherInkSet: new Set(othList.map((s) => String(s).toUpperCase())),
+    };
+  }
+
+  function classifyBoosterItem(it, skuSets = getBoosterSkuSets()) {
     const kat = it.kat || "";
     const eim = it.eim || "";
     const model = (it.model || "").toUpperCase();
     const desc = (it.desc || "").toUpperCase();
     const qty = it.qty || 0;
     if (kat === "Consumables") {
-      const is664Or003 =
-        model.startsWith("C13T00V") ||
-        model.startsWith("C13T664") ||
-        desc.includes("003") ||
-        desc.includes("664");
-      const isInkBottle = model.startsWith("C13T") || desc.includes("INK");
+      const is664Or003 = skuSets.inkBottleSet.has(model);
+      const isOtherInk = skuSets.otherInkSet.has(model);
       return {
         ink_664_003: is664Or003 ? qty : 0,
-        cons_other: is664Or003 ? 0 : qty,
-        ink_bottle: isInkBottle ? qty : 0,
+        cons_other: isOtherInk ? qty : 0,
+        ink_bottle: is664Or003 || isOtherInk ? qty : 0,
         low_end: 0,
         mid_high: 0,
       };
@@ -923,6 +945,7 @@
 
     const byEpr = new Map();
     const modelTotals = new Map();
+    const skuSets = getBoosterSkuSets();
     let excludedTx = 0;
     let excludedQty = 0;
 
@@ -946,7 +969,7 @@
       eo.tx += it.tx || 0;
       eo.qty += it.qty || 0;
 
-      const bk = classifyBoosterItem(it);
+      const bk = classifyBoosterItem(it, skuSets);
       eo.bucket.ink_664_003 += bk.ink_664_003;
       eo.bucket.cons_other += bk.cons_other;
       eo.bucket.ink_bottle += bk.ink_bottle;

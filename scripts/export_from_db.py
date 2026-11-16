@@ -123,10 +123,33 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         if "Q3 Booster Up" in program_rules:
             program_rules["Q3 Booster Up"]["participants"] = booster_map
 
-    booster_participants = set(
-        booster_map
-        or (program_rules.get("Q3 Booster Up", {}).get("participants") or {}).keys()
+    booster_participants = (
+        dict(booster_map)
+        if booster_map
+        else dict(program_rules.get("Q3 Booster Up", {}).get("participants") or {})
     )
+    ink_bottle_skus = []
+    other_ink_skus = []
+    sku_csv = os.path.join(tool_dir, "data", "booster_consumables_sku.csv")
+    if os.path.exists(sku_csv):
+        with open(sku_csv, encoding="utf-8-sig") as sf:
+            for sr in csv.DictReader(sf):
+                mc = (sr.get("Material Code") or "").strip().upper()
+                tp = (sr.get("Type") or "").strip().upper()
+                if not mc:
+                    continue
+                if tp == "INK BOTTLE":
+                    ink_bottle_skus.append(mc)
+                elif tp == "OTHERS INK BOTTLE":
+                    other_ink_skus.append(mc)
+        if "Q3 Booster Up" in program_rules:
+            program_rules["Q3 Booster Up"]["ink_bottle_skus"] = ink_bottle_skus
+            program_rules["Q3 Booster Up"]["other_ink_skus"] = other_ink_skus
+    else:
+        ink_bottle_skus = [x.upper() for x in (program_rules.get("Q3 Booster Up", {}).get("ink_bottle_skus") or [])]
+        other_ink_skus = [x.upper() for x in (program_rules.get("Q3 Booster Up", {}).get("other_ink_skus") or [])]
+
+    all_booster_ink_skus = set(ink_bottle_skus) | set(other_ink_skus)
     LOCAL_BOOSTER_EPPS = {"EPP-0050", "EPP-0055", "EPP-0056", "EPP-0245"}
 
     def _is_local_booster_epp(epp_code, epp_name):
@@ -135,7 +158,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         en = (epp_name or "").upper()
         return any(k in en for k in ("COMPUTEK", "RAKA PERKASA", "CV COMPUTA", "TOP DISTRIBUSI"))
 
-    def _extract_program(rem_text, epr_code="", inv_date="", epp_code="", epp_name=""):
+    def _extract_program(rem_text, epr_code="", inv_date="", epp_code="", epp_name="", kat="", mat=""):
         parts = [x.strip() for x in (rem_text or "").split("|")]
         ad_raw = ""
         if len(parts) >= 4 and parts[-1].lower().startswith("src "):
@@ -147,11 +170,20 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         if m:
             return f"EIN-{m.group(1)}-{m.group(2).zfill(6)}"
         if re.match(r"^q3\s+booster(\s+up)?$", ad_raw, re.I):
+            ec = (epr_code or "").upper()
+            pinfo = booster_participants.get(ec)
             if (
-                "2026-10-01" <= (inv_date or "") <= "2026-12-31"
+                pinfo
+                and "2026-10-01" <= (inv_date or "") <= "2026-12-31"
                 and _is_local_booster_epp(epp_code, epp_name)
-                and (epr_code or "").upper() in booster_participants
             ):
+                if kat == "Consumables" and (mat or "").strip().upper() not in all_booster_ink_skus:
+                    return "Reguler (Tanpa Program)"
+                scheme = pinfo.get("scheme")
+                if scheme == "consumables" and kat != "Consumables":
+                    return "Reguler (Tanpa Program)"
+                if scheme == "unit_ink" and kat not in ("Consumer", "Consumables"):
+                    return "Reguler (Tanpa Program)"
                 return "Q3 Booster Up"
             return "Reguler (Tanpa Program)"
         return ad_raw
@@ -196,7 +228,8 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             ga["cats"][kat] += net
 
         inv_date = (r["invoice_date"] or "").strip()
-        prog_name = _extract_program(r["remarks"], code, inv_date, ep_code, ep_name)
+        mat = (r["material"] or "").strip()
+        prog_name = _extract_program(r["remarks"], code, inv_date, ep_code, ep_name, kat, mat)
         pa = prog_agg[code][prog_name]
         pa["total"] += net
         pa["tx"] += 1
@@ -205,7 +238,6 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             pa["cats"][kat] += net
         global_prog[prog_name] += net
 
-        mat = (r["material"] or "").strip()
         desc = (r["description"] or "").strip()
         pk = (code, prog_name, inv_date, mat)
         pi = prog_items_map[pk]
