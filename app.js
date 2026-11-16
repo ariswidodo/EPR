@@ -682,9 +682,8 @@
     ],
   };
 
-  function evaluateBoosterPackage(bucket, schemeKey, pkgKey, schemes) {
-    const scheme = schemes?.[schemeKey];
-    const pkg = scheme?.packages?.[pkgKey];
+  function evaluateBoosterPackage(bucket, schemeKey, pkgKey, packages) {
+    const pkg = packages?.[pkgKey];
     const fields = BOOSTER_FIELDS[schemeKey] || [];
     if (!pkg) return null;
     const lines = fields.map((f) => {
@@ -705,16 +704,18 @@
     };
   }
 
-  function renderBoosterSchemeInfo(schemes) {
+  function renderBoosterSchemeInfo(progRule) {
     const el = $("progSchemeInfo");
     if (!el) return;
-    if (!schemes) {
+    if (!progRule || !progRule.scheme || !progRule.packages) {
       el.innerHTML = "";
       return;
     }
-    const uiPkgs = schemes.unit_ink?.packages || {};
-    const coPkgs = schemes.consumables?.packages || {};
-    const pkgRows = (pkgs, keys, catNotes) =>
+    const schemeKey = progRule.scheme;
+    const pkgs = progRule.packages || {};
+    const parts = progRule.participants || {};
+    const partEntries = Object.entries(parts);
+    const pkgRows = (keys, catNotes) =>
       ["SUN", "STAR", "MOON"]
         .filter((k) => pkgs[k])
         .map((k) => {
@@ -722,30 +723,46 @@
           const nums = keys
             .map((fk) => `<td class="num mono">${(p.targets?.[fk] || 0).toLocaleString("id-ID")}</td>`)
             .join("");
+          const cnt = partEntries.filter(([, v]) => v.pkg === k).length;
           return `<tr>
             <td><b>${k}</b> <span style="color:var(--text-3)">(${catNotes[k]})</span></td>
             ${nums}
             <td class="num mono"><b>${(p.total_qty || 0).toLocaleString("id-ID")}</b></td>
             <td class="num mono">Rp ${(p.reward || 0).toLocaleString("id-ID")}</td>
+            <td class="num mono">${cnt} EPR</td>
           </tr>`;
         })
         .join("");
+
     const notes = { SUN: "Sun", STAR: "Star, Earth, Moon", MOON: "Moon, Crescent" };
-    el.innerHTML = `<div class="prog-scheme-grid">
-      <div class="prog-scheme-card">
-        <h4><span>${esc(schemes.unit_ink?.label || "Program Q3 Booster Up")}</span><span class="badge badge-indigo">Unit + Ink Bottle</span></h4>
-        <table class="prog-scheme-table">
-          <thead><tr><th>Paket</th><th class="num">Low End</th><th class="num">Mid High</th><th class="num">Ink Bottle</th><th class="num">Total</th><th class="num">Hadiah</th></tr></thead>
-          <tbody>${pkgRows(uiPkgs, ["low_end", "mid_high", "ink_bottle"], notes)}</tbody>
-        </table>
-      </div>
-      <div class="prog-scheme-card">
-        <h4><span>${esc(schemes.consumables?.label || "Program Q3 Booster Up (Consumables)")}</span><span class="badge badge-indigo">Consumables</span></h4>
-        <table class="prog-scheme-table">
-          <thead><tr><th>Paket</th><th class="num">664/003</th><th class="num">Lainnya</th><th class="num">Total</th><th class="num">Hadiah</th></tr></thead>
-          <tbody>${pkgRows(coPkgs, ["ink_664_003", "cons_other"], notes)}</tbody>
-        </table>
-      </div>
+    let participantSummary = "";
+    if (schemeKey === "unit_ink") {
+      const counts = ["SUN", "STAR", "MOON"]
+        .map((k) => `${partEntries.filter(([, v]) => v.pkg === k).length} ${k} Consumer`)
+        .join(" · ");
+      participantSummary = `${partEntries.length} EPR Terdaftar: ${counts}`;
+    } else {
+      const listTxt = partEntries
+        .map(([code, v]) => `${code} [${v.pack_name}]`)
+        .join(" · ");
+      participantSummary = `${partEntries.length} EPR Terdaftar: ${listTxt}`;
+    }
+
+    const headCols =
+      schemeKey === "unit_ink"
+        ? `<th>Paket</th><th class="num">Low End</th><th class="num">Mid High</th><th class="num">Ink Bottle</th><th class="num">Total</th><th class="num">Hadiah</th><th class="num">Peserta</th>`
+        : `<th>Paket</th><th class="num">664/003</th><th class="num">Lainnya</th><th class="num">Total</th><th class="num">Hadiah</th><th class="num">Peserta</th>`;
+    const bodyCols = schemeKey === "unit_ink" ? ["low_end", "mid_high", "ink_bottle"] : ["ink_664_003", "cons_other"];
+
+    el.innerHTML = `<div class="prog-scheme-card">
+      <h4>
+        <span>${esc(progRule.label || schemeKey)}</span>
+        <span class="badge badge-indigo">${esc(participantSummary)}</span>
+      </h4>
+      <table class="prog-scheme-table">
+        <thead><tr>${headCols}</tr></thead>
+        <tbody>${pkgRows(bodyCols, notes)}</tbody>
+      </table>
     </div>`;
   }
 
@@ -806,10 +823,17 @@
       });
     }
 
+    Object.entries(rules).forEach(([progName, rule]) => {
+      if (rule && rule.participants && !map.has(progName)) {
+        map.set(progName, { name: progName, eprs: new Set(), tx: 0, qty: 0, total: 0 });
+        catByProg.set(progName, { Consumer: 0, Scanner: 0, Consumables: 0, Dotmatrix: 0 });
+      }
+    });
+
     const rows = [...map.values()].sort((a, b) => b.total - a.total);
-    if (!progAutoSelected && !selectedProg && rows.some((r) => r.name === "Q3 Booster Up")) {
+    if (!progAutoSelected && !selectedProg && rows.some((r) => r.name === "Q3 Booster Up (Consumer)")) {
       progAutoSelected = true;
-      selectedProg = "Q3 Booster Up";
+      selectedProg = "Q3 Booster Up (Consumer)";
       const r = rules[selectedProg] || {};
       $("progStart").value = r.start || "2026-10-01";
       $("progEnd").value = r.end || "2026-12-31";
@@ -817,7 +841,7 @@
 
     $("progSummaryCount").textContent = `${rows.length} program`;
     const body = $("progSummaryBody");
-    if (!rows.length || grand <= 0) {
+    if (!rows.length) {
       body.innerHTML =
         '<tr><td colspan="12" style="text-align:center;color:var(--text-3);padding:20px">Belum ada data program.</td></tr>';
       $("progEprPanel").hidden = true;
@@ -826,7 +850,7 @@
 
     body.innerHTML = rows
       .map((pr, i) => {
-        const totPct = (pr.total / grand) * 100;
+        const totPct = grand > 0 ? (pr.total / grand) * 100 : 0;
         const rule = rules[pr.name];
         const periodTxt =
           rule && (rule.start || rule.end)
@@ -834,11 +858,13 @@
             : "Semua Tanggal";
         const isReg = pr.name.startsWith("Reguler");
         const cats = catByProg.get(pr.name) || {};
+        const partCount = rule?.participants ? Object.keys(rule.participants).length : null;
+        const eprColTxt = partCount != null ? `${pr.eprs.size} / ${partCount} EPR` : `${pr.eprs.size}`;
         return `<tr data-prog="${esc(pr.name)}" class="${selectedProg === pr.name ? "prog-row-active" : ""}">
           <td class="col-rank mono">${i + 1}</td>
           <td><span class="${isReg ? "badge badge-neutral" : "badge badge-indigo"}">${esc(pr.name)}</span></td>
           <td class="mono" style="font-size:12px">${esc(periodTxt)}</td>
-          <td class="num mono">${pr.eprs.size}</td>
+          <td class="num mono">${esc(eprColTxt)}</td>
           <td class="num mono">${pr.tx.toLocaleString("id-ID")}</td>
           <td class="num mono"><strong>${pr.qty.toLocaleString("id-ID")}</strong></td>
           <td class="num">
@@ -884,15 +910,21 @@
       end: $("progEnd").value || "",
     };
     const progRuleFull = getProgramRules()[progName] || {};
-    const schemes = progRuleFull.schemes || null;
-    const isBooster = progName === "Q3 Booster Up" && !!schemes;
+    const isBooster = !!(progRuleFull.scheme && progRuleFull.participants);
 
-    const schemeFilterEl = $("progSchemeFilter");
-    if (schemeFilterEl) schemeFilterEl.hidden = !isBooster;
-    const schemeFilter = isBooster ? schemeFilterEl?.value || "auto" : "auto";
-    renderBoosterSchemeInfo(isBooster ? schemes : null);
+    const calcModeEl = $("progSchemeFilter");
+    if (calcModeEl) calcModeEl.hidden = !isBooster;
+    const calcMode = isBooster ? calcModeEl?.value || "remarks" : "remarks";
+    renderBoosterSchemeInfo(isBooster ? progRuleFull : null);
 
-    const items = (rawData?.program_items || []).filter((it) => it.prog === progName);
+    const participantMap = progRuleFull.participants || {};
+    const items = (rawData?.program_items || []).filter((it) => {
+      if (isBooster && calcMode === "all_period") {
+        return !!participantMap[it.epr];
+      }
+      return it.prog === progName;
+    });
+
     const byEpr = new Map();
     const modelTotals = new Map();
     let excludedTx = 0;
@@ -941,9 +973,9 @@
           .join("")
       : '<span style="font-size:12px;color:var(--text-3)">Tidak ada transaksi pada rentang tanggal ini.</span>';
 
-    const overrides = isBooster ? getBoosterOverrides() : {};
+    const candidatePartners = isBooster ? list.filter((p) => !!participantMap[p.code]) : list;
 
-    const rows = list
+    const rows = candidatePartners
       .map((p) => {
         const hit = byEpr.get(p.code);
         const progVal = hit ? hit.net : 0;
@@ -954,16 +986,17 @@
           : { ink_664_003: 0, cons_other: 0, ink_bottle: 0, low_end: 0, mid_high: 0 };
         const shortfall = Math.max(0, (p.target || 0) - (p.actual || 0));
         let boosterEval = null;
+        let partInfo = null;
         if (isBooster) {
-          const ov = overrides[p.code] || {};
-          const pkgKey = ov.pkg || defaultBoosterPackage(p.tier);
-          const schemeKey =
-            schemeFilter !== "auto"
-              ? schemeFilter
-              : ov.scheme || defaultBoosterScheme(bucket);
-          boosterEval = evaluateBoosterPackage(bucket, schemeKey, pkgKey, schemes);
+          partInfo = participantMap[p.code];
+          boosterEval = evaluateBoosterPackage(
+            bucket,
+            progRuleFull.scheme,
+            partInfo.pkg,
+            progRuleFull.packages
+          );
         }
-        return { p, progVal, progQty, models, bucket, shortfall, boosterEval, joined: !!hit && progQty > 0 };
+        return { p, progVal, progQty, models, bucket, shortfall, boosterEval, partInfo, joined: !!hit && progQty > 0 };
       })
       .filter((r) => {
         if (mode === "joined") return r.joined;
@@ -975,7 +1008,9 @@
     const joinedCount = rows.filter((r) => r.joined).length;
     $("progEprTitle").textContent = `Monitor EPR — ${progName}`;
     $("progEprSub").textContent =
-      `${joinedCount} EPR ikut dalam periode` +
+      (isBooster
+        ? `${joinedCount} dari ${candidatePartners.length} EPR peserta terdaftar sudah ada transaksi`
+        : `${joinedCount} EPR ikut dalam periode`) +
       (excludedTx > 0
         ? ` · ${excludedTx} tx (${excludedQty.toLocaleString("id-ID")} unit) di luar periode tidak dihitung`
         : "");
@@ -1003,18 +1038,11 @@
             ? `<span class="badge badge-emerald">Achieved (${fmtPct(r.p.ach)})</span>`
             : `<span class="mono" style="color:var(--rose);font-weight:700">${fmtCompact(r.shortfall)}</span>`;
 
-        if (r.boosterEval) {
+        if (r.boosterEval && r.partInfo) {
           const ev = r.boosterEval;
-          pkgCellHtml = `<div class="prog-select-stack" data-no-drawer>
-            <select class="prog-select-mini" data-booster-pkg="${esc(r.p.code)}" title="Pilih Paket Booster">
-              <option value="SUN"${ev.pkgKey === "SUN" ? " selected" : ""}>Paket SUN</option>
-              <option value="STAR"${ev.pkgKey === "STAR" ? " selected" : ""}>Paket STAR</option>
-              <option value="MOON"${ev.pkgKey === "MOON" ? " selected" : ""}>Paket MOON</option>
-            </select>
-            <select class="prog-select-mini" data-booster-scheme="${esc(r.p.code)}" title="Pilih Skema Program"${schemeFilter !== "auto" ? " disabled" : ""}>
-              <option value="unit_ink"${ev.schemeKey === "unit_ink" ? " selected" : ""}>Unit + Ink Bottle</option>
-              <option value="consumables"${ev.schemeKey === "consumables" ? " selected" : ""}>Consumables</option>
-            </select>
+          pkgCellHtml = `<div style="display:flex;flex-direction:column;gap:3px">
+            <span class="badge badge-indigo">${esc(r.partInfo.pack_name)}</span>
+            <span class="partner-meta mono">FY26 Cat: ${esc(r.partInfo.fy_cat)}</span>
           </div>`;
 
           targetCellHtml = `<div class="booster-lines mono">${ev.lines
@@ -1054,24 +1082,6 @@
         </tr>`;
       })
       .join("");
-
-    tbody.querySelectorAll("[data-booster-pkg]").forEach((sel) => {
-      sel.addEventListener("click", (e) => e.stopPropagation());
-      sel.addEventListener("change", (e) => {
-        e.stopPropagation();
-        saveBoosterOverride(sel.dataset.boosterPkg, { pkg: sel.value });
-        renderProgramEprDetail(list, progName);
-      });
-    });
-
-    tbody.querySelectorAll("[data-booster-scheme]").forEach((sel) => {
-      sel.addEventListener("click", (e) => e.stopPropagation());
-      sel.addEventListener("change", (e) => {
-        e.stopPropagation();
-        saveBoosterOverride(sel.dataset.boosterScheme, { scheme: sel.value });
-        renderProgramEprDetail(list, progName);
-      });
-    });
 
     tbody.querySelectorAll("tr[data-code]").forEach((tr) => {
       tr.addEventListener("click", () => openDrawer(tr.dataset.code));
@@ -1757,7 +1767,7 @@
       localStorage.setItem("epr_program_rules", JSON.stringify(local));
 
       try {
-        const prevSchemes = rawData?.meta?.program_rules?.[selectedProg]?.schemes;
+        const prevRule = rawData?.meta?.program_rules?.[selectedProg];
         const res = await fetch("/api/program-rules", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -1767,8 +1777,11 @@
           const data = await res.json();
           if (rawData?.meta) {
             rawData.meta.program_rules = data.rules || {};
-            if (prevSchemes && rawData.meta.program_rules[selectedProg]) {
-              rawData.meta.program_rules[selectedProg].schemes = prevSchemes;
+            if (prevRule && rawData.meta.program_rules[selectedProg]) {
+              rawData.meta.program_rules[selectedProg] = {
+                ...prevRule,
+                ...rawData.meta.program_rules[selectedProg],
+              };
             }
           }
         }

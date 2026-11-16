@@ -88,7 +88,19 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
     ]
     con.close()
 
-    def _extract_program(rem_text):
+    rules_path = os.path.join(tool_dir, "data", "program_rules.json")
+    program_rules = {}
+    if os.path.exists(rules_path):
+        try:
+            with open(rules_path, encoding="utf-8") as rf:
+                program_rules = json.load(rf)
+        except Exception:
+            program_rules = {}
+
+    cons_participants = set((program_rules.get("Q3 Booster Up (Consumables)", {}).get("participants") or {}).keys())
+    unit_participants = set((program_rules.get("Q3 Booster Up (Consumer)", {}).get("participants") or {}).keys())
+
+    def _extract_program(rem_text, epr_code=""):
         parts = [x.strip() for x in (rem_text or "").split("|")]
         ad_raw = ""
         if len(parts) >= 4 and parts[-1].lower().startswith("src "):
@@ -100,7 +112,11 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         if m:
             return f"EIN-{m.group(1)}-{m.group(2).zfill(6)}"
         if re.match(r"^q3\s+booster(\s+up)?$", ad_raw, re.I):
-            return "Q3 Booster Up"
+            if epr_code in cons_participants:
+                return "Q3 Booster Up (Consumables)"
+            if epr_code in unit_participants:
+                return "Q3 Booster Up (Consumer)"
+            return "Reguler (Tanpa Program)"
         return ad_raw
 
     agg = defaultdict(lambda: defaultdict(float))
@@ -142,7 +158,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         if kat:
             ga["cats"][kat] += net
 
-        prog_name = _extract_program(r["remarks"])
+        prog_name = _extract_program(r["remarks"], code)
         pa = prog_agg[code][prog_name]
         pa["total"] += net
         pa["tx"] += 1
@@ -271,15 +287,6 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         }
         for ec, ev in sorted(global_epp.items(), key=lambda kv: -kv[1]["total"])
     ]
-
-    rules_path = os.path.join(tool_dir, "data", "program_rules.json")
-    program_rules = {}
-    if os.path.exists(rules_path):
-        try:
-            with open(rules_path, encoding="utf-8") as rf:
-                program_rules = json.load(rf)
-        except Exception:
-            program_rules = {}
 
     program_items = [
         {
