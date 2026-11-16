@@ -1796,6 +1796,7 @@
 
       <div class="pdf-foot">
         <span>Result Achievement EPR FY26 · Semua nilai exclude PPN 11%</span>
+        <span class="pdf-credit">Created by Aris Widodo</span>
         <span>${p.tx_count || 0} transaksi terverifikasi</span>
       </div>
     `;
@@ -1926,6 +1927,7 @@
 
       <div class="pdf-foot">
         <span>Result Achievement EPR (${esc(period.toUpperCase())}) · Exclude PPN 11%</span>
+        <span class="pdf-credit">Created by Aris Widodo</span>
         <span>${list.length} partner</span>
       </div>
     `;
@@ -2097,6 +2099,7 @@
 
       <div class="pdf-foot">
         <span>${esc(progName)} · ${esc(periodTxt)} · ${esc(sourceTxt)}</span>
+        <span class="pdf-credit">Created by Aris Widodo</span>
         <span>${printRows.length} EPR</span>
       </div>
     `;
