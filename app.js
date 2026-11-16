@@ -707,25 +707,28 @@
   function renderBoosterSchemeInfo(progRule) {
     const el = $("progSchemeInfo");
     if (!el) return;
-    if (!progRule || !progRule.scheme || !progRule.packages) {
+    if (!progRule || !progRule.schemes) {
       el.innerHTML = "";
       return;
     }
-    const schemeKey = progRule.scheme;
-    const pkgs = progRule.packages || {};
+    const uiScheme = progRule.schemes.unit_ink;
+    const coScheme = progRule.schemes.consumables;
     const parts = progRule.participants || {};
     const partEntries = Object.entries(parts);
-    const pkgRows = (keys, catNotes) =>
-      ["SUN", "STAR", "MOON"]
+    const notes = { SUN: "Sun", STAR: "Star, Earth, Moon", MOON: "Moon, Crescent" };
+
+    const pkgRows = (schemeObj, schemeKey, keys) => {
+      const pkgs = schemeObj?.packages || {};
+      return ["SUN", "STAR", "MOON"]
         .filter((k) => pkgs[k])
         .map((k) => {
           const p = pkgs[k];
           const nums = keys
             .map((fk) => `<td class="num mono">${(p.targets?.[fk] || 0).toLocaleString("id-ID")}</td>`)
             .join("");
-          const cnt = partEntries.filter(([, v]) => v.pkg === k).length;
+          const cnt = partEntries.filter(([, v]) => v.scheme === schemeKey && v.pkg === k).length;
           return `<tr>
-            <td><b>${k}</b> <span style="color:var(--text-3)">(${catNotes[k]})</span></td>
+            <td><b>${k}</b> <span style="color:var(--text-3)">(${notes[k]})</span></td>
             ${nums}
             <td class="num mono"><b>${(p.total_qty || 0).toLocaleString("id-ID")}</b></td>
             <td class="num mono">Rp ${(p.reward || 0).toLocaleString("id-ID")}</td>
@@ -733,42 +736,34 @@
           </tr>`;
         })
         .join("");
+    };
 
-    const notes = { SUN: "Sun", STAR: "Star, Earth, Moon", MOON: "Moon, Crescent" };
-    let participantSummary = "";
-    if (schemeKey === "unit_ink") {
-      const counts = ["SUN", "STAR", "MOON"]
-        .map((k) => `${partEntries.filter(([, v]) => v.pkg === k).length} ${k} Consumer`)
-        .join(" · ");
-      participantSummary = `${partEntries.length} EPR Terdaftar: ${counts}`;
-    } else {
-      const listTxt = partEntries
-        .map(([code, v]) => `${code} [${v.pack_name}]`)
-        .join(" · ");
-      participantSummary = `${partEntries.length} EPR Terdaftar: ${listTxt}`;
-    }
-
-    const headCols =
-      schemeKey === "unit_ink"
-        ? `<th>Paket</th><th class="num">Low End</th><th class="num">Mid High</th><th class="num">Ink Bottle</th><th class="num">Total</th><th class="num">Hadiah</th><th class="num">Peserta</th>`
-        : `<th>Paket</th><th class="num">664/003</th><th class="num">Lainnya</th><th class="num">Total</th><th class="num">Hadiah</th><th class="num">Peserta</th>`;
-    const bodyCols = schemeKey === "unit_ink" ? ["low_end", "mid_high", "ink_bottle"] : ["ink_664_003", "cons_other"];
-
+    const uiCount = partEntries.filter(([, v]) => v.scheme === "unit_ink").length;
+    const coEntries = partEntries.filter(([, v]) => v.scheme === "consumables");
+    const coSub = coEntries.map(([c, v]) => `${c} [${v.pack_name}]`).join(" · ");
     const localEppTxt = Array.isArray(progRule.local_epp_names) && progRule.local_epp_names.length
       ? `EPP Lokal: ${progRule.local_epp_names.join(", ")}`
       : "";
 
-    el.innerHTML = `<div class="prog-scheme-card">
-      <h4>
-        <span>${esc(progRule.label || schemeKey)}</span>
-        <span class="badge badge-indigo">${esc(participantSummary)}</span>
-      </h4>
-      ${localEppTxt ? `<div style="font-size:11.5px;color:var(--text-3);margin:-4px 0 8px 0">${esc(localEppTxt)}</div>` : ""}
-      <table class="prog-scheme-table">
-        <thead><tr>${headCols}</tr></thead>
-        <tbody>${pkgRows(bodyCols, notes)}</tbody>
-      </table>
-    </div>`;
+    el.innerHTML = `
+      ${localEppTxt ? `<div style="font-size:12px;color:var(--text-3);margin-bottom:8px">${esc(localEppTxt)}</div>` : ""}
+      <div class="prog-scheme-grid">
+        <div class="prog-scheme-card">
+          <h4><span>${esc(uiScheme?.label || "Program Q3 Booster Up (Consumer)")}</span><span class="badge badge-indigo">${uiCount} EPR</span></h4>
+          <table class="prog-scheme-table">
+            <thead><tr><th>Paket</th><th class="num">Low End</th><th class="num">Mid High</th><th class="num">Ink Bottle</th><th class="num">Total</th><th class="num">Hadiah</th><th class="num">Peserta</th></tr></thead>
+            <tbody>${pkgRows(uiScheme, "unit_ink", ["low_end", "mid_high", "ink_bottle"])}</tbody>
+          </table>
+        </div>
+        <div class="prog-scheme-card">
+          <h4><span>${esc(coScheme?.label || "Program Q3 Booster Up (Consumables)")}</span><span class="badge badge-indigo">${coEntries.length} EPR</span></h4>
+          ${coSub ? `<div style="font-size:11px;color:var(--text-3);margin:-4px 0 6px 0">${esc(coSub)}</div>` : ""}
+          <table class="prog-scheme-table">
+            <thead><tr><th>Paket</th><th class="num">664/003</th><th class="num">Lainnya</th><th class="num">Total</th><th class="num">Hadiah</th><th class="num">Peserta</th></tr></thead>
+            <tbody>${pkgRows(coScheme, "consumables", ["ink_664_003", "cons_other"])}</tbody>
+          </table>
+        </div>
+      </div>`;
   }
 
   function renderProgramSummary(list) {
@@ -836,9 +831,9 @@
     });
 
     const rows = [...map.values()].sort((a, b) => b.total - a.total);
-    if (!progAutoSelected && !selectedProg && rows.some((r) => r.name === "Q3 Booster Up (Consumer)")) {
+    if (!progAutoSelected && !selectedProg && rows.some((r) => r.name === "Q3 Booster Up")) {
       progAutoSelected = true;
-      selectedProg = "Q3 Booster Up (Consumer)";
+      selectedProg = "Q3 Booster Up";
       const r = rules[selectedProg] || {};
       $("progStart").value = r.start || "2026-10-01";
       $("progEnd").value = r.end || "2026-12-31";
@@ -915,15 +910,19 @@
       end: $("progEnd").value || "",
     };
     const progRuleFull = getProgramRules()[progName] || {};
-    const isBooster = !!(progRuleFull.scheme && progRuleFull.participants);
+    const isBooster = !!(progRuleFull.schemes && progRuleFull.participants);
+    const packFilterEl = $("progBoosterPackFilter");
+    if (packFilterEl) packFilterEl.hidden = !isBooster;
+    const packFilter = isBooster ? packFilterEl?.value || "all" : "all";
     renderBoosterSchemeInfo(isBooster ? progRuleFull : null);
 
     const participantMap = progRuleFull.participants || {};
-    const items = (rawData?.program_items || []).filter((it) => it.prog === progName);
+    const items = (rawData?.program_items || []).filter(
+      (it) => it.prog === progName || (progName === "Q3 Booster Up" && it.prog && it.prog.startsWith("Q3 Booster Up"))
+    );
 
     const byEpr = new Map();
     const modelTotals = new Map();
-    const grandBucket = { ink_664_003: 0, cons_other: 0, ink_bottle: 0, low_end: 0, mid_high: 0 };
     let excludedTx = 0;
     let excludedQty = 0;
 
@@ -954,30 +953,47 @@
       eo.bucket.low_end += bk.low_end;
       eo.bucket.mid_high += bk.mid_high;
 
-      grandBucket.ink_664_003 += bk.ink_664_003;
-      grandBucket.cons_other += bk.cons_other;
-      grandBucket.ink_bottle += bk.ink_bottle;
-      grandBucket.low_end += bk.low_end;
-      grandBucket.mid_high += bk.mid_high;
-
       const mKey = it.desc ? `${it.model} (${it.desc})` : it.model || "-";
       eo.models.set(mKey, (eo.models.get(mKey) || 0) + (it.qty || 0));
       modelTotals.set(mKey, (modelTotals.get(mKey) || 0) + (it.qty || 0));
     });
 
+    const candidatePartners = isBooster
+      ? list.filter((p) => {
+          const pi = participantMap[p.code];
+          if (!pi) return false;
+          if (packFilter !== "all" && pi.scheme !== packFilter) return false;
+          return true;
+        })
+      : list;
+
     if (isBooster) {
-      const summaryChips =
-        progRuleFull.scheme === "unit_ink"
-          ? [
-              ["Ink Bottle", `${grandBucket.ink_bottle.toLocaleString("id-ID")} pcs`],
-              ["Low End", `${grandBucket.low_end.toLocaleString("id-ID")} Unit`],
-              ["Mid High", `${grandBucket.mid_high.toLocaleString("id-ID")} Unit`],
-            ]
-          : [
-              ["664/003", `${grandBucket.ink_664_003.toLocaleString("id-ID")} pcs`],
-              ["Lainnya", `${grandBucket.cons_other.toLocaleString("id-ID")} pcs`],
-            ];
-      $("progModelSummary").innerHTML = summaryChips
+      const unitTot = { ink_bottle: 0, low_end: 0, mid_high: 0 };
+      const consTot = { ink_664_003: 0, cons_other: 0 };
+      candidatePartners.forEach((p) => {
+        const hit = byEpr.get(p.code);
+        const pi = participantMap[p.code];
+        if (!hit || !pi) return;
+        if (pi.scheme === "consumables") {
+          consTot.ink_664_003 += hit.bucket.ink_664_003;
+          consTot.cons_other += hit.bucket.cons_other;
+        } else {
+          unitTot.ink_bottle += hit.bucket.ink_bottle;
+          unitTot.low_end += hit.bucket.low_end;
+          unitTot.mid_high += hit.bucket.mid_high;
+        }
+      });
+      const chips = [];
+      if (packFilter === "all" || packFilter === "unit_ink") {
+        chips.push(["Consumer · Ink Bottle", `${unitTot.ink_bottle.toLocaleString("id-ID")} pcs`]);
+        chips.push(["Consumer · Low End", `${unitTot.low_end.toLocaleString("id-ID")} Unit`]);
+        chips.push(["Consumer · Mid High", `${unitTot.mid_high.toLocaleString("id-ID")} Unit`]);
+      }
+      if (packFilter === "all" || packFilter === "consumables") {
+        chips.push(["Consumables · 664/003", `${consTot.ink_664_003.toLocaleString("id-ID")} pcs`]);
+        chips.push(["Consumables · Lainnya", `${consTot.cons_other.toLocaleString("id-ID")} pcs`]);
+      }
+      $("progModelSummary").innerHTML = chips
         .map(([lbl, val]) => `<span class="model-chip"><span>${lbl}:</span><strong class="mono">${val}</strong></span>`)
         .join("");
     } else {
@@ -993,8 +1009,6 @@
         : '<span style="font-size:12px;color:var(--text-3)">Tidak ada transaksi pada rentang tanggal ini.</span>';
     }
 
-    const candidatePartners = isBooster ? list.filter((p) => !!participantMap[p.code]) : list;
-
     const rows = candidatePartners
       .map((p) => {
         const hit = byEpr.get(p.code);
@@ -1002,26 +1016,25 @@
         const bucket = hit
           ? hit.bucket
           : { ink_664_003: 0, cons_other: 0, ink_bottle: 0, low_end: 0, mid_high: 0 };
-        const progQty = isBooster
-          ? progRuleFull.scheme === "unit_ink"
-            ? bucket.ink_bottle + bucket.low_end + bucket.mid_high
-            : bucket.ink_664_003 + bucket.cons_other
-          : hit
-          ? hit.qty
-          : 0;
-        const models = hit ? [...hit.models.entries()].sort((a, b) => b[1] - a[1]) : [];
-        const shortfall = Math.max(0, (p.target || 0) - (p.actual || 0));
         let boosterEval = null;
         let partInfo = null;
+        let progQty = hit ? hit.qty : 0;
         if (isBooster) {
           partInfo = participantMap[p.code];
+          const schemeObj = progRuleFull.schemes?.[partInfo.scheme];
           boosterEval = evaluateBoosterPackage(
             bucket,
-            progRuleFull.scheme,
+            partInfo.scheme,
             partInfo.pkg,
-            progRuleFull.packages
+            schemeObj?.packages
           );
+          progQty =
+            partInfo.scheme === "consumables"
+              ? bucket.ink_664_003 + bucket.cons_other
+              : bucket.ink_bottle + bucket.low_end + bucket.mid_high;
         }
+        const models = hit ? [...hit.models.entries()].sort((a, b) => b[1] - a[1]) : [];
+        const shortfall = Math.max(0, (p.target || 0) - (p.actual || 0));
         return { p, progVal, progQty, models, bucket, shortfall, boosterEval, partInfo, joined: !!hit && progQty > 0 };
       })
       .filter((r) => {
@@ -1050,19 +1063,19 @@
     tbody.innerHTML = rows
       .map((r, i) => {
         let modelHtml;
-        if (isBooster) {
+        if (isBooster && r.partInfo) {
           if (!r.joined) {
             modelHtml = '<span class="badge badge-neutral">Belum Beli</span>';
-          } else if (progRuleFull.scheme === "unit_ink") {
+          } else if (r.partInfo.scheme === "consumables") {
+            modelHtml = `<div class="model-list-cell">
+              <span class="badge badge-neutral mono">664/003: ${r.bucket.ink_664_003.toLocaleString("id-ID")} pcs</span>
+              <span class="badge badge-neutral mono">Lainnya: ${r.bucket.cons_other.toLocaleString("id-ID")} pcs</span>
+            </div>`;
+          } else {
             modelHtml = `<div class="model-list-cell">
               <span class="badge badge-neutral mono">Ink Bottle: ${r.bucket.ink_bottle.toLocaleString("id-ID")} pcs</span>
               <span class="badge badge-neutral mono">Low End: ${r.bucket.low_end.toLocaleString("id-ID")} Unit</span>
               <span class="badge badge-neutral mono">Mid High: ${r.bucket.mid_high.toLocaleString("id-ID")} Unit</span>
-            </div>`;
-          } else {
-            modelHtml = `<div class="model-list-cell">
-              <span class="badge badge-neutral mono">664/003: ${r.bucket.ink_664_003.toLocaleString("id-ID")} pcs</span>
-              <span class="badge badge-neutral mono">Lainnya: ${r.bucket.cons_other.toLocaleString("id-ID")} pcs</span>
             </div>`;
           }
         } else {
@@ -1791,6 +1804,9 @@
     $("progEprMode").addEventListener("change", () => {
       if (selectedProg) renderProgramEprDetail(getFilteredPartners(), selectedProg);
     });
+    $("progBoosterPackFilter")?.addEventListener("change", () => {
+      if (selectedProg) renderProgramEprDetail(getFilteredPartners(), selectedProg);
+    });
     $("progStart").addEventListener("change", () => {
       if (selectedProg) renderProgramEprDetail(getFilteredPartners(), selectedProg);
     });
@@ -2168,7 +2184,7 @@
     initTheme();
     bindEvents();
     try {
-      const res = await fetch("./data/epr_data.json", { cache: "no-store" });
+      const res = await fetch(`./data/epr_data.json?t=${Date.now()}`, { cache: "no-store" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       rawData = await res.json();
       populateFilters(rawData.partners || []);

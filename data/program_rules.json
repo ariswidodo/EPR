@@ -3,83 +3,79 @@
     "start": "2026-09-01",
     "end": "2026-09-30"
   },
-  "Q3 Booster Up (Consumer)": {
+  "Q3 Booster Up": {
     "start": "2026-10-01",
     "end": "2026-12-31",
-    "scheme": "unit_ink",
-    "label": "Program Q3 Booster Up (Consumer — Unit + Ink Bottle)",
     "local_epps": ["EPP-0056", "EPP-0245", "EPP-0050", "EPP-0055"],
     "local_epp_names": ["PT Computek", "Raka Perkasa", "Computa", "Top Distribusi"],
-    "packages": {
-      "SUN": {
-        "categories": ["SUN"],
-        "reward": 20000000,
-        "total_qty": 4740,
-        "targets": { "low_end": 500, "mid_high": 40, "ink_bottle": 4200 }
+    "schemes": {
+      "unit_ink": {
+        "label": "Program Q3 Booster Up (Consumer — Unit + Ink Bottle)",
+        "packages": {
+          "SUN": {
+            "categories": ["SUN"],
+            "reward": 20000000,
+            "total_qty": 4740,
+            "targets": { "low_end": 500, "mid_high": 40, "ink_bottle": 4200 }
+          },
+          "STAR": {
+            "categories": ["STAR", "PLANET", "EARTH", "MOON"],
+            "reward": 10000000,
+            "total_qty": 2275,
+            "targets": { "low_end": 250, "mid_high": 25, "ink_bottle": 2000 }
+          },
+          "MOON": {
+            "categories": ["MOON", "CRESCENT"],
+            "reward": 3900000,
+            "total_qty": 580,
+            "targets": { "low_end": 120, "mid_high": 10, "ink_bottle": 450 }
+          }
+        }
       },
-      "STAR": {
-        "categories": ["STAR", "PLANET", "EARTH", "MOON"],
-        "reward": 10000000,
-        "total_qty": 2275,
-        "targets": { "low_end": 250, "mid_high": 25, "ink_bottle": 2000 }
-      },
-      "MOON": {
-        "categories": ["MOON", "CRESCENT"],
-        "reward": 3900000,
-        "total_qty": 580,
-        "targets": { "low_end": 120, "mid_high": 10, "ink_bottle": 450 }
+      "consumables": {
+        "label": "Program Q3 Booster Up (Consumables)",
+        "packages": {
+          "SUN": {
+            "categories": ["SUN"],
+            "reward": 20000000,
+            "total_qty": 18500,
+            "targets": { "ink_664_003": 18200, "cons_other": 300 }
+          },
+          "STAR": {
+            "categories": ["STAR", "PLANET", "EARTH", "MOON"],
+            "reward": 10000000,
+            "total_qty": 9200,
+            "targets": { "ink_664_003": 9000, "cons_other": 200 }
+          },
+          "MOON": {
+            "categories": ["MOON", "CRESCENT"],
+            "reward": 3900000,
+            "total_qty": 4100,
+            "targets": { "ink_664_003": 4000, "cons_other": 100 }
+          }
+        }
       }
     },
     "participants": {
-      "EPR-1002": { "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
-      "EPR-1628": { "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
-      "EPR-1967": { "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
-      "EPR-1966": { "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
-      "EPR-1999": { "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
-      "EPR-0038": { "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "MOON" },
-      "EPR-1005": { "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "MOON" },
-      "EPR-0650": { "pkg": "STAR", "pack_name": "STAR Consumer", "fy_cat": "STAR" },
-      "EPR-1410": { "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
-      "EPR-1816": { "pkg": "STAR", "pack_name": "STAR Consumer", "fy_cat": "EARTH" },
-      "EPR-1197": { "pkg": "SUN", "pack_name": "SUN Consumer", "fy_cat": "STAR" },
-      "EPR-1906": { "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
-      "EPR-0733": { "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
-      "EPR-0267": { "pkg": "SUN", "pack_name": "SUN Consumer", "fy_cat": "SUN" },
-      "EPR-0054": { "pkg": "SUN", "pack_name": "SUN Consumer", "fy_cat": "SUN" },
-      "EPR-1413": { "pkg": "SUN", "pack_name": "SUN Consumer", "fy_cat": "SUN" },
-      "EPR-0881": { "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" }
-    }
-  },
-  "Q3 Booster Up (Consumables)": {
-    "start": "2026-10-01",
-    "end": "2026-12-31",
-    "scheme": "consumables",
-    "label": "Program Q3 Booster Up (Consumables)",
-    "local_epps": ["EPP-0056", "EPP-0245", "EPP-0050", "EPP-0055"],
-    "local_epp_names": ["PT Computek", "Raka Perkasa", "Computa", "Top Distribusi"],
-    "packages": {
-      "SUN": {
-        "categories": ["SUN"],
-        "reward": 20000000,
-        "total_qty": 18500,
-        "targets": { "ink_664_003": 18200, "cons_other": 300 }
-      },
-      "STAR": {
-        "categories": ["STAR", "PLANET", "EARTH", "MOON"],
-        "reward": 10000000,
-        "total_qty": 9200,
-        "targets": { "ink_664_003": 9000, "cons_other": 200 }
-      },
-      "MOON": {
-        "categories": ["MOON", "CRESCENT"],
-        "reward": 3900000,
-        "total_qty": 4100,
-        "targets": { "ink_664_003": 4000, "cons_other": 100 }
-      }
-    },
-    "participants": {
-      "EPR-2013": { "pkg": "SUN", "pack_name": "SUN Consumables", "fy_cat": "CRESCENT" },
-      "EPR-1768": { "pkg": "MOON", "pack_name": "MOON Consumables", "fy_cat": "SUN" }
+      "EPR-1002": { "scheme": "unit_ink", "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
+      "EPR-1628": { "scheme": "unit_ink", "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
+      "EPR-1967": { "scheme": "unit_ink", "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
+      "EPR-1966": { "scheme": "unit_ink", "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
+      "EPR-1999": { "scheme": "unit_ink", "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
+      "EPR-0038": { "scheme": "unit_ink", "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "MOON" },
+      "EPR-1005": { "scheme": "unit_ink", "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "MOON" },
+      "EPR-0650": { "scheme": "unit_ink", "pkg": "STAR", "pack_name": "STAR Consumer", "fy_cat": "STAR" },
+      "EPR-1410": { "scheme": "unit_ink", "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
+      "EPR-1816": { "scheme": "unit_ink", "pkg": "STAR", "pack_name": "STAR Consumer", "fy_cat": "EARTH" },
+      "EPR-1197": { "scheme": "unit_ink", "pkg": "SUN", "pack_name": "SUN Consumer", "fy_cat": "STAR" },
+      "EPR-1906": { "scheme": "unit_ink", "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
+      "EPR-0733": { "scheme": "unit_ink", "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
+      "EPR-0267": { "scheme": "unit_ink", "pkg": "SUN", "pack_name": "SUN Consumer", "fy_cat": "SUN" },
+      "EPR-0054": { "scheme": "unit_ink", "pkg": "SUN", "pack_name": "SUN Consumer", "fy_cat": "SUN" },
+      "EPR-1413": { "scheme": "unit_ink", "pkg": "SUN", "pack_name": "SUN Consumer", "fy_cat": "SUN" },
+      "EPR-0881": { "scheme": "unit_ink", "pkg": "MOON", "pack_name": "MOON Consumer", "fy_cat": "CRESCENT" },
+      "EPR-2013": { "scheme": "consumables", "pkg": "SUN", "pack_name": "SUN Consumables", "fy_cat": "CRESCENT" },
+      "EPR-1768": { "scheme": "consumables", "pkg": "MOON", "pack_name": "MOON Consumables", "fy_cat": "SUN" }
     }
   }
 }

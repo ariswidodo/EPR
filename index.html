@@ -287,6 +287,11 @@
             <span style="font-size:12px;color:var(--text-3)">s/d</span>
             <input type="date" id="progEnd" class="mini-input" style="width:132px" title="Akhir periode program" />
             <button class="btn btn-primary" id="btnSaveProgRule" style="height:32px;padding:0 10px;font-size:12px">Simpan Periode</button>
+            <select id="progBoosterPackFilter" aria-label="Filter jenis paket Booster" hidden>
+              <option value="all">Semua Paket (19 EPR)</option>
+              <option value="consumables">Paket Consumables (2 EPR)</option>
+              <option value="unit_ink">Paket Consumer (17 EPR)</option>
+            </select>
             <select id="progEprMode" aria-label="Filter keikutsertaan EPR">
               <option value="all">Semua EPR (Ikut &amp; Belum)</option>
               <option value="joined">Hanya yang Sudah Beli</option>
@@ -561,6 +566,6 @@
   <!-- Printable PDF Report Container (per EPR) -->
   <section id="pdfReport" class="pdf-report" aria-hidden="true"></section>
 
-  <script src="app.js?v=20261116c"></script>
+  <script src="app.js?v=20261116d"></script>
 </body>
 </html>

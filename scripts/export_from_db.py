@@ -97,8 +97,7 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         except Exception:
             program_rules = {}
 
-    cons_map = {}
-    unit_map = {}
+    booster_map = {}
     peserta_csv = os.path.join(tool_dir, "data", "peserta_booster.csv")
     if os.path.exists(peserta_csv):
         with open(peserta_csv, encoding="utf-8-sig") as pf:
@@ -109,18 +108,25 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
                 if not ec or not pack:
                     continue
                 pkg = pack.split()[0].upper()
-                entry = {"pkg": pkg, "pack_name": pack, "fy_cat": fy_cat}
                 if "CONSUMABLES" in pack.upper():
-                    cons_map[ec] = entry
+                    scheme = "consumables"
                 elif "CONSUMER" in pack.upper():
-                    unit_map[ec] = entry
-        if "Q3 Booster Up (Consumables)" in program_rules:
-            program_rules["Q3 Booster Up (Consumables)"]["participants"] = cons_map
-        if "Q3 Booster Up (Consumer)" in program_rules:
-            program_rules["Q3 Booster Up (Consumer)"]["participants"] = unit_map
+                    scheme = "unit_ink"
+                else:
+                    continue
+                booster_map[ec] = {
+                    "scheme": scheme,
+                    "pkg": pkg,
+                    "pack_name": pack,
+                    "fy_cat": fy_cat,
+                }
+        if "Q3 Booster Up" in program_rules:
+            program_rules["Q3 Booster Up"]["participants"] = booster_map
 
-    cons_participants = set(cons_map or (program_rules.get("Q3 Booster Up (Consumables)", {}).get("participants") or {}).keys())
-    unit_participants = set(unit_map or (program_rules.get("Q3 Booster Up (Consumer)", {}).get("participants") or {}).keys())
+    booster_participants = set(
+        booster_map
+        or (program_rules.get("Q3 Booster Up", {}).get("participants") or {}).keys()
+    )
     LOCAL_BOOSTER_EPPS = {"EPP-0050", "EPP-0055", "EPP-0056", "EPP-0245"}
 
     def _is_local_booster_epp(epp_code, epp_name):
@@ -141,11 +147,12 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         if m:
             return f"EIN-{m.group(1)}-{m.group(2).zfill(6)}"
         if re.match(r"^q3\s+booster(\s+up)?$", ad_raw, re.I):
-            if "2026-10-01" <= (inv_date or "") <= "2026-12-31" and _is_local_booster_epp(epp_code, epp_name):
-                if epr_code in cons_participants:
-                    return "Q3 Booster Up (Consumables)"
-                if epr_code in unit_participants:
-                    return "Q3 Booster Up (Consumer)"
+            if (
+                "2026-10-01" <= (inv_date or "") <= "2026-12-31"
+                and _is_local_booster_epp(epp_code, epp_name)
+                and (epr_code or "").upper() in booster_participants
+            ):
+                return "Q3 Booster Up"
             return "Reguler (Tanpa Program)"
         return ad_raw
 

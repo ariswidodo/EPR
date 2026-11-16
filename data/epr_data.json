@@ -2,7 +2,7 @@
   "meta": {
     "title": "EPR FY26 Achievement Dashboard",
     "fiscal_year": "FY26 (Apr 2026 - Mar 2027)",
-    "generated_at": "2026-11-16 09:09:17",
+    "generated_at": "2026-11-16 09:22:02",
     "last_source_file": "Q2 FY26.xlsx",
     "last_processed_at": "2026-11-14 22:04:13",
     "verified_rows": 8705,
@@ -28,9 +28,8 @@
     ],
     "programs": [
       "Reguler (Tanpa Program)",
-      "Q3 Booster Up (Consumer)",
+      "Q3 Booster Up",
       "COMPUMART SALES PACKAGE",
-      "Q3 Booster Up (Consumables)",
       "SN DOUBLE",
       "Low End"
     ],
@@ -39,11 +38,9 @@
         "start": "2026-09-01",
         "end": "2026-09-30"
       },
-      "Q3 Booster Up (Consumer)": {
+      "Q3 Booster Up": {
         "start": "2026-10-01",
         "end": "2026-12-31",
-        "scheme": "unit_ink",
-        "label": "Program Q3 Booster Up (Consumer — Unit + Ink Bottle)",
         "local_epps": [
           "EPP-0056",
           "EPP-0245",
@@ -56,199 +53,206 @@
           "Computa",
           "Top Distribusi"
         ],
-        "packages": {
-          "SUN": {
-            "categories": [
-              "SUN"
-            ],
-            "reward": 20000000,
-            "total_qty": 4740,
-            "targets": {
-              "low_end": 500,
-              "mid_high": 40,
-              "ink_bottle": 4200
+        "schemes": {
+          "unit_ink": {
+            "label": "Program Q3 Booster Up (Consumer — Unit + Ink Bottle)",
+            "packages": {
+              "SUN": {
+                "categories": [
+                  "SUN"
+                ],
+                "reward": 20000000,
+                "total_qty": 4740,
+                "targets": {
+                  "low_end": 500,
+                  "mid_high": 40,
+                  "ink_bottle": 4200
+                }
+              },
+              "STAR": {
+                "categories": [
+                  "STAR",
+                  "PLANET",
+                  "EARTH",
+                  "MOON"
+                ],
+                "reward": 10000000,
+                "total_qty": 2275,
+                "targets": {
+                  "low_end": 250,
+                  "mid_high": 25,
+                  "ink_bottle": 2000
+                }
+              },
+              "MOON": {
+                "categories": [
+                  "MOON",
+                  "CRESCENT"
+                ],
+                "reward": 3900000,
+                "total_qty": 580,
+                "targets": {
+                  "low_end": 120,
+                  "mid_high": 10,
+                  "ink_bottle": 450
+                }
+              }
             }
           },
-          "STAR": {
-            "categories": [
-              "STAR",
-              "PLANET",
-              "EARTH",
-              "MOON"
-            ],
-            "reward": 10000000,
-            "total_qty": 2275,
-            "targets": {
-              "low_end": 250,
-              "mid_high": 25,
-              "ink_bottle": 2000
-            }
-          },
-          "MOON": {
-            "categories": [
-              "MOON",
-              "CRESCENT"
-            ],
-            "reward": 3900000,
-            "total_qty": 580,
-            "targets": {
-              "low_end": 120,
-              "mid_high": 10,
-              "ink_bottle": 450
+          "consumables": {
+            "label": "Program Q3 Booster Up (Consumables)",
+            "packages": {
+              "SUN": {
+                "categories": [
+                  "SUN"
+                ],
+                "reward": 20000000,
+                "total_qty": 18500,
+                "targets": {
+                  "ink_664_003": 18200,
+                  "cons_other": 300
+                }
+              },
+              "STAR": {
+                "categories": [
+                  "STAR",
+                  "PLANET",
+                  "EARTH",
+                  "MOON"
+                ],
+                "reward": 10000000,
+                "total_qty": 9200,
+                "targets": {
+                  "ink_664_003": 9000,
+                  "cons_other": 200
+                }
+              },
+              "MOON": {
+                "categories": [
+                  "MOON",
+                  "CRESCENT"
+                ],
+                "reward": 3900000,
+                "total_qty": 4100,
+                "targets": {
+                  "ink_664_003": 4000,
+                  "cons_other": 100
+                }
+              }
             }
           }
         },
         "participants": {
           "EPR-1002": {
+            "scheme": "unit_ink",
             "pkg": "MOON",
             "pack_name": "MOON Consumer",
             "fy_cat": "CRESCENT"
           },
           "EPR-1628": {
+            "scheme": "unit_ink",
             "pkg": "MOON",
             "pack_name": "MOON Consumer",
             "fy_cat": "CRESCENT"
           },
           "EPR-1967": {
+            "scheme": "unit_ink",
             "pkg": "MOON",
             "pack_name": "MOON Consumer",
             "fy_cat": "CRESCENT"
           },
           "EPR-1966": {
+            "scheme": "unit_ink",
             "pkg": "MOON",
             "pack_name": "MOON Consumer",
             "fy_cat": "CRESCENT"
           },
           "EPR-1999": {
+            "scheme": "unit_ink",
             "pkg": "MOON",
             "pack_name": "MOON Consumer",
             "fy_cat": "CRESCENT"
           },
           "EPR-0038": {
+            "scheme": "unit_ink",
             "pkg": "MOON",
             "pack_name": "MOON Consumer",
             "fy_cat": "MOON"
           },
           "EPR-1005": {
+            "scheme": "unit_ink",
             "pkg": "MOON",
             "pack_name": "MOON Consumer",
             "fy_cat": "MOON"
           },
           "EPR-0650": {
+            "scheme": "unit_ink",
             "pkg": "STAR",
             "pack_name": "STAR Consumer",
             "fy_cat": "STAR"
           },
           "EPR-1410": {
+            "scheme": "unit_ink",
             "pkg": "MOON",
             "pack_name": "MOON Consumer",
             "fy_cat": "CRESCENT"
           },
           "EPR-1816": {
+            "scheme": "unit_ink",
             "pkg": "STAR",
             "pack_name": "STAR Consumer",
             "fy_cat": "EARTH"
           },
           "EPR-1197": {
+            "scheme": "unit_ink",
             "pkg": "SUN",
             "pack_name": "SUN Consumer",
             "fy_cat": "STAR"
           },
           "EPR-1906": {
+            "scheme": "unit_ink",
             "pkg": "MOON",
             "pack_name": "MOON Consumer",
             "fy_cat": "CRESCENT"
           },
           "EPR-0733": {
+            "scheme": "unit_ink",
             "pkg": "MOON",
             "pack_name": "MOON Consumer",
             "fy_cat": "CRESCENT"
           },
           "EPR-0267": {
+            "scheme": "unit_ink",
             "pkg": "SUN",
             "pack_name": "SUN Consumer",
             "fy_cat": "SUN"
           },
           "EPR-0054": {
+            "scheme": "unit_ink",
             "pkg": "SUN",
             "pack_name": "SUN Consumer",
             "fy_cat": "SUN"
           },
           "EPR-1413": {
+            "scheme": "unit_ink",
             "pkg": "SUN",
             "pack_name": "SUN Consumer",
             "fy_cat": "SUN"
           },
           "EPR-0881": {
+            "scheme": "unit_ink",
             "pkg": "MOON",
             "pack_name": "MOON Consumer",
             "fy_cat": "CRESCENT"
-          }
-        }
-      },
-      "Q3 Booster Up (Consumables)": {
-        "start": "2026-10-01",
-        "end": "2026-12-31",
-        "scheme": "consumables",
-        "label": "Program Q3 Booster Up (Consumables)",
-        "local_epps": [
-          "EPP-0056",
-          "EPP-0245",
-          "EPP-0050",
-          "EPP-0055"
-        ],
-        "local_epp_names": [
-          "PT Computek",
-          "Raka Perkasa",
-          "Computa",
-          "Top Distribusi"
-        ],
-        "packages": {
-          "SUN": {
-            "categories": [
-              "SUN"
-            ],
-            "reward": 20000000,
-            "total_qty": 18500,
-            "targets": {
-              "ink_664_003": 18200,
-              "cons_other": 300
-            }
           },
-          "STAR": {
-            "categories": [
-              "STAR",
-              "PLANET",
-              "EARTH",
-              "MOON"
-            ],
-            "reward": 10000000,
-            "total_qty": 9200,
-            "targets": {
-              "ink_664_003": 9000,
-              "cons_other": 200
-            }
-          },
-          "MOON": {
-            "categories": [
-              "MOON",
-              "CRESCENT"
-            ],
-            "reward": 3900000,
-            "total_qty": 4100,
-            "targets": {
-              "ink_664_003": 4000,
-              "cons_other": 100
-            }
-          }
-        },
-        "participants": {
           "EPR-2013": {
+            "scheme": "consumables",
             "pkg": "SUN",
             "pack_name": "SUN Consumables",
             "fy_cat": "CRESCENT"
           },
           "EPR-1768": {
+            "scheme": "consumables",
             "pkg": "MOON",
             "pack_name": "MOON Consumables",
             "fy_cat": "SUN"
@@ -7372,7 +7376,7 @@
     },
     {
       "epr": "EPR-0650",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-07",
       "model": "C11CJ65504",
       "desc": "L5290 INDO",
@@ -7552,7 +7556,7 @@
     },
     {
       "epr": "EPR-1002",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-15",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -7564,7 +7568,7 @@
     },
     {
       "epr": "EPR-1002",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-05",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -7576,7 +7580,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-02",
       "model": "C13S015531",
       "desc": "RIBBON,S015086(B),ASIA",
@@ -7612,7 +7616,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-16",
       "model": "C13S015639",
       "desc": "RIBBON,S015634(B), ASIA,B,24",
@@ -7624,7 +7628,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-07",
       "model": "C13T774100",
       "desc": "INK BOTTLE,BK,140ML",
@@ -7636,7 +7640,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-16",
       "model": "C13T03Y300",
       "desc": "INK BOTTLE,M,A/A,70ML",
@@ -7648,7 +7652,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-16",
       "model": "C13T03Y200",
       "desc": "INK BOTTLE,C,A/A,70ML",
@@ -7660,7 +7664,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-16",
       "model": "C13T03Y400",
       "desc": "INK BOTTLE,Y,A/A,70ML",
@@ -7672,7 +7676,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-16",
       "model": "C13T03Y100",
       "desc": "INK BOTTLE,BK,A/A",
@@ -7684,7 +7688,7 @@
     },
     {
       "epr": "EPR-0650",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-22",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -7696,7 +7700,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-28",
       "model": "C11CJ65504",
       "desc": "L5290 INDO",
@@ -7732,7 +7736,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-15",
       "model": "C13T664399",
       "desc": "MAGENTA 70ML INK BOTTLE (EIN)",
@@ -7756,7 +7760,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -7804,7 +7808,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-28",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -7828,7 +7832,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-20",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -7840,7 +7844,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-28",
       "model": "C13T664299",
       "desc": "CYAN 70ML INK BOTTLE (EIN)",
@@ -7852,7 +7856,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -7864,7 +7868,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-22",
       "model": "C13T664499",
       "desc": "YELLOW 70ML INK BOTTLE (EIN)",
@@ -7900,7 +7904,7 @@
     },
     {
       "epr": "EPR-0650",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-28",
       "model": "C11CL41504",
       "desc": "L4360 INDO",
@@ -7912,7 +7916,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T664199",
       "desc": "BLACK 70ML INK BOTTLE (EIN)",
@@ -7936,7 +7940,7 @@
     },
     {
       "epr": "EPR-0650",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-20",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -7960,7 +7964,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-22",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -7984,7 +7988,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-20",
       "model": "C13T664399",
       "desc": "MAGENTA 70ML INK BOTTLE (EIN)",
@@ -8008,7 +8012,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-15",
       "model": "C13T664199",
       "desc": "BLACK 70ML INK BOTTLE (EIN)",
@@ -8020,7 +8024,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-15",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -8032,7 +8036,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-15",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -8056,7 +8060,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-22",
       "model": "C13T03Y400",
       "desc": "INK BOTTLE,Y,A/A,70ML",
@@ -8080,7 +8084,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-28",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -8092,7 +8096,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-20",
       "model": "C13T664499",
       "desc": "YELLOW 70ML INK BOTTLE (EIN)",
@@ -8116,7 +8120,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T664299",
       "desc": "CYAN 70ML INK BOTTLE (EIN)",
@@ -8188,7 +8192,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-21",
       "model": "C13T664299",
       "desc": "CYAN 70ML INK BOTTLE (EIN)",
@@ -8284,7 +8288,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13T664199",
       "desc": "BLACK 70ML INK BOTTLE (EIN)",
@@ -8332,7 +8336,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-22",
       "model": "C13T03Y200",
       "desc": "INK BOTTLE,C,A/A,70ML",
@@ -8356,7 +8360,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-15",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -8404,7 +8408,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-01",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -8428,7 +8432,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-22",
       "model": "C13T03Y300",
       "desc": "INK BOTTLE,M,A/A,70ML",
@@ -8464,7 +8468,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13S015516",
       "desc": "RIBBON,#8750(B),ASIA",
@@ -8488,7 +8492,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-22",
       "model": "C13S015516",
       "desc": "RIBBON,#8750(B),ASIA",
@@ -8524,7 +8528,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-20",
       "model": "C13T664199",
       "desc": "BLACK 70ML INK BOTTLE (EIN)",
@@ -8536,7 +8540,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-22",
       "model": "C13T664199",
       "desc": "BLACK 70ML INK BOTTLE (EIN)",
@@ -8548,7 +8552,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T664499",
       "desc": "YELLOW 70ML INK BOTTLE (EIN)",
@@ -8560,7 +8564,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-15",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -8584,7 +8588,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T06G199",
       "desc": "008 BLACK PIGMENT, 127ML (EIN)",
@@ -8596,7 +8600,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-28",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -8608,7 +8612,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T664399",
       "desc": "MAGENTA 70ML INK BOTTLE (EIN)",
@@ -8644,7 +8648,7 @@
     },
     {
       "epr": "EPR-0650",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-27",
       "model": "C11CJ68504",
       "desc": "L3211 INDO 2",
@@ -8656,7 +8660,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T06G299",
       "desc": "008 CYAN PIGMENT, 70ML (EIN)",
@@ -8692,7 +8696,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-20",
       "model": "C13T664299",
       "desc": "CYAN 70ML INK BOTTLE (EIN)",
@@ -8704,7 +8708,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-22",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -8716,7 +8720,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -8728,7 +8732,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-15",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -8776,7 +8780,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-22",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -8800,7 +8804,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-15",
       "model": "C13T664499",
       "desc": "YELLOW 70ML INK BOTTLE (EIN)",
@@ -8872,7 +8876,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T06G499",
       "desc": "008 YELLOW PIGMENT, 70ML (EIN)",
@@ -8884,7 +8888,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -8896,7 +8900,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T06G399",
       "desc": "008 MAGENTA PIGMENT, 70ML (EIN)",
@@ -8908,7 +8912,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-20",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -8932,7 +8936,7 @@
     },
     {
       "epr": "EPR-1816",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-28",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -8980,7 +8984,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-22",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -8992,7 +8996,7 @@
     },
     {
       "epr": "EPR-0650",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-13",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -9232,7 +9236,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-15",
       "model": "C13T03Y100",
       "desc": "INK BOTTLE,BK,A/A",
@@ -9244,7 +9248,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-15",
       "model": "C13T03Y300",
       "desc": "INK BOTTLE,M,A/A,70ML",
@@ -9256,7 +9260,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-23",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -9268,7 +9272,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-05",
       "model": "C43S015374",
       "desc": "ERC-38(B) RIBBON CASSETTE.",
@@ -9280,7 +9284,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -9292,7 +9296,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-23",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -9304,7 +9308,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -9316,7 +9320,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-23",
       "model": "C13T664199",
       "desc": "BLACK 70ML INK BOTTLE (EIN)",
@@ -9340,7 +9344,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-15",
       "model": "C13T03Y200",
       "desc": "INK BOTTLE,C,A/A,70ML",
@@ -9376,7 +9380,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-21",
       "model": "C11CC24341",
       "desc": "LX-310 (INDO) IMPACT PRINTER",
@@ -9388,7 +9392,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C11CJ67506",
       "desc": "L3251 INDO 2",
@@ -9400,7 +9404,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-02",
       "model": "C13T06G499",
       "desc": "008 YELLOW PIGMENT, 70ML (EIN)",
@@ -9412,7 +9416,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13T09D299",
       "desc": "L8050 CYAN DYE 70ML INK BOTTLE",
@@ -9424,7 +9428,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-30",
       "model": "C11CH96502",
       "desc": "L14150 STD",
@@ -9436,7 +9440,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13T09D199",
       "desc": "L8050 BLACK DYE 70ML INK BOTTLE",
@@ -9448,7 +9452,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-30",
       "model": "C11CK39502",
       "desc": "L11050 INDO",
@@ -9460,7 +9464,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-02",
       "model": "C13S015639",
       "desc": "RIBBON,S015634(B), ASIA,B,24",
@@ -9472,7 +9476,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13T09D699",
       "desc": "L8050 LT MAGENTA DYE 70ML INK BOTTLE",
@@ -9484,7 +9488,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-15",
       "model": "C13T03Y400",
       "desc": "INK BOTTLE,Y,A/A,70ML",
@@ -9496,7 +9500,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-02",
       "model": "C13T03Y300",
       "desc": "INK BOTTLE,M,A/A,70ML",
@@ -9532,7 +9536,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-23",
       "model": "C13T03Y300",
       "desc": "INK BOTTLE,M,A/A,70ML",
@@ -9544,7 +9548,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-06",
       "model": "C13S015531",
       "desc": "RIBBON,S015086(B),ASIA",
@@ -9556,7 +9560,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -9568,7 +9572,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-02",
       "model": "C13T06G199",
       "desc": "008 BLACK PIGMENT, 127ML (EIN)",
@@ -9580,7 +9584,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13T09D399",
       "desc": "L8050 MAGENTA DYE 70ML INK BOTTLE",
@@ -9592,7 +9596,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -9604,7 +9608,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-23",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -9616,7 +9620,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-15",
       "model": "C11CC24341",
       "desc": "LX-310 (INDO) IMPACT PRINTER",
@@ -9628,7 +9632,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13T09D599",
       "desc": "L8050 LT CYAN DYE 70ML INK BOTTLE",
@@ -9640,7 +9644,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -9652,7 +9656,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-02",
       "model": "C13T03Y100",
       "desc": "INK BOTTLE,BK,A/A",
@@ -9688,7 +9692,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-02",
       "model": "C13T06G399",
       "desc": "008 MAGENTA PIGMENT, 70ML (EIN)",
@@ -9700,7 +9704,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-02",
       "model": "C13T03Y400",
       "desc": "INK BOTTLE,Y,A/A,70ML",
@@ -9712,7 +9716,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-02",
       "model": "C13S010068",
       "desc": "RIBBON,PACK,#8758(B),ASIA",
@@ -9724,7 +9728,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-02",
       "model": "C13T06G299",
       "desc": "008 CYAN PIGMENT, 70ML (EIN)",
@@ -9736,7 +9740,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-23",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -9748,7 +9752,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-23",
       "model": "C13T04D100",
       "desc": "L6000 SERIES INK MAINTENANCE BOX",
@@ -9760,7 +9764,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-30",
       "model": "C11CL40502",
       "desc": "L6390 STD",
@@ -9772,7 +9776,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-02",
       "model": "C13S015632",
       "desc": "RIBBON,S015632(B), ASIA,B,9",
@@ -9796,7 +9800,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-02",
       "model": "C13T03Y200",
       "desc": "INK BOTTLE,C,A/A,70ML",
@@ -9820,7 +9824,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -9832,7 +9836,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -9844,7 +9848,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13T03Y200",
       "desc": "INK BOTTLE,C,A/A,70ML",
@@ -9856,7 +9860,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-23",
       "model": "C13T03Y400",
       "desc": "INK BOTTLE,Y,A/A,70ML",
@@ -9868,7 +9872,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13T09D499",
       "desc": "L8050 YELLOW DYE 70ML INK BOTTLE",
@@ -9892,7 +9896,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-23",
       "model": "C13T03Y200",
       "desc": "INK BOTTLE,C,A/A,70ML",
@@ -9904,7 +9908,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-23",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -9916,7 +9920,7 @@
     },
     {
       "epr": "EPR-1197",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T664199",
       "desc": "BLACK 70ML INK BOTTLE (EIN)",
@@ -9988,7 +9992,7 @@
     },
     {
       "epr": "EPR-0650",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-19",
       "model": "C13T09D199",
       "desc": "L8050 BLACK DYE 70ML INK BOTTLE",
@@ -10036,7 +10040,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-28",
       "model": "C13S015639",
       "desc": "RIBBON,S015634(B), ASIA,B,24",
@@ -10084,7 +10088,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-28",
       "model": "C13S015632",
       "desc": "RIBBON,S015632(B), ASIA,B,9",
@@ -10132,7 +10136,7 @@
     },
     {
       "epr": "EPR-1410",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-28",
       "model": "C11CK39502",
       "desc": "L11050 INDO",
@@ -10252,7 +10256,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-27",
       "model": "C13T06G399",
       "desc": "008 MAGENTA PIGMENT, 70ML (EIN)",
@@ -10276,7 +10280,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-27",
       "model": "C13T06G499",
       "desc": "008 YELLOW PIGMENT, 70ML (EIN)",
@@ -10300,7 +10304,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-27",
       "model": "C13T03Q100",
       "desc": "INK BOTTLE,BK,A/A",
@@ -10324,7 +10328,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-27",
       "model": "C13T06G299",
       "desc": "008 CYAN PIGMENT, 70ML (EIN)",
@@ -10348,7 +10352,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-27",
       "model": "C13T03Y200",
       "desc": "INK BOTTLE,C,A/A,70ML",
@@ -10360,7 +10364,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-27",
       "model": "C13T06G199",
       "desc": "008 BLACK PIGMENT, 127ML (EIN)",
@@ -10408,7 +10412,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-27",
       "model": "C13T03Y300",
       "desc": "INK BOTTLE,M,A/A,70ML",
@@ -10420,7 +10424,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-27",
       "model": "C13S015639",
       "desc": "RIBBON,S015634(B), ASIA,B,24",
@@ -10456,7 +10460,7 @@
     },
     {
       "epr": "EPR-0038",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-27",
       "model": "C13S015531",
       "desc": "RIBBON,S015086(B),ASIA",
@@ -10504,7 +10508,7 @@
     },
     {
       "epr": "EPR-1005",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-12",
       "model": "C11CL43501",
       "desc": "L6370 STD",
@@ -10528,7 +10532,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-02",
       "model": "C13T06G399",
       "desc": "008 MAGENTA PIGMENT, 70ML (EIN)",
@@ -10552,7 +10556,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13S015592",
       "desc": "RIBBON,S015339(B),ESP,3PCS",
@@ -10576,7 +10580,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-02",
       "model": "C13T06G499",
       "desc": "008 YELLOW PIGMENT, 70ML (EIN)",
@@ -10588,7 +10592,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-13",
       "model": "C13T03Y100",
       "desc": "INK BOTTLE,BK,A/A",
@@ -10600,7 +10604,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-02",
       "model": "C13T06G199",
       "desc": "008 BLACK PIGMENT, 127ML (EIN)",
@@ -10636,7 +10640,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13S015639",
       "desc": "RIBBON,S015634(B), ASIA,B,24",
@@ -10648,7 +10652,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13S015632",
       "desc": "RIBBON,S015632(B), ASIA,B,9",
@@ -10672,7 +10676,7 @@
     },
     {
       "epr": "EPR-0733",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-02",
       "model": "C13T06G299",
       "desc": "008 CYAN PIGMENT, 70ML (EIN)",
@@ -11080,7 +11084,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-12",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -11092,7 +11096,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-12",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -11116,7 +11120,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-12",
       "model": "C13T00V499",
       "desc": "003 YELLOW 4CL DYE 65ML INK BOTTLE",
@@ -11140,7 +11144,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-23",
       "model": "C13T664199",
       "desc": "BLACK 70ML INK BOTTLE (EIN)",
@@ -11176,7 +11180,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-27",
       "model": "C13T664499",
       "desc": "YELLOW 70ML INK BOTTLE (EIN)",
@@ -11188,7 +11192,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -11200,7 +11204,7 @@
     },
     {
       "epr": "EPR-0054",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-16",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -11356,7 +11360,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-29",
       "model": "C11CK39502",
       "desc": "L11050 INDO",
@@ -11368,7 +11372,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-12",
       "model": "C13T03Y200",
       "desc": "INK BOTTLE,C,A/A,70ML",
@@ -11380,7 +11384,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-16",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -11416,7 +11420,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-12",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -11428,7 +11432,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T03Y200",
       "desc": "INK BOTTLE,C,A/A,70ML",
@@ -11440,7 +11444,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-03",
       "model": "C13T06G499",
       "desc": "008 YELLOW PIGMENT, 70ML (EIN)",
@@ -11452,7 +11456,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T03Y400",
       "desc": "INK BOTTLE,Y,A/A,70ML",
@@ -11464,7 +11468,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-12",
       "model": "C13T03Y300",
       "desc": "INK BOTTLE,M,A/A,70ML",
@@ -11476,7 +11480,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C13T03Y300",
       "desc": "INK BOTTLE,M,A/A,70ML",
@@ -11488,7 +11492,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-07",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -11500,7 +11504,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-31",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -11512,7 +11516,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-07",
       "model": "C13T664199",
       "desc": "BLACK 70ML INK BOTTLE (EIN)",
@@ -11524,7 +11528,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-09",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -11536,7 +11540,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-27",
       "model": "C13S010068",
       "desc": "RIBBON,PACK,#8758(B),ASIA",
@@ -11548,7 +11552,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-07",
       "model": "C13T664399",
       "desc": "MAGENTA 70ML INK BOTTLE (EIN)",
@@ -11560,7 +11564,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-07",
       "model": "C13T664499",
       "desc": "YELLOW 70ML INK BOTTLE (EIN)",
@@ -11572,7 +11576,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-03",
       "model": "C11CC25341",
       "desc": "LQ-310 (INDO) IMPACT PRINTER",
@@ -11584,7 +11588,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13S010068",
       "desc": "RIBBON,PACK,#8758(B),ASIA",
@@ -11596,7 +11600,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-30",
       "model": "C11CC25341",
       "desc": "LQ-310 (INDO) IMPACT PRINTER",
@@ -11608,7 +11612,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-12",
       "model": "C11CH72502",
       "desc": "L15150 STD",
@@ -11632,7 +11636,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-03",
       "model": "C13T03Y300",
       "desc": "INK BOTTLE,M,A/A,70ML",
@@ -11644,7 +11648,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-30",
       "model": "C13S015639",
       "desc": "RIBBON,S015634(B), ASIA,B,24",
@@ -11668,7 +11672,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-12",
       "model": "C13T03Y400",
       "desc": "INK BOTTLE,Y,A/A,70ML",
@@ -11680,7 +11684,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-22",
       "model": "C11CC24341",
       "desc": "LX-310 (INDO) IMPACT PRINTER",
@@ -11692,7 +11696,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-07",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -11704,7 +11708,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-01",
       "model": "C13T03Y200",
       "desc": "INK BOTTLE,C,A/A,70ML",
@@ -11716,7 +11720,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-19",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -11728,7 +11732,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-07",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -11740,7 +11744,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-03",
       "model": "C13T06G399",
       "desc": "008 MAGENTA PIGMENT, 70ML (EIN)",
@@ -11764,7 +11768,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-03",
       "model": "C13T06G199",
       "desc": "008 BLACK PIGMENT, 127ML (EIN)",
@@ -11788,7 +11792,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-07",
       "model": "C13T664299",
       "desc": "CYAN 70ML INK BOTTLE (EIN)",
@@ -11800,7 +11804,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-16",
       "model": "C13S015639",
       "desc": "RIBBON,S015634(B), ASIA,B,24",
@@ -11824,7 +11828,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-01",
       "model": "B11B249501",
       "desc": "DS-410",
@@ -11836,7 +11840,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-01",
       "model": "C13T03Y300",
       "desc": "INK BOTTLE,M,A/A,70ML",
@@ -11848,7 +11852,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-12",
       "model": "C11CK38502",
       "desc": "L18050 INDO",
@@ -11860,7 +11864,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-27",
       "model": "C11CD76502",
       "desc": "L121 INDO",
@@ -11872,7 +11876,7 @@
     },
     {
       "epr": "EPR-0267",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-01",
       "model": "C13T03Y400",
       "desc": "INK BOTTLE,Y,A/A,70ML",
@@ -11896,7 +11900,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-27",
       "model": "C13T00V399",
       "desc": "003 MAGENTA 4CL DYE 65ML INK BOTTLE",
@@ -11908,7 +11912,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-08",
       "model": "C13T09D299",
       "desc": "L8050 CYAN DYE 70ML INK BOTTLE",
@@ -11920,7 +11924,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-27",
       "model": "C13T00V199",
       "desc": "003 BLACK 4CL DYE 65ML INK BOTTLE",
@@ -11932,7 +11936,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-16",
       "model": "C13T03Y300",
       "desc": "INK BOTTLE,M,A/A,70ML",
@@ -11944,7 +11948,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-15",
       "model": "C13T03Y400",
       "desc": "INK BOTTLE,Y,A/A,70ML",
@@ -11956,7 +11960,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-07",
       "model": "C13T290090",
       "desc": "WF-100 CL INK (PIGMENT)",
@@ -11968,7 +11972,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-07",
       "model": "C13T289190",
       "desc": "WF-100 BK INK (PIGMENT)",
@@ -12004,7 +12008,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-08",
       "model": "C13T09D699",
       "desc": "L8050 LT MAGENTA DYE 70ML INK BOTTLE",
@@ -12040,7 +12044,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-27",
       "model": "C13T00V299",
       "desc": "003 CYAN 4CL DYE 65ML INK BOTTLE",
@@ -12052,7 +12056,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-16",
       "model": "C11CK38502",
       "desc": "L18050 INDO",
@@ -12088,7 +12092,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-16",
       "model": "C13T03Y200",
       "desc": "INK BOTTLE,C,A/A,70ML",
@@ -12100,7 +12104,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-08",
       "model": "C13T09D399",
       "desc": "L8050 MAGENTA DYE 70ML INK BOTTLE",
@@ -12112,7 +12116,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-19",
       "model": "B11B249501",
       "desc": "DS-410",
@@ -12136,7 +12140,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-07",
       "model": "C13T03Y100",
       "desc": "INK BOTTLE,BK,A/A",
@@ -12172,7 +12176,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-16",
       "model": "C11CA92031",
       "desc": "LQ-2190 (INT'L) IMPACT PRINTER",
@@ -12196,7 +12200,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-07",
       "model": "C13T03Y200",
       "desc": "INK BOTTLE,C,A/A,70ML",
@@ -12220,7 +12224,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-16",
       "model": "C13T03Y100",
       "desc": "INK BOTTLE,BK,A/A",
@@ -12232,7 +12236,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-08",
       "model": "C13T09D599",
       "desc": "L8050 LT CYAN DYE 70ML INK BOTTLE",
@@ -12244,7 +12248,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-16",
       "model": "C11CJ65504",
       "desc": "L5290 INDO",
@@ -12268,7 +12272,7 @@
     },
     {
       "epr": "EPR-1413",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-30",
       "model": "C11CK39502",
       "desc": "L11050 INDO",
@@ -12280,7 +12284,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13T09D399",
       "desc": "L8050 MAGENTA DYE 70ML INK BOTTLE",
@@ -12292,7 +12296,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-13",
       "model": "C13T673399",
       "desc": "L800 INK BOTTLE MAGENTA (EIN)",
@@ -12304,7 +12308,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-13",
       "model": "C13T673699",
       "desc": "L800 INK BOTTLE LIGHT MAGENTA (EIN)",
@@ -12316,7 +12320,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-06",
       "model": "C13T03Q100",
       "desc": "INK BOTTLE,BK,A/A",
@@ -12328,7 +12332,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13T09D199",
       "desc": "L8050 BLACK DYE 70ML INK BOTTLE",
@@ -12340,7 +12344,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13T09D499",
       "desc": "L8050 YELLOW DYE 70ML INK BOTTLE",
@@ -12352,7 +12356,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-13",
       "model": "C13T673199",
       "desc": "L800 INK BOTTLE BLACK (EIN)",
@@ -12364,7 +12368,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-14",
       "model": "C13T09D299",
       "desc": "L8050 CYAN DYE 70ML INK BOTTLE",
@@ -12376,7 +12380,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-13",
       "model": "C13T673499",
       "desc": "L800 INK BOTTLE YELLOW (EIN)",
@@ -12388,7 +12392,7 @@
     },
     {
       "epr": "EPR-1768",
-      "prog": "Q3 Booster Up (Consumables)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-06",
       "model": "C13T774100",
       "desc": "INK BOTTLE,BK,140ML",
@@ -12472,7 +12476,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-16",
       "model": "C13T673699",
       "desc": "L800 INK BOTTLE LIGHT MAGENTA (EIN)",
@@ -12508,7 +12512,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-28",
       "model": "C13T673399",
       "desc": "L800 INK BOTTLE MAGENTA (EIN)",
@@ -12532,7 +12536,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-22",
       "model": "C13T774100",
       "desc": "INK BOTTLE,BK,140ML",
@@ -12544,7 +12548,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-28",
       "model": "C11CC24341",
       "desc": "LX-310 (INDO) IMPACT PRINTER",
@@ -12556,7 +12560,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-08",
       "model": "C13T03Q100",
       "desc": "INK BOTTLE,BK,A/A",
@@ -12568,7 +12572,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-12",
       "model": "C11CC24341",
       "desc": "LX-310 (INDO) IMPACT PRINTER",
@@ -12664,7 +12668,7 @@
     },
     {
       "epr": "EPR-0881",
-      "prog": "Q3 Booster Up (Consumer)",
+      "prog": "Q3 Booster Up",
       "date": "2026-10-28",
       "model": "C13S015632",
       "desc": "RIBBON,S015632(B), ASIA,B,9",
@@ -46980,7 +46984,7 @@
           }
         },
         {
-          "name": "Q3 Booster Up (Consumer)",
+          "name": "Q3 Booster Up",
           "total": 12186486.49,
           "tx": 9,
           "qty": 92,
@@ -47209,7 +47213,7 @@
           }
         },
         {
-          "name": "Q3 Booster Up (Consumer)",
+          "name": "Q3 Booster Up",
           "total": 386990990.99,
           "tx": 15,
           "qty": 5140,
@@ -47360,7 +47364,7 @@
           }
         },
         {
-          "name": "Q3 Booster Up (Consumer)",
+          "name": "Q3 Booster Up",
           "total": 702306306.31,
           "tx": 37,
           "qty": 2213,
@@ -47562,7 +47566,7 @@
           }
         },
         {
-          "name": "Q3 Booster Up (Consumer)",
+          "name": "Q3 Booster Up",
           "total": 116504504.5,
           "tx": 8,
           "qty": 83,
@@ -47752,7 +47756,7 @@
           }
         },
         {
-          "name": "Q3 Booster Up (Consumer)",
+          "name": "Q3 Booster Up",
           "total": 7856756.76,
           "tx": 8,
           "qty": 46,
@@ -47941,7 +47945,7 @@
           }
         },
         {
-          "name": "Q3 Booster Up (Consumer)",
+          "name": "Q3 Booster Up",
           "total": 17738738.74,
           "tx": 7,
           "qty": 71,
@@ -48093,7 +48097,7 @@
           }
         },
         {
-          "name": "Q3 Booster Up (Consumer)",
+          "name": "Q3 Booster Up",
           "total": 15909909.91,
           "tx": 2,
           "qty": 8,
@@ -48271,7 +48275,7 @@
           }
         },
         {
-          "name": "Q3 Booster Up (Consumer)",
+          "name": "Q3 Booster Up",
           "total": 8828828.83,
           "tx": 1,
           "qty": 2,
@@ -48475,7 +48479,7 @@
           }
         },
         {
-          "name": "Q3 Booster Up (Consumer)",
+          "name": "Q3 Booster Up",
           "total": 169054051.35,
           "tx": 54,
           "qty": 1125,
@@ -48868,7 +48872,7 @@
           }
         },
         {
-          "name": "Q3 Booster Up (Consumer)",
+          "name": "Q3 Booster Up",
           "total": 7198198.2,
           "tx": 3,
           "qty": 31,
@@ -49046,7 +49050,7 @@
           }
         },
         {
-          "name": "Q3 Booster Up (Consumer)",
+          "name": "Q3 Booster Up",
           "total": 195108108.11,
           "tx": 20,
           "qty": 757,
@@ -49568,7 +49572,7 @@
           }
         },
         {
-          "name": "Q3 Booster Up (Consumables)",
+          "name": "Q3 Booster Up",
           "total": 852227567.57,
           "tx": 39,
           "qty": 11029,
@@ -49898,7 +49902,7 @@
           }
         },
         {
-          "name": "Q3 Booster Up (Consumer)",
+          "name": "Q3 Booster Up",
           "total": 103463963.96,
           "tx": 14,
           "qty": 748,
