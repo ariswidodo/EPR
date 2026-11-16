@@ -97,8 +97,30 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         except Exception:
             program_rules = {}
 
-    cons_participants = set((program_rules.get("Q3 Booster Up (Consumables)", {}).get("participants") or {}).keys())
-    unit_participants = set((program_rules.get("Q3 Booster Up (Consumer)", {}).get("participants") or {}).keys())
+    cons_map = {}
+    unit_map = {}
+    peserta_csv = os.path.join(tool_dir, "data", "peserta_booster.csv")
+    if os.path.exists(peserta_csv):
+        with open(peserta_csv, encoding="utf-8-sig") as pf:
+            for pr in csv.DictReader(pf):
+                ec = (pr.get("EPR CODE") or "").strip().upper()
+                pack = (pr.get("PACK NAME") or "").strip()
+                fy_cat = (pr.get("FY26 TARGET CATEGORY") or "").strip()
+                if not ec or not pack:
+                    continue
+                pkg = pack.split()[0].upper()
+                entry = {"pkg": pkg, "pack_name": pack, "fy_cat": fy_cat}
+                if "CONSUMABLES" in pack.upper():
+                    cons_map[ec] = entry
+                elif "CONSUMER" in pack.upper():
+                    unit_map[ec] = entry
+        if "Q3 Booster Up (Consumables)" in program_rules:
+            program_rules["Q3 Booster Up (Consumables)"]["participants"] = cons_map
+        if "Q3 Booster Up (Consumer)" in program_rules:
+            program_rules["Q3 Booster Up (Consumer)"]["participants"] = unit_map
+
+    cons_participants = set(cons_map or (program_rules.get("Q3 Booster Up (Consumables)", {}).get("participants") or {}).keys())
+    unit_participants = set(unit_map or (program_rules.get("Q3 Booster Up (Consumer)", {}).get("participants") or {}).keys())
     LOCAL_BOOSTER_EPPS = {"EPP-0050", "EPP-0055", "EPP-0056", "EPP-0245"}
 
     def _is_local_booster_epp(epp_code, epp_name):
@@ -108,23 +130,22 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         return any(k in en for k in ("COMPUTEK", "RAKA PERKASA", "CV COMPUTA", "TOP DISTRIBUSI"))
 
     def _extract_program(rem_text, epr_code="", inv_date="", epp_code="", epp_name=""):
-        if "2026-10-01" <= (inv_date or "") <= "2026-12-31" and _is_local_booster_epp(epp_code, epp_name):
-            if epr_code in cons_participants:
-                return "Q3 Booster Up (Consumables)"
-            if epr_code in unit_participants:
-                return "Q3 Booster Up (Consumer)"
-
         parts = [x.strip() for x in (rem_text or "").split("|")]
         ad_raw = ""
         if len(parts) >= 4 and parts[-1].lower().startswith("src "):
             ad_raw = " | ".join(parts[2:-1]).strip()
-        ad_raw = ad_raw.strip().strip('"\'“”‘’').strip()
+        ad_raw = ad_raw.strip().strip('"\'\u201c\u201d\u2018\u2019').strip()
         if not ad_raw:
             return "Reguler (Tanpa Program)"
         m = re.match(r"^EIN-(\d{2})-(\d+)$", ad_raw, re.I)
         if m:
             return f"EIN-{m.group(1)}-{m.group(2).zfill(6)}"
         if re.match(r"^q3\s+booster(\s+up)?$", ad_raw, re.I):
+            if "2026-10-01" <= (inv_date or "") <= "2026-12-31" and _is_local_booster_epp(epp_code, epp_name):
+                if epr_code in cons_participants:
+                    return "Q3 Booster Up (Consumables)"
+                if epr_code in unit_participants:
+                    return "Q3 Booster Up (Consumer)"
             return "Reguler (Tanpa Program)"
         return ad_raw
 
