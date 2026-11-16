@@ -2,7 +2,7 @@
   "meta": {
     "title": "EPR FY26 Achievement Dashboard",
     "fiscal_year": "FY26 (Apr 2026 - Mar 2027)",
-    "generated_at": "2026-11-16 16:27:10",
+    "generated_at": "2026-11-16 17:15:12",
     "last_source_file": "Q2 FY26.xlsx",
     "last_processed_at": "2026-11-14 22:04:13",
     "verified_rows": 8705,
@@ -34,10 +34,6 @@
       "Low End"
     ],
     "program_rules": {
-      "EIN-26-000044": {
-        "start": "2026-09-01",
-        "end": "2026-09-30"
-      },
       "Q3 Booster Up": {
         "start": "2026-10-01",
         "end": "2026-12-31",

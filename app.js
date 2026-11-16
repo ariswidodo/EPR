@@ -176,7 +176,8 @@
       '<option value="ALL">Semua Kota</option>' +
       cities.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
 
-    const progs = rawData?.meta?.programs || [];
+    const rules = getProgramRules();
+    const progs = (rawData?.meta?.programs || []).filter((pr) => !!rules[pr] && !rules[pr].closed);
     const progSel = $("programFilter");
     if (progSel) {
       progSel.innerHTML =
@@ -855,7 +856,10 @@
       }
     });
 
-    const rows = [...map.values()].sort((a, b) => b.total - a.total);
+    const rows = [...map.values()]
+      .filter((r) => !!rules[r.name] && !rules[r.name].closed)
+      .sort((a, b) => b.total - a.total);
+    const activeGrand = rows.reduce((s, r) => s + r.total, 0);
     if (!progAutoSelected && !selectedProg && rows.some((r) => r.name === "Q3 Booster Up")) {
       progAutoSelected = true;
       selectedProg = "Q3 Booster Up";
@@ -864,18 +868,18 @@
       $("progEnd").value = r.end || "2026-12-31";
     }
 
-    $("progSummaryCount").textContent = `${rows.length} program`;
+    $("progSummaryCount").textContent = `${rows.length} program berjalan`;
     const body = $("progSummaryBody");
     if (!rows.length) {
       body.innerHTML =
-        '<tr><td colspan="12" style="text-align:center;color:var(--text-3);padding:20px">Belum ada data program.</td></tr>';
+        '<tr><td colspan="12" style="text-align:center;color:var(--text-3);padding:20px">Belum ada program yang berjalan.</td></tr>';
       $("progEprPanel").hidden = true;
       return;
     }
 
     body.innerHTML = rows
       .map((pr, i) => {
-        const totPct = grand > 0 ? (pr.total / grand) * 100 : 0;
+        const totPct = activeGrand > 0 ? (pr.total / activeGrand) * 100 : 0;
         const rule = rules[pr.name];
         const periodTxt =
           rule && (rule.start || rule.end)
