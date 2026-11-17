@@ -1223,3 +1223,140 @@ td {
   text-align: left;
   padding: 11px 14px;
 }
+
+/* Q3 & Q4 Target Monitoring Section */
+.q-monitoring-card {
+  margin-bottom: 20px;
+}
+
+.q-summary-badge {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.q-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+@media (max-width: 960px) {
+  .q-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.q-quarter-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.q-quarter-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.q-quarter-title h3 {
+  margin: 6px 0 2px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.q-quarter-weight {
+  font-size: 12px;
+  color: var(--text-3);
+  font-weight: 500;
+}
+
+.q-quarter-ach {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.q-quarter-ach strong {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.q-quarter-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.q-metric-item span {
+  display: block;
+  font-size: 11px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 2px;
+}
+
+.q-metric-item strong {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
+  word-break: break-all;
+}
+
+.q-months-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.q-months-table, .drawer-months-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.q-months-table th, .drawer-months-table th {
+  padding: 8px 10px;
+  text-align: left;
+  background: var(--surface-2);
+  color: var(--text-3);
+  font-weight: 600;
+  font-size: 11px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.q-months-table td, .drawer-months-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.q-months-table tr:last-child td, .drawer-months-table tr:last-child td {
+  border-bottom: none;
+}
+
+.q-months-table td.num, .q-months-table th.num,
+.drawer-months-table td.num, .drawer-months-table th.num {
+  text-align: right;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}

@@ -22,6 +22,7 @@
     program: "ALL",
     sortKey: "actual",
     sortDir: "desc",
+    tableView: "category",
   };
 
   let charts = {
@@ -110,15 +111,16 @@
   // Period-aware metrics for a partner
   function partnerMetrics(p) {
     const monthsSlice =
-      state.period === "h1" ? [0, 6] : state.period === "h2" ? [6, 12] : [0, 12];
-    const [s, e] = monthsSlice;
-
-    const target =
       state.period === "h1"
-        ? p.target_h1
+        ? [0, 6]
         : state.period === "h2"
-        ? p.target_h2
-        : p.target_fy;
+        ? [6, 12]
+        : state.period === "q3"
+        ? [6, 9]
+        : state.period === "q4"
+        ? [9, 12]
+        : [0, 12];
+    const [s, e] = monthsSlice;
 
     const origFy = p.target_original || p.target_fy || 0;
     const target_orig =
@@ -126,13 +128,32 @@
         ? p.target_original_h1 ?? Math.round(origFy * 0.52)
         : state.period === "h2"
         ? p.target_original_h2 ?? Math.round(origFy * 0.48)
+        : state.period === "q3"
+        ? p.target_original_q3 ?? Math.round(origFy * 0.30)
+        : state.period === "q4"
+        ? p.target_original_q4 ?? Math.round(origFy * 0.18)
         : origFy;
+
+    const target =
+      state.period === "h1"
+        ? p.target_h1
+        : state.period === "h2"
+        ? p.target_h2
+        : state.period === "q3"
+        ? Math.round((p.target_h2 || p.target_fy * 0.5) * 0.5)
+        : state.period === "q4"
+        ? Math.round((p.target_h2 || p.target_fy * 0.5) * 0.5)
+        : p.target_fy;
 
     const actual =
       state.period === "h1"
         ? p.actual_h1
         : state.period === "h2"
         ? p.actual_h2
+        : state.period === "q3"
+        ? p.actual_q3 ?? (p.monthly_total || []).slice(6, 9).reduce((a, b) => a + (b || 0), 0)
+        : state.period === "q4"
+        ? p.actual_q4 ?? (p.monthly_total || []).slice(9, 12).reduce((a, b) => a + (b || 0), 0)
         : p.actual_fy;
 
     const catTotals = {};
@@ -146,10 +167,31 @@
     const midHiRatio = p.actual_fy > 0 ? (p.mid_hi || 0) / p.actual_fy : 0;
     const midHiEst = state.period === "fy" ? p.mid_hi || 0 : actual * midHiRatio;
 
+    const t_orig_q3 = p.target_original_q3 ?? Math.round(origFy * 0.30);
+    const act_q3 = p.actual_q3 ?? (p.monthly_total || []).slice(6, 9).reduce((a, b) => a + (b || 0), 0);
+    const ach_q3 = t_orig_q3 > 0 ? act_q3 / t_orig_q3 : null;
+
+    const t_orig_q4 = p.target_original_q4 ?? Math.round(origFy * 0.18);
+    const act_q4 = p.actual_q4 ?? (p.monthly_total || []).slice(9, 12).reduce((a, b) => a + (b || 0), 0);
+    const ach_q4 = t_orig_q4 > 0 ? act_q4 / t_orig_q4 : null;
+
+    const t_orig_h2 = p.target_original_h2 ?? Math.round(origFy * 0.48);
+    const act_h2 = p.actual_h2 ?? 0;
+    const ach_orig_h2 = t_orig_h2 > 0 ? act_h2 / t_orig_h2 : null;
+
     return {
       ...p,
       target,
       target_orig,
+      target_orig_fy: origFy,
+      target_original_q3: t_orig_q3,
+      actual_q3: act_q3,
+      ach_q3,
+      target_original_q4: t_orig_q4,
+      actual_q4: act_q4,
+      ach_q4,
+      actual_h2: act_h2,
+      ach_orig_h2,
       actual,
       ach,
       ach_orig,
@@ -234,6 +276,7 @@
     const list = getFilteredPartners();
     renderMeta();
     renderKpis(list);
+    renderQuarterMonitoring(list);
     renderCharts(list);
     renderTable(list);
     renderEppSummary(list);
@@ -294,6 +337,193 @@
     $("kpiMidHiSub").textContent = `Mid High ${fmtCompact(totalMidHi)} · Low End ${fmtCompact(
       Math.max(0, totalRev - totalMidHi)
     )}`;
+  }
+
+  function renderQuarterMonitoring(list) {
+    const totalOrigFy = list.reduce(
+      (s, p) => s + (p.target_original || p.target_fy || 0),
+      0
+    );
+    const badgeEl = $("qSummaryBadge");
+    if (badgeEl) {
+      badgeEl.textContent = `Target Orig FY: ${fmtCompact(totalOrigFy)}`;
+    }
+
+    const q3Target = list.reduce(
+      (s, p) =>
+        s +
+        (p.target_original_q3 ??
+          Math.round((p.target_original || p.target_fy || 0) * 0.3)),
+      0
+    );
+    const q3Actual = list.reduce(
+      (s, p) =>
+        s +
+        (p.actual_q3 ??
+          (p.monthly_total || [])
+            .slice(6, 9)
+            .reduce((a, b) => a + (b || 0), 0)),
+      0
+    );
+    const q3Ach = q3Target > 0 ? q3Actual / q3Target : null;
+    const q3Gap = q3Actual - q3Target;
+
+    const q4Target = list.reduce(
+      (s, p) =>
+        s +
+        (p.target_original_q4 ??
+          Math.round((p.target_original || p.target_fy || 0) * 0.18)),
+      0
+    );
+    const q4Actual = list.reduce(
+      (s, p) =>
+        s +
+        (p.actual_q4 ??
+          (p.monthly_total || [])
+            .slice(9, 12)
+            .reduce((a, b) => a + (b || 0), 0)),
+      0
+    );
+    const q4Ach = q4Target > 0 ? q4Actual / q4Target : null;
+    const q4Gap = q4Actual - q4Target;
+
+    if ($("q3TargetVal")) $("q3TargetVal").textContent = fmtRp(q3Target);
+    if ($("q3ActualVal")) $("q3ActualVal").textContent = fmtRp(q3Actual);
+    if ($("q3AchVal")) {
+      $("q3AchVal").textContent = fmtPct(q3Ach);
+      $("q3AchVal").style.color = achColor(q3Ach);
+    }
+    if ($("q3AchBadge")) {
+      $("q3AchBadge").className = `kpi-pill ${achBadgeClass(q3Ach)}`;
+      $("q3AchBadge").textContent = achLabel(q3Ach);
+    }
+    if ($("q3GapVal")) {
+      $("q3GapVal").textContent =
+        q3Gap >= 0
+          ? `+${fmtRp(q3Gap)} (Surplus)`
+          : `-${fmtRp(Math.abs(q3Gap))} (Kurang)`;
+      $("q3GapVal").style.color = q3Gap >= 0 ? "var(--emerald)" : "var(--rose)";
+    }
+    if ($("q3ProgressBar")) {
+      $("q3ProgressBar").style.width = `${Math.min(
+        100,
+        Math.max(0, (q3Ach || 0) * 100)
+      ).toFixed(1)}%`;
+      $("q3ProgressBar").className =
+        "progress-fill " +
+        (q3Ach >= 1
+          ? "emerald"
+          : q3Ach >= 0.75
+          ? "indigo"
+          : q3Ach >= 0.5
+          ? "amber"
+          : "rose");
+    }
+
+    if ($("q4TargetVal")) $("q4TargetVal").textContent = fmtRp(q4Target);
+    if ($("q4ActualVal")) $("q4ActualVal").textContent = fmtRp(q4Actual);
+    if ($("q4AchVal")) {
+      $("q4AchVal").textContent = fmtPct(q4Ach);
+      $("q4AchVal").style.color = achColor(q4Ach);
+    }
+    if ($("q4AchBadge")) {
+      $("q4AchBadge").className = `kpi-pill ${achBadgeClass(q4Ach)}`;
+      $("q4AchBadge").textContent = achLabel(q4Ach);
+    }
+    if ($("q4GapVal")) {
+      $("q4GapVal").textContent =
+        q4Gap >= 0
+          ? `+${fmtRp(q4Gap)} (Surplus)`
+          : `-${fmtRp(Math.abs(q4Gap))} (Kurang)`;
+      $("q4GapVal").style.color = q4Gap >= 0 ? "var(--emerald)" : "var(--rose)";
+    }
+    if ($("q4ProgressBar")) {
+      $("q4ProgressBar").style.width = `${Math.min(
+        100,
+        Math.max(0, (q4Ach || 0) * 100)
+      ).toFixed(1)}%`;
+      $("q4ProgressBar").className =
+        "progress-fill " +
+        (q4Ach >= 1
+          ? "emerald"
+          : q4Ach >= 0.75
+          ? "indigo"
+          : q4Ach >= 0.5
+          ? "amber"
+          : "rose");
+    }
+
+    const months = rawData?.meta?.months || DEFAULT_MONTHS;
+
+    const q3MonthIndices = [6, 7, 8];
+    const q3Tbody = $("q3MonthsBody");
+    if (q3Tbody) {
+      q3Tbody.innerHTML = q3MonthIndices
+        .map((idx) => {
+          const mName = months[idx] || `Bulan ${idx + 1}`;
+          const mTgt = list.reduce(
+            (s, p) =>
+              s +
+              (p.target_original_monthly?.[idx] ??
+                Math.round((p.target_original || p.target_fy || 0) * 0.1)),
+            0
+          );
+          const mAct = list.reduce(
+            (s, p) => s + (p.monthly_total?.[idx] || 0),
+            0
+          );
+          const mAch = mTgt > 0 ? mAct / mTgt : null;
+          const mGap = mAct - mTgt;
+          const gapColor = mGap >= 0 ? "var(--emerald)" : "var(--rose)";
+          const gapText =
+            mGap >= 0 ? `+${fmtCompact(mGap)}` : `-${fmtCompact(Math.abs(mGap))}`;
+          return `
+          <tr>
+            <td><strong>${esc(mName)}</strong></td>
+            <td class="num">${fmtRp(mTgt)}</td>
+            <td class="num">${fmtRp(mAct)}</td>
+            <td class="num"><strong style="color:${achColor(mAch)}">${fmtPct(mAch)}</strong></td>
+            <td class="num" style="color:${gapColor};font-weight:600">${gapText}</td>
+          </tr>
+        `;
+        })
+        .join("");
+    }
+
+    const q4MonthIndices = [9, 10, 11];
+    const q4Tbody = $("q4MonthsBody");
+    if (q4Tbody) {
+      q4Tbody.innerHTML = q4MonthIndices
+        .map((idx) => {
+          const mName = months[idx] || `Bulan ${idx + 1}`;
+          const mTgt = list.reduce(
+            (s, p) =>
+              s +
+              (p.target_original_monthly?.[idx] ??
+                Math.round((p.target_original || p.target_fy || 0) * 0.06)),
+            0
+          );
+          const mAct = list.reduce(
+            (s, p) => s + (p.monthly_total?.[idx] || 0),
+            0
+          );
+          const mAch = mTgt > 0 ? mAct / mTgt : null;
+          const mGap = mAct - mTgt;
+          const gapColor = mGap >= 0 ? "var(--emerald)" : "var(--rose)";
+          const gapText =
+            mGap >= 0 ? `+${fmtCompact(mGap)}` : `-${fmtCompact(Math.abs(mGap))}`;
+          return `
+          <tr>
+            <td><strong>${esc(mName)}</strong></td>
+            <td class="num">${fmtRp(mTgt)}</td>
+            <td class="num">${fmtRp(mAct)}</td>
+            <td class="num"><strong style="color:${achColor(mAch)}">${fmtPct(mAch)}</strong></td>
+            <td class="num" style="color:${gapColor};font-weight:600">${gapText}</td>
+          </tr>
+        `;
+        })
+        .join("");
+    }
   }
 
   function renderCharts(list) {
@@ -466,50 +696,160 @@
 
   function renderTable(list) {
     $("tableCount").textContent = `${list.length} partner`;
+    const table = $("eprTable");
+    const thead = table.querySelector("thead");
     const body = $("tableBody");
 
+    const isQuarterView = state.tableView === "quarter";
+
+    if (isQuarterView) {
+      thead.innerHTML = `
+        <tr>
+          <th class="col-rank">#</th>
+          <th class="sortable" data-sort="name">EPR Partner</th>
+          <th class="sortable" data-sort="tier">Tier</th>
+          <th class="sortable num" data-sort="target_orig_fy">Target Orig FY</th>
+          <th class="sortable num" data-sort="target_original_q3">Target Q3 (30%)</th>
+          <th class="sortable num" data-sort="actual_q3">Aktual Q3</th>
+          <th class="sortable num" data-sort="ach_q3">Ach Q3 %</th>
+          <th class="sortable num" data-sort="target_original_q4">Target Q4 (18%)</th>
+          <th class="sortable num" data-sort="actual_q4">Aktual Q4</th>
+          <th class="sortable num" data-sort="ach_q4">Ach Q4 %</th>
+          <th class="sortable num" data-sort="actual_h2">Total H2</th>
+          <th class="sortable num" data-sort="ach_orig_h2">Ach H2 (Orig)</th>
+        </tr>
+      `;
+    } else {
+      thead.innerHTML = `
+        <tr>
+          <th class="col-rank">#</th>
+          <th class="sortable" data-sort="name">EPR Partner</th>
+          <th class="sortable" data-sort="tier">Tier</th>
+          <th>Beli dari EPP</th>
+          <th class="sortable num" data-sort="target_orig">Target Orig</th>
+          <th class="sortable num" data-sort="target">Target Cat</th>
+          <th class="sortable num" data-sort="actual">Total Pembelian</th>
+          <th class="sortable num" data-sort="ach">Achievement</th>
+          <th class="sortable num" data-sort="midhi_pct">Mid-Hi %</th>
+          <th class="sortable num" data-sort="Consumer">Consumer</th>
+          <th class="sortable num" data-sort="Scanner">Scanner</th>
+          <th class="sortable num" data-sort="Consumables">Consumables</th>
+          <th class="sortable num" data-sort="Dotmatrix">Dotmatrix</th>
+        </tr>
+      `;
+    }
+
+    thead.querySelectorAll(".sortable").forEach((th) => {
+      const k = th.dataset.sort;
+      if (k === state.sortKey) {
+        th.classList.add(state.sortDir);
+      }
+      th.addEventListener("click", () => {
+        if (state.sortKey === k) {
+          state.sortDir = state.sortDir === "asc" ? "desc" : "asc";
+        } else {
+          state.sortKey = k;
+          state.sortDir = "desc";
+        }
+        render();
+      });
+    });
+
     if (!list.length) {
-      body.innerHTML = `<tr><td colspan="13" style="text-align:center;padding:32px;color:var(--text-3)">Tidak ada partner yang cocok dengan filter.</td></tr>`;
+      body.innerHTML = `<tr><td colspan="${isQuarterView ? 12 : 13}" style="text-align:center;padding:32px;color:var(--text-3)">Tidak ada partner yang cocok dengan filter.</td></tr>`;
       return;
     }
 
-    body.innerHTML = list
-      .map((p, i) => {
-        const pct = p.ach != null ? p.ach * 100 : null;
-        const barW = pct != null ? Math.min(100, Math.max(0, pct)).toFixed(1) : 0;
-        const color = achColor(p.ach);
-        const epps = p.epp_sources || [];
-        const eppLabel = epps.length
-          ? `${esc(epps[0].name)}${epps.length > 1 ? ` <span class="badge badge-neutral">+${epps.length - 1}</span>` : ""}`
-          : '<span style="color:var(--text-3)">-</span>';
-        return `<tr data-code="${esc(p.code)}">
-          <td class="col-rank mono">${i + 1}</td>
-          <td>
-            <div class="partner-cell">
-              <span class="partner-name">${esc(p.name)}</span>
-              <span class="partner-meta mono">${esc(p.code)} · ${esc(p.city || "-")}</span>
-            </div>
-          </td>
-          <td><span class="tier-pill tier-${esc(p.tier)}">${esc(p.tier || "-")}</span></td>
-          <td style="max-width:210px;overflow:hidden;text-overflow:ellipsis" title="${esc(epps.map((e) => e.name).join(", "))}">${eppLabel}</td>
-          <td class="num mono">${fmtCompact(p.target_orig)}</td>
-          <td class="num mono">${fmtCompact(p.target)}</td>
-          <td class="num mono"><strong>${fmtCompact(p.actual)}</strong></td>
-          <td class="num">
-            <div class="ach-cell">
-              <div class="mini-bar"><span style="width:${barW}%;background:${color}"></span></div>
-              <span class="mono" style="color:${color};font-weight:600;min-width:52px;text-align:right">${fmtPct(p.ach)}</span>
-            </div>
-            <div class="partner-meta mono" style="text-align:right">Orig: ${fmtPct(p.ach_orig)}</div>
-          </td>
-          <td class="num mono">${fmtPct(p.midhi_pct)}</td>
-          <td class="num mono">${fmtCompact(p.Consumer)}</td>
-          <td class="num mono">${fmtCompact(p.Scanner)}</td>
-          <td class="num mono">${fmtCompact(p.Consumables)}</td>
-          <td class="num mono">${fmtCompact(p.Dotmatrix)}</td>
-        </tr>`;
-      })
-      .join("");
+    if (isQuarterView) {
+      body.innerHTML = list
+        .map((p, i) => {
+          const achQ3 = p.ach_q3;
+          const barQ3 = achQ3 != null ? Math.min(100, Math.max(0, achQ3 * 100)).toFixed(1) : 0;
+          const colQ3 = achColor(achQ3);
+
+          const achQ4 = p.ach_q4;
+          const barQ4 = achQ4 != null ? Math.min(100, Math.max(0, achQ4 * 100)).toFixed(1) : 0;
+          const colQ4 = achColor(achQ4);
+
+          const achH2 = p.ach_orig_h2;
+          const barH2 = achH2 != null ? Math.min(100, Math.max(0, achH2 * 100)).toFixed(1) : 0;
+          const colH2 = achColor(achH2);
+
+          return `<tr data-code="${esc(p.code)}">
+            <td class="col-rank mono">${i + 1}</td>
+            <td>
+              <div class="partner-cell">
+                <span class="partner-name">${esc(p.name)}</span>
+                <span class="partner-meta mono">${esc(p.code)} · ${esc(p.city || "-")}</span>
+              </div>
+            </td>
+            <td><span class="tier-pill tier-${esc(p.tier)}">${esc(p.tier || "-")}</span></td>
+            <td class="num mono">${fmtCompact(p.target_orig_fy)}</td>
+            <td class="num mono">${fmtCompact(p.target_original_q3)}</td>
+            <td class="num mono"><strong>${fmtCompact(p.actual_q3)}</strong></td>
+            <td class="num">
+              <div class="ach-cell">
+                <div class="mini-bar"><span style="width:${barQ3}%;background:${colQ3}"></span></div>
+                <span class="mono" style="color:${colQ3};font-weight:600;min-width:48px;text-align:right">${fmtPct(achQ3)}</span>
+              </div>
+            </td>
+            <td class="num mono">${fmtCompact(p.target_original_q4)}</td>
+            <td class="num mono"><strong>${fmtCompact(p.actual_q4)}</strong></td>
+            <td class="num">
+              <div class="ach-cell">
+                <div class="mini-bar"><span style="width:${barQ4}%;background:${colQ4}"></span></div>
+                <span class="mono" style="color:${colQ4};font-weight:600;min-width:48px;text-align:right">${fmtPct(achQ4)}</span>
+              </div>
+            </td>
+            <td class="num mono"><strong>${fmtCompact(p.actual_h2)}</strong></td>
+            <td class="num">
+              <div class="ach-cell">
+                <div class="mini-bar"><span style="width:${barH2}%;background:${colH2}"></span></div>
+                <span class="mono" style="color:${colH2};font-weight:600;min-width:48px;text-align:right">${fmtPct(achH2)}</span>
+              </div>
+            </td>
+          </tr>`;
+        })
+        .join("");
+    } else {
+      body.innerHTML = list
+        .map((p, i) => {
+          const pct = p.ach != null ? p.ach * 100 : null;
+          const barW = pct != null ? Math.min(100, Math.max(0, pct)).toFixed(1) : 0;
+          const color = achColor(p.ach);
+          const epps = p.epp_sources || [];
+          const eppLabel = epps.length
+            ? `${esc(epps[0].name)}${epps.length > 1 ? ` <span class="badge badge-neutral">+${epps.length - 1}</span>` : ""}`
+            : '<span style="color:var(--text-3)">-</span>';
+          return `<tr data-code="${esc(p.code)}">
+            <td class="col-rank mono">${i + 1}</td>
+            <td>
+              <div class="partner-cell">
+                <span class="partner-name">${esc(p.name)}</span>
+                <span class="partner-meta mono">${esc(p.code)} · ${esc(p.city || "-")}</span>
+              </div>
+            </td>
+            <td><span class="tier-pill tier-${esc(p.tier)}">${esc(p.tier || "-")}</span></td>
+            <td style="max-width:210px;overflow:hidden;text-overflow:ellipsis" title="${esc(epps.map((e) => e.name).join(", "))}">${eppLabel}</td>
+            <td class="num mono">${fmtCompact(p.target_orig)}</td>
+            <td class="num mono">${fmtCompact(p.target)}</td>
+            <td class="num mono"><strong>${fmtCompact(p.actual)}</strong></td>
+            <td class="num">
+              <div class="ach-cell">
+                <div class="mini-bar"><span style="width:${barW}%;background:${color}"></span></div>
+                <span class="mono" style="color:${color};font-weight:600;min-width:52px;text-align:right">${fmtPct(p.ach)}</span>
+              </div>
+              <div class="partner-meta mono" style="text-align:right">Orig: ${fmtPct(p.ach_orig)}</div>
+            </td>
+            <td class="num mono">${fmtPct(p.midhi_pct)}</td>
+            <td class="num mono">${fmtCompact(p.Consumer)}</td>
+            <td class="num mono">${fmtCompact(p.Scanner)}</td>
+            <td class="num mono">${fmtCompact(p.Consumables)}</td>
+            <td class="num mono">${fmtCompact(p.Dotmatrix)}</td>
+          </tr>`;
+        })
+        .join("");
+    }
 
     body.querySelectorAll("tr[data-code]").forEach((tr) => {
       tr.addEventListener("click", () => openDrawer(tr.dataset.code));
@@ -1560,6 +1900,62 @@
     $("dAchH2").style.color = achColor(achH2);
     $("dRevH2").innerHTML = `Beli: ${fmtCompact(p.actual_h2)}<br>Cat: ${fmtCompact(p.target_h2)} (${fmtPct(achH2)})<br>Orig: ${fmtCompact(origH2)} (${fmtPct(achOrigH2)})`;
 
+    const origQ3 = p.target_original_q3 ?? Math.round(origFy * 0.30);
+    const origQ4 = p.target_original_q4 ?? Math.round(origFy * 0.18);
+    const actQ3 = p.actual_q3 ?? (p.monthly_total || []).slice(6, 9).reduce((a, b) => a + (b || 0), 0);
+    const actQ4 = p.actual_q4 ?? (p.monthly_total || []).slice(9, 12).reduce((a, b) => a + (b || 0), 0);
+    const achOrigQ3 = origQ3 > 0 ? actQ3 / origQ3 : null;
+    const achOrigQ4 = origQ4 > 0 ? actQ4 / origQ4 : null;
+
+    if ($("dAchQ3")) {
+      $("dAchQ3").textContent = fmtPct(achOrigQ3);
+      $("dAchQ3").style.color = achColor(achOrigQ3);
+    }
+    if ($("dRevQ3")) {
+      $("dRevQ3").innerHTML = `Beli: ${fmtCompact(actQ3)}<br>Orig (30%): ${fmtCompact(origQ3)}`;
+    }
+    if ($("dAchQ4")) {
+      $("dAchQ4").textContent = fmtPct(achOrigQ4);
+      $("dAchQ4").style.color = achColor(achOrigQ4);
+    }
+    if ($("dRevQ4")) {
+      $("dRevQ4").innerHTML = `Beli: ${fmtCompact(actQ4)}<br>Orig (18%): ${fmtCompact(origQ4)}`;
+    }
+
+    const dMonthsBody = $("dMonthsBody");
+    if (dMonthsBody) {
+      const q34Indices = [
+        { idx: 6, q: "Q3", w: "10%" },
+        { idx: 7, q: "Q3", w: "10%" },
+        { idx: 8, q: "Q3", w: "10%" },
+        { idx: 9, q: "Q4", w: "6%" },
+        { idx: 10, q: "Q4", w: "6%" },
+        { idx: 11, q: "Q4", w: "6%" },
+      ];
+      const monthsList = rawData.meta?.months || DEFAULT_MONTHS;
+      dMonthsBody.innerHTML = q34Indices
+        .map(({ idx, q, w }) => {
+          const mName = monthsList[idx] || `Bulan ${idx + 1}`;
+          const mTgt = p.target_original_monthly?.[idx] ?? Math.round(origFy * (q === "Q3" ? 0.10 : 0.06));
+          const mAct = p.monthly_total?.[idx] || 0;
+          const mAch = mTgt > 0 ? mAct / mTgt : null;
+          const mGap = mAct - mTgt;
+          const gapColor = mGap >= 0 ? "var(--emerald)" : "var(--rose)";
+          const gapText = mGap >= 0 ? `+${fmtCompact(mGap)}` : `-${fmtCompact(Math.abs(mGap))}`;
+          return `
+            <tr>
+              <td><strong>${esc(mName)}</strong></td>
+              <td><span class="badge ${q === 'Q3' ? 'badge-indigo' : 'badge-neutral'}">${q} (${w})</span></td>
+              <td class="num">${fmtRp(mTgt)}</td>
+              <td class="num">${fmtRp(mAct)}</td>
+              <td class="num"><strong style="color:${achColor(mAch)}">${fmtPct(mAch)}</strong></td>
+              <td class="num" style="color:${gapColor};font-weight:600">${gapText}</td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
     const tc = themeColors();
     const months = rawData.meta?.months || DEFAULT_MONTHS;
     if (charts.drawer) charts.drawer.destroy();
@@ -1839,7 +2235,15 @@
     const totalGap = list.reduce((s, p) => s + Math.max(0, (p.target || 0) - (p.actual || 0)), 0);
     const achievedCount = list.filter((p) => p.ach != null && p.ach >= 1).length;
     const periodLabel =
-      period === "h1" ? "H1 (Apr – Sep 2026)" : period === "h2" ? "H2 (Okt 2026 – Mar 2027)" : "FY26 (Full Year)";
+      period === "h1"
+        ? "H1 (Apr – Sep 2026)"
+        : period === "h2"
+        ? "H2 (Okt 2026 – Mar 2027)"
+        : period === "q3"
+        ? "Q3 (Okt – Des 2026 · Target Orig 30%)"
+        : period === "q4"
+        ? "Q4 (Jan – Mar 2027 · Target Orig 18%)"
+        : "FY26 (Full Year)";
 
     const rowsHtml = list
       .map((p, i) => {
@@ -2257,12 +2661,21 @@
       render();
     });
 
-    document.querySelectorAll(".seg-btn").forEach((btn) => {
+    document.querySelectorAll(".pbi-slicer-group .seg-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
-        document.querySelectorAll(".seg-btn").forEach((b) => b.classList.remove("active"));
+        document.querySelectorAll(".pbi-slicer-group .seg-btn").forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
         state.period = btn.dataset.period;
         render();
+      });
+    });
+
+    document.querySelectorAll("#tableViewToggle .seg-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#tableViewToggle .seg-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        state.tableView = btn.dataset.tableView;
+        renderTable(getFilteredPartners());
       });
     });
 

@@ -339,6 +339,30 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             target_h2 = round(target_fy * 0.50)
         target_original_h1 = round(target_original * 0.52)
         target_original_h2 = round(target_original * 0.48)
+        target_original_q1 = round(target_original * 0.22)
+        target_original_q2 = round(target_original * 0.30)
+        target_original_q3 = round(target_original * 0.30)
+        target_original_q4 = round(target_original * 0.18)
+
+        # Target original per bulan (12 bulan):
+        # Q1 (bulan 0..2): 22% total -> Apr, Mei, Jun
+        # Q2 (bulan 3..5): 30% total -> 10% per bulan (Jul, Agu, Sep)
+        # Q3 (bulan 6..8): 30% total -> 10% per bulan (Okt, Nov, Des)
+        # Q4 (bulan 9..11): 18% total -> 6% per bulan (Jan, Feb, Mar)
+        target_original_monthly = [
+            round(target_original * 0.22 / 3),
+            round(target_original * 0.22 / 3),
+            target_original_q1 - 2 * round(target_original * 0.22 / 3),
+            round(target_original * 0.10),
+            round(target_original * 0.10),
+            round(target_original * 0.10),
+            round(target_original * 0.10),
+            round(target_original * 0.10),
+            round(target_original * 0.10),
+            round(target_original * 0.06),
+            round(target_original * 0.06),
+            round(target_original * 0.06),
+        ]
 
         monthly_by_cat = {}
         cat_totals = {}
@@ -353,6 +377,10 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
         ]
         total_h1 = round(sum(monthly_total[:6]), 2)
         total_h2 = round(sum(monthly_total[6:]), 2)
+        total_q1 = round(sum(monthly_total[0:3]), 2)
+        total_q2 = round(sum(monthly_total[3:6]), 2)
+        total_q3 = round(sum(monthly_total[6:9]), 2)
+        total_q4 = round(sum(monthly_total[9:12]), 2)
         total_fy = round(sum(monthly_total), 2)
         mid_hi_val = round(midhi.get(code, 0.0), 2)
         low_end_val = round(max(0.0, total_fy - mid_hi_val), 2)
@@ -390,11 +418,20 @@ def export_data(tool_dir=DEFAULT_TOOL_DIR, out_path=OUT_PATH):
             "target_original": round(target_original),
             "target_original_h1": target_original_h1,
             "target_original_h2": target_original_h2,
+            "target_original_q1": target_original_q1,
+            "target_original_q2": target_original_q2,
+            "target_original_q3": target_original_q3,
+            "target_original_q4": target_original_q4,
+            "target_original_monthly": target_original_monthly,
             "target_h1": target_h1,
             "target_h2": target_h2,
             "actual_fy": total_fy,
             "actual_h1": total_h1,
             "actual_h2": total_h2,
+            "actual_q1": total_q1,
+            "actual_q2": total_q2,
+            "actual_q3": total_q3,
+            "actual_q4": total_q4,
             "mid_hi": mid_hi_val,
             "low_end": low_end_val,
             "tx_count": row_count.get(code, 0),

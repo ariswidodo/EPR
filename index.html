@@ -105,6 +105,8 @@
         <div class="pbi-slicer-group">
           <span class="pbi-slicer-label">Periode</span>
           <div class="segmented" role="group" aria-label="Periode">
+            <button class="seg-btn" data-period="q3">Q3 (Okt–Des)</button>
+            <button class="seg-btn" data-period="q4">Q4 (Jan–Mar)</button>
             <button class="seg-btn active" data-period="h2">H2 (Okt–Mar)</button>
             <button class="seg-btn" data-period="fy">FY26 (Full Year)</button>
             <button class="seg-btn" data-period="h1">H1 (Apr–Sep · Closed)</button>
@@ -200,6 +202,122 @@
       </article>
     </section>
 
+    <!-- Q3 & Q4 Target Monitoring Section (Target Original) -->
+    <section class="card q-monitoring-card" id="qMonitoringSection">
+      <div class="card-head">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <h2>Target Original per Kuartal (Q3 &amp; Q4) &amp; Rincian Bulanan</h2>
+            <span class="badge badge-indigo">Focus H2</span>
+          </div>
+          <p class="card-sub">Monitoring pencapaian Target Original FY26 untuk periode berjalan Q3 (30% · Okt–Des) &amp; Q4 (18% · Jan–Mar) beserta rincian bulanan</p>
+        </div>
+        <div class="q-summary-badge mono" id="qSummaryBadge">
+          Target Orig FY: -
+        </div>
+      </div>
+
+      <div class="q-cards-grid">
+        <!-- Q3 Card -->
+        <article class="q-quarter-card" id="cardQ3">
+          <div class="q-quarter-head">
+            <div class="q-quarter-title">
+              <span class="badge badge-indigo">KUARTAL 3</span>
+              <h3>Q3 (Okt – Des 2026)</h3>
+              <span class="q-quarter-weight mono">Bobot 30% dari Target Original FY</span>
+            </div>
+            <div class="q-quarter-ach">
+              <strong class="mono" id="q3AchVal">0.0%</strong>
+              <span class="kpi-pill" id="q3AchBadge">-</span>
+            </div>
+          </div>
+
+          <div class="q-quarter-metrics">
+            <div class="q-metric-item">
+              <span>Target Orig Q3</span>
+              <strong class="mono" id="q3TargetVal">-</strong>
+            </div>
+            <div class="q-metric-item">
+              <span>Total Pembelian</span>
+              <strong class="mono" id="q3ActualVal">-</strong>
+            </div>
+            <div class="q-metric-item">
+              <span>Sisa / Gap</span>
+              <strong class="mono" id="q3GapVal">-</strong>
+            </div>
+          </div>
+
+          <div class="progress-track" style="margin: 12px 0 16px;">
+            <div class="progress-fill indigo" id="q3ProgressBar" style="width:0%"></div>
+          </div>
+
+          <div class="q-months-table-wrap">
+            <table class="q-months-table">
+              <thead>
+                <tr>
+                  <th>Bulan</th>
+                  <th class="num">Target (10%)</th>
+                  <th class="num">Aktual</th>
+                  <th class="num">Ach %</th>
+                  <th class="num">Sisa / Gap</th>
+                </tr>
+              </thead>
+              <tbody id="q3MonthsBody"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- Q4 Card -->
+        <article class="q-quarter-card" id="cardQ4">
+          <div class="q-quarter-head">
+            <div class="q-quarter-title">
+              <span class="badge badge-neutral">KUARTAL 4</span>
+              <h3>Q4 (Jan – Mar 2027)</h3>
+              <span class="q-quarter-weight mono">Bobot 18% dari Target Original FY</span>
+            </div>
+            <div class="q-quarter-ach">
+              <strong class="mono" id="q4AchVal">0.0%</strong>
+              <span class="kpi-pill" id="q4AchBadge">-</span>
+            </div>
+          </div>
+
+          <div class="q-quarter-metrics">
+            <div class="q-metric-item">
+              <span>Target Orig Q4</span>
+              <strong class="mono" id="q4TargetVal">-</strong>
+            </div>
+            <div class="q-metric-item">
+              <span>Total Pembelian</span>
+              <strong class="mono" id="q4ActualVal">-</strong>
+            </div>
+            <div class="q-metric-item">
+              <span>Sisa / Gap</span>
+              <strong class="mono" id="q4GapVal">-</strong>
+            </div>
+          </div>
+
+          <div class="progress-track" style="margin: 12px 0 16px;">
+            <div class="progress-fill indigo" id="q4ProgressBar" style="width:0%"></div>
+          </div>
+
+          <div class="q-months-table-wrap">
+            <table class="q-months-table">
+              <thead>
+                <tr>
+                  <th>Bulan</th>
+                  <th class="num">Target (6%)</th>
+                  <th class="num">Aktual</th>
+                  <th class="num">Ach %</th>
+                  <th class="num">Sisa / Gap</th>
+                </tr>
+              </thead>
+              <tbody id="q4MonthsBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+    </section>
+
     <!-- Charts Grid -->
     <section class="charts-grid">
       <article class="card chart-wide">
@@ -248,7 +366,13 @@
           <h2>Rincian Pencapaian per EPR</h2>
           <p class="card-sub">Klik baris partner untuk melihat detail tren bulanan &amp; komposisi produk</p>
         </div>
-        <span class="badge badge-neutral" id="tableCount">0 partner</span>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <div class="segmented" id="tableViewToggle" role="group" aria-label="Tampilan Kolom">
+            <button class="seg-btn active" data-table-view="category">Kategori Produk</button>
+            <button class="seg-btn" data-table-view="quarter">Breakdown Q3 &amp; Q4</button>
+          </div>
+          <span class="badge badge-neutral" id="tableCount">0 partner</span>
+        </div>
       </div>
 
       <div class="table-scroll">
@@ -508,12 +632,41 @@
           <strong class="mono" id="dAchH2">-</strong>
           <small class="mono" id="dRevH2">-</small>
         </div>
+        <div class="mini-kpi">
+          <span>Q3 (Okt – Des)</span>
+          <strong class="mono" id="dAchQ3">-</strong>
+          <small class="mono" id="dRevQ3">-</small>
+        </div>
+        <div class="mini-kpi">
+          <span>Q4 (Jan – Mar)</span>
+          <strong class="mono" id="dAchQ4">-</strong>
+          <small class="mono" id="dRevQ4">-</small>
+        </div>
       </div>
 
       <div class="drawer-section">
         <h3>Tren Bulanan Partner</h3>
         <div class="drawer-chart-wrap">
           <canvas id="drawerChart"></canvas>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <h3>Target Original &amp; Pencapaian Bulanan (Q3 &amp; Q4)</h3>
+        <div class="table-scroll" style="margin-top:8px">
+          <table class="drawer-months-table">
+            <thead>
+              <tr>
+                <th>Bulan</th>
+                <th>Kuartal</th>
+                <th class="num">Target Orig</th>
+                <th class="num">Aktual</th>
+                <th class="num">Ach %</th>
+                <th class="num">Sisa / Gap</th>
+              </tr>
+            </thead>
+            <tbody id="dMonthsBody"></tbody>
+          </table>
         </div>
       </div>
 
@@ -651,6 +804,14 @@
       <div class="field">
         <label>Pilih Periode Achievement</label>
         <div class="share-period-list">
+          <button class="btn share-period-btn" data-share-period="q3">
+            <span><b>Q3 (Okt – Des) — Kuartal Berjalan</b><br><small style="color:var(--text-3)">Target Q3 (Orig 30%) · Highlight Kekurangan</small></span>
+            <span>&rarr;</span>
+          </button>
+          <button class="btn share-period-btn" data-share-period="q4">
+            <span><b>Q4 (Jan – Mar) — Kuartal Penutup</b><br><small style="color:var(--text-3)">Target Q4 (Orig 18%) · Highlight Kekurangan</small></span>
+            <span>&rarr;</span>
+          </button>
           <button class="btn share-period-btn" data-share-period="h2">
             <span><b>H2 (Okt – Mar) — Fokus Berjalan</b><br><small style="color:var(--text-3)">Target H2 (Orig 48% · Cat 50%) · Highlight Kekurangan</small></span>
             <span>&rarr;</span>

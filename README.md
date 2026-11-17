@@ -28,13 +28,24 @@ Aplikasi ini berjalan mandiri di Windows (`http://127.0.0.1:8765/`) menggunakan 
   - **Cek Kode EPR & Kota**: kode `EPR-xxxx` yang tidak terdaftar di `data/epr_master.csv` langsung ditolak (tidak dicocokkan paksa lewat nama), dan kolom `City` ikut diverifikasi agar nama yang sama dari kota berbeda tidak salah masuk.
   - **Alias EPR**: pemetaan nama alternatif diatur di `data/epr_aliases.json`.
 
-### 2. Monitoring 2 Target (Target Original & Target Category) vs Total Pembelian (Focus H2)
-- Karena **H1 (Apr–Sep) sudah Closed**, dashboard otomatis terbuka pada periode fokus **`H2 (Okt–Mar)`** (arsip `H1 (Apr–Sep · Closed)` dan `FY26 (Full Year)` tetap dapat dipilih kapan saja).
+### 2. Monitoring 2 Target (Target Original & Target Category) vs Total Pembelian (Focus H2, Q3 & Q4)
+- Karena **H1 (Apr–Sep) sudah Closed**, dashboard otomatis terbuka pada periode fokus **`H2 (Okt–Mar)`** (tersedia juga pilihan kuartal **`Q3 (Okt–Des)`**, **`Q4 (Jan–Mar)`**, serta arsip `FY26 (Full Year)` dan `H1 (Apr–Sep · Closed)`).
 - Data master EPR di `data/epr_master.csv` (24 EPR area `ARIS`) menyimpan dua acuan target sekaligus:
-  - **Target Original**: target tahunan original (`H1 = 52%`, `H2 = 48%`).
+  - **Target Original**: target tahunan original dengan pembobotan kuartal dan bulanan resmi:
+    - **Q1**: `22%` (Apr, Mei, Jun)
+    - **Q2**: `30%` (Jul, Agu, Sep · 10% per bulan)
+    - **H1**: `52%` (Q1 + Q2)
+    - **Q3**: `30%` (Okt, Nov, Des · 10% per bulan)
+    - **Q4**: `18%` (Jan, Feb, Mar · 6% per bulan)
+    - **H2**: `48%` (Q3 + Q4)
   - **Target Category**: target sesuai tier/kategori (`SUN`, `STAR`, `PLANET`, `MOON`, `CRESCENT`) dengan pembagian **`H1 = 50%`** dan **`H2 = 50%`**.
-- **Dashboard & Drawer Detail Partner**:
-  - KPI atas, grafik Top EPR, tabel **Rincian Pencapaian per EPR** (`Target Orig`, `Target Cat`, `Total Pembelian`, `Achievement`), serta panel detail partner (`FY26`, `H1`, `H2`) menampilkan perbandingan kedua target terhadap **Total Pembelian (Net)**.
+- **Panel Monitoring Target Original (Q3 & Q4 Focus)**:
+  - Widget interaktif di halaman Overview yang merangkum Target Original Q3 (30%) & Q4 (18%), aktual pembelian, achievement %, dan gap/kekurangan.
+  - Tabel rincian bulanan dinamis untuk **Okt 26, Nov 26, Des 26** (10% Target Original) dan **Jan 27, Feb 27, Mar 27** (6% Target Original).
+- **Dashboard, Tabel & Drawer Detail Partner**:
+  - Filter Slicer: tombol segmented **Q3**, **Q4**, **H2**, **FY26**, dan **H1**.
+  - Tabel Rincian Pencapaian per EPR: dilengkapi switcher tampilan antara **Kategori Produk** dan **Breakdown Q3 & Q4**.
+  - Drawer Detail Partner: kartu capaian Q3 & Q4 serta tabel rincian bulanan untuk setiap EPR yang dipilih.
 
 ### 3. Ringkasan Program Berjalan & Monitoring Paket (`Q3 Booster Up`)
 - Otomatis mengekstrak nama program dari kolom **`Remarks` (AD)** dan menggabungkan variasi penulisan (`Q3 BOOSTER UP`, `Q3 Booster Up`, `“Q3 Booster Up”`, `Q3 Booster`) serta format `EIN-YY-NNNNN` 6 digit ([scripts/export_from_db.py](scripts/export_from_db.py)).
@@ -52,7 +63,7 @@ Aplikasi ini berjalan mandiri di Windows (`http://127.0.0.1:8765/`) menggunakan 
     - Tersedia filter **`Semua AE/AM` (`ARIS` / `HERDIAN` / `SIGIT`)**, **`Semua Paket (82 EPR)` / `Paket Consumables (7 EPR)` / `Paket Consumer (75 EPR)`**, dan filter status keikutsertaan EPR.
 
 ### 4. Share to PDF (1 Halaman A4)
-- **Share PDF Achievement (Semua EPR)** *(tombol di kanan atas)*: pilih periode **H2 (Fokus Berjalan)**, **FY26**, atau **H1 (Closed)** → mencetak daftar **Target Original**, **Target Category**, **Total Pembelian**, **Ach Orig**, **Ach Cat**, dan **Kekurangan (Cat)** **tanpa nama EPP**.
+- **Share PDF Achievement (Semua EPR)** *(tombol di kanan atas)*: kini mendukung pilihan periode **Q3 (Okt–Des · Kuartal Berjalan)**, **Q4 (Jan–Mar · Kuartal Penutup)**, **H2 (Fokus Berjalan)**, **FY26**, atau **H1 (Closed)** → mencetak daftar **Target Original**, **Target Category**, **Total Pembelian**, **Ach Orig**, **Ach Cat**, dan **Kekurangan (Cat)** **tanpa nama EPP**.
 - **Share PDF Achievement (Per EPR)** *(di dalam Drawer Detail Partner)*: mencetak laporan lengkap 1 EPR (`FY26`, `H1`, `H2` untuk Target Original & Category), grafik bulanan, komposisi kategori, dan sumber pembelian EPP-nya.
 - **Share PDF Result Paket** *(di toolbar Monitor EPR Program Berjalan, tombol **`PDF`** di tiap baris EPR, dan di dalam pop-up detail EPR)*: mencetak ringkasan pembelian paket semua peserta sesuai filter aktif atau laporan khusus 1 EPR.
 
@@ -88,3 +99,15 @@ EPR_Dashboard/
    ├─ booster_consumables_sku.csv  Daftar resmi 31 SKU tinta Paket Booster
    └─ sku.xlsx / template_*.xlsx
 ```
+
+## LAN Access
+
+- **Binding address**: server kini mendengarkan pada `0.0.0.0` (semua interface) sehingga dapat diakses dari komputer lain di jaringan LAN.
+- **Cara menjalankan**: pastikan server sudah dijalankan dengan `start_dashboard.bat` atau `python server.py`. URL yang dapat diakses dari jaringan lain adalah `http://<IP_LAN_HOST>:8765/` (contoh `http://192.168.1.10:8765/`).
+- **Firewall**: buka inbound TCP pada port **8765**. Jika Anda memiliki hak admin, jalankan di PowerShell:
+  ```powershell
+  New-NetFirewallRule -DisplayName "EPR Dashboard (8765)" -Direction Inbound -Protocol TCP -LocalPort 8765 -Action Allow
+  ```
+  Jika tidak, tambahkan rule secara manual melalui *Windows Defender Firewall → Inbound Rules → New Rule…* → *Port* → masukkan `8765`.
+- **Uji konektivitas**: dari komputer lain, buka browser ke URL di atas atau gunakan `curl`/`Invoke-WebRequest` untuk mengecek `/api/status`.
+

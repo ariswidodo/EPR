@@ -41,6 +41,14 @@ JOB = {
     "stats": None,
 }
 
+# Allowed upload extensions (Excel/CSV only)
+ALLOWED_EXTENSIONS = {".xlsx", ".xls", ".xlsm", ".csv"}
+
+
+def _allowed_file(fname: str) -> bool:
+    _, ext = os.path.splitext(fname.lower())
+    return ext in ALLOWED_EXTENSIONS
+
 
 def _emit(msg):
     with LOCK:
@@ -208,6 +216,10 @@ class Handler(BaseHTTPRequestHandler):
 
         raw_name = urllib.parse.unquote(self.headers.get("X-Filename", "upload.xlsx"))
         fname = os.path.basename(raw_name) or "upload.xlsx"
+
+        # Validate file extension – only Excel/CSV allowed
+        if not _allowed_file(fname):
+            return self._send_json({"ok": False, "error": "File tidak diperbolehkan. Hanya file Excel (.xlsx, .xls, .xlsm) atau CSV yang diterima."}, 400)
         build_excel = self.headers.get("X-Build-Excel", "0") == "1"
 
         length = int(self.headers.get("Content-Length") or 0)
@@ -266,7 +278,7 @@ def main():
             webbrowser.open(url)
         return
 
-    srv = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    srv = ThreadingHTTPServer(("0.0.0.0", args.port), Handler)  # Bind to all interfaces for LAN access
     print(f"EPR Dashboard berjalan di {url}")
     print("Tekan Ctrl+C untuk berhenti.")
     if not args.no_browser:

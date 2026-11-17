@@ -6,3 +6,6 @@ out/
 processed/*.xlsx
 processed/*.xlsm
 data/epr.db
+*.log
+inbox/*
+!inbox/.gitkeep
